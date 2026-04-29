@@ -31,6 +31,21 @@ class OosValidator:
         summary = "OOS validation passed." if passed else "OOS validation failed."
         return OosValidationResult(passed=passed, score=score, summary=summary)
 
+    def build_report_payload(
+        self,
+        in_sample: RunSummary,
+        out_of_sample: RunSummary,
+        result: OosValidationResult,
+    ) -> dict[str, str]:
+        """构造OOS验证报告所需的结构化摘要字段。"""
+        return {
+            "in_sample_run_id": in_sample.run_id.value,
+            "out_of_sample_run_id": out_of_sample.run_id.value,
+            "validation_score": str(result.score),
+            "passed": str(result.passed),
+            "summary": result.summary,
+        }
+
     def _alignment(self, in_sample_value, out_of_sample_value) -> Decimal:
         """计算收益类指标在样本内外之间的吻合度。"""
         if in_sample_value in (None, Decimal("0")) or out_of_sample_value is None:

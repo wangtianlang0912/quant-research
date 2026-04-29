@@ -41,9 +41,9 @@ def test_run_paper_writes_report_and_records_execution(tmp_path, monkeypatch) ->
     )
     monkeypatch.chdir(tmp_path)
 
-    paper_summary = run_paper(data_path=str(tmp_path), symbol="000300.SH")
+    paper_summary = run_paper(data_path=str(tmp_path), symbol="000300.SH", strategy_name="mean_reversion")
 
-    report_path = tmp_path / "reports" / "paper" / "paper-000300.SH.json"
+    report_path = tmp_path / "reports" / "paper" / "paper-mean_reversion-000300.SH.json"
     report_payload = json.loads(report_path.read_text(encoding="utf-8"))
     assert paper_summary.mode.value == "paper"
     assert report_path.exists()

@@ -5,21 +5,21 @@ from src.domain.enums import Frequency, RunMode
 from src.domain.ids import RunId
 from src.domain.models.run import RunContext, RunSummary
 from src.orchestrators import BacktestRunner
-from src.strategies import TrendFollowingStrategy
+from src.strategies import MeanReversionStrategy, TrendFollowingStrategy
 from src.adapters import LocalCsvAdapter
 from src.services.reporting import BacktestReportWriter
 
 
-def run_paper(data_path: str, symbol: str) -> RunSummary:
-    """使用本地CSV数据运行一次最小纸盘流程并输出报告。"""
+def run_paper(data_path: str, symbol: str, strategy_name: str = "trend_following") -> RunSummary:
+    """使用本地CSV数据运行指定策略的最小纸盘流程并输出报告。"""
     from datetime import date, datetime
 
-    strategy = TrendFollowingStrategy()
+    strategy = _build_strategy(strategy_name)
     market_data = LocalCsvAdapter(base_path=data_path)
     container = build_paper_container(strategy=strategy, market_data=market_data)
     runner = BacktestRunner(container)
     context = RunContext(
-        run_id=RunId(f"paper-{symbol}"),
+        run_id=RunId(f"paper-{strategy.metadata().strategy_id.value}-{symbol}"),
         mode=RunMode.PAPER,
         strategy_id=strategy.metadata().strategy_id,
         symbols=[symbol],
@@ -28,7 +28,7 @@ def run_paper(data_path: str, symbol: str) -> RunSummary:
         end_date=date(2024, 12, 31),
         created_at=datetime.now(),
         environment="paper",
-        metadata={"data_path": data_path},
+        metadata={"data_path": data_path, "strategy_name": strategy_name},
     )
     summary = runner.run(context)
     execution_gateway = container.execution_gateway
@@ -67,3 +67,10 @@ def run_paper(data_path: str, symbol: str) -> RunSummary:
         max_drawdown=summary.max_drawdown,
         sharpe_ratio=summary.sharpe_ratio,
     )
+
+
+def _build_strategy(strategy_name: str):
+    """根据策略名称构造纸盘运行所需的策略实例。"""
+    if strategy_name == "mean_reversion":
+        return MeanReversionStrategy()
+    return TrendFollowingStrategy()
