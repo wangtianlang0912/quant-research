@@ -9,6 +9,7 @@ from src.domain.models.run import RunContext, RunSummary
 from src.domain.models.strategy import StrategyConfig, StrategyContext
 from src.domain.ports.market_data_port import MarketDataPort
 from src.engines.backtest import BacktestEngine, MetricsEngine
+from src.engines.risk import BasicRiskManager
 from src.orchestrators.order_pipeline import OrderPipeline
 from src.orchestrators.signal_pipeline import SignalPipeline
 from src.app.bootstrap import AppContainer
@@ -59,8 +60,11 @@ class BacktestRunner:
                 updated_at=self.container.clock.now(),
             )
         equity_curve = [portfolio.total_value]
+        peak_equity = portfolio.total_value
 
         for symbol in context.symbols:
+            if self._should_stop_for_drawdown(portfolio.total_value, peak_equity):
+                break
             bars = self._load_bars(self.container.market_data, symbol, context)
             if not bars:
                 continue
@@ -84,15 +88,17 @@ class BacktestRunner:
             portfolio = self.backtest_engine.apply_fills(portfolio, fills)
             self.container.portfolio_repository.save_portfolio(context.run_id, portfolio)
             equity_curve.append(portfolio.total_value)
+            if portfolio.total_value > peak_equity:
+                peak_equity = portfolio.total_value
 
         metrics = self.metrics_engine.calculate(equity_curve)
         summary = RunSummary(
             run_id=context.run_id,
-            mode=RunMode.BACKTEST,
+            mode=context.mode,
             started_at=context.created_at,
             finished_at=self.container.clock.now(),
             status="completed",
-            message="Backtest finished successfully.",
+            message="Run finished successfully.",
             final_equity=portfolio.total_value,
             total_return=metrics.total_return,
             annualized_return=metrics.annualized_return,
@@ -109,6 +115,7 @@ class BacktestRunner:
                 payload={
                     "status": summary.status,
                     "final_equity": str(summary.final_equity),
+                    "peak_equity": str(peak_equity),
                     "total_return": str(summary.total_return),
                     "annualized_return": str(summary.annualized_return),
                     "max_drawdown": str(summary.max_drawdown),
@@ -130,3 +137,12 @@ class BacktestRunner:
         start = datetime.combine(context.start_date, time.min)
         end = datetime.combine(context.end_date, time.max)
         return market_data.get_bars(symbol, start, end, context.frequency)
+
+    def _should_stop_for_drawdown(self, current_equity: Decimal, peak_equity: Decimal) -> bool:
+        """根据历史峰值净值判断是否需要触发回撤保护。"""
+        if not isinstance(self.container.risk_manager, BasicRiskManager):
+            return False
+        triggered = self.container.risk_manager.should_trigger_drawdown_guard(current_equity, peak_equity)
+        if triggered:
+            self.container.risk_manager.kill_switch = True
+        return triggered

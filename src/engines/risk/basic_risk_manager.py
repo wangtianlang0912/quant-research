@@ -27,9 +27,8 @@ class BasicRiskManager(RiskPort):
         portfolio: Portfolio,
         order_intents: list[OrderIntent],
     ) -> list[RiskDecision]:
-        """对订单列表执行总开关、回撤、单笔数量、仓位比例和现金保留检查。"""
+        """对订单列表执行总开关、单笔数量、仓位比例和现金保留检���。"""
         decisions: list[RiskDecision] = []
-        current_drawdown = self._calculate_current_drawdown(portfolio)
         for order in order_intents:
             if not self.enabled:
                 decisions.append(
@@ -50,17 +49,6 @@ class BasicRiskManager(RiskPort):
                         approved_quantity=Decimal("0"),
                         reject_reason="Kill Switch 已触发，禁止继续下单。",
                         triggered_rules=["kill_switch"],
-                    )
-                )
-                continue
-            if current_drawdown >= self.max_drawdown_ratio:
-                decisions.append(
-                    RiskDecision(
-                        order_id=order.order_id,
-                        action=RiskAction.REJECT,
-                        approved_quantity=Decimal("0"),
-                        reject_reason="当前回撤超过阈值，禁止继续下单。",
-                        triggered_rules=["max_drawdown_ratio"],
                     )
                 )
                 continue
@@ -110,6 +98,17 @@ class BasicRiskManager(RiskPort):
             )
         return decisions
 
+    def should_trigger_drawdown_guard(
+        self,
+        current_equity: Decimal,
+        peak_equity: Decimal,
+    ) -> bool:
+        """根据当前净值与历史峰值判断是否触发最大回撤保护。"""
+        if peak_equity <= 0:
+            return False
+        current_drawdown = (peak_equity - current_equity) / peak_equity
+        return current_drawdown >= self.max_drawdown_ratio
+
     def _estimate_order_price(self, order: OrderIntent) -> Decimal:
         """为基础风控计算估算成交价，优先使用限价，否则使用兜底价格。"""
         if order.limit_price is not None and order.limit_price > 0:
@@ -153,12 +152,3 @@ class BasicRiskManager(RiskPort):
         if remaining_exposure <= 0:
             return Decimal("0")
         return remaining_exposure / estimated_price
-
-    def _calculate_current_drawdown(self, portfolio: Portfolio) -> Decimal:
-        """根据组合净值和现金水平估算当前回撤比例。"""
-        if portfolio.total_value <= 0:
-            return Decimal("1")
-        baseline = max(portfolio.total_value, portfolio.cash)
-        if baseline <= 0:
-            return Decimal("0")
-        return max(Decimal("0"), (baseline - portfolio.total_value) / baseline)

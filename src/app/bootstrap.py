@@ -159,10 +159,14 @@ class NoopExecutionGateway(ExecutionPort):
 
 
 class PaperExecutionGateway(ExecutionPort):
+    def __init__(self) -> None:
+        """初始化纸盘执行网关的订单回报内存存储。"""
+        self._reports: dict[str, ExecutionReport] = {}
+
     def submit_orders(self, orders: list[OrderIntent]) -> list[ExecutionReport]:
-        """在纸盘模式下记录订单已提交状态。"""
+        """在纸盘模式下记录订单已提交状态并返回提交回报。"""
         now = datetime.now()
-        return [
+        reports = [
             ExecutionReport(
                 order_id=order.order_id,
                 broker_order_id=BrokerOrderId(f"paper-{order.order_id.value}"),
@@ -172,18 +176,34 @@ class PaperExecutionGateway(ExecutionPort):
             )
             for order in orders
         ]
+        for report in reports:
+            self._reports[report.broker_order_id.value] = report
+        return reports
 
     def get_fills(self, order_ids: list[str]) -> list[Fill]:
         """纸盘模式下暂不返回真实成交。"""
         return []
 
     def cancel_order(self, broker_order_id: str) -> bool:
-        """模拟纸盘撤单成功。"""
+        """模拟纸盘撤单成功，并将状态更新为已取消。"""
+        if broker_order_id not in self._reports:
+            return False
+        report = self._reports[broker_order_id]
+        self._reports[broker_order_id] = ExecutionReport(
+            order_id=report.order_id,
+            broker_order_id=report.broker_order_id,
+            status=OrderStatus.CANCELLED,
+            message="cancelled by paper execution gateway",
+            timestamp=datetime.now(),
+        )
         return True
 
     def get_order_status(self, broker_order_id: str) -> OrderStatus:
-        """返回纸盘订单状态。"""
-        return OrderStatus.SUBMITTED
+        """返回纸盘订单当前状态，未找到时默认返回已提交。"""
+        report = self._reports.get(broker_order_id)
+        if report is None:
+            return OrderStatus.SUBMITTED
+        return report.status
 
     def get_account_state(self) -> AccountState:
         """返回默认纸盘账户状态。"""
@@ -198,6 +218,10 @@ class PaperExecutionGateway(ExecutionPort):
     def get_positions(self) -> list[Position]:
         """返回纸盘持仓列表，当前为占位实现。"""
         return []
+
+    def list_reports(self) -> list[ExecutionReport]:
+        """返回当前纸盘执行网关已记录的全部订单回报。"""
+        return list(self._reports.values())
 
 
 def build_backtest_container(
