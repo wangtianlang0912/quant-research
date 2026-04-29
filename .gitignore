@@ -1,0 +1,69 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# Distribution / packaging
+dist/
+build/
+*.egg-info/
+*.egg
+.eggs/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.coveragerc
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project-specific: data and secrets
+.env
+configs/*.secret.yaml
+configs/runtime.yaml
+data/
+*.h5
+*.hdf5
+*.parquet
+*.feather
+*.pkl
+*.pickle
+
+# Logs
+logs/
+*.log
+
+# Backtest outputs (large files, commit reports not raw data)
+research/**/*.csv
+research/**/*.parquet
+research/**/*.h5
+research/**/data/
+
+# Build artifacts
+*.tar.gz
+*.zip
