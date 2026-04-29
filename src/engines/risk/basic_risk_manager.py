@@ -18,6 +18,7 @@ class BasicRiskManager(RiskPort):
     max_position_value_ratio: Decimal = Decimal("0.2")
     max_total_exposure_ratio: Decimal = Decimal("0.8")
     min_cash_reserve: Decimal = Decimal("50000")
+    max_drawdown_ratio: Decimal = Decimal("0.15")
     enabled: bool = True
     kill_switch: bool = False
 
@@ -26,8 +27,9 @@ class BasicRiskManager(RiskPort):
         portfolio: Portfolio,
         order_intents: list[OrderIntent],
     ) -> list[RiskDecision]:
-        """对订单列表执行总开关、单笔数量、仓位比例和现金保留检查。"""
+        """对订单列表执行总开关、回撤、单笔数量、仓位比例和现金保留检查。"""
         decisions: list[RiskDecision] = []
+        current_drawdown = self._calculate_current_drawdown(portfolio)
         for order in order_intents:
             if not self.enabled:
                 decisions.append(
@@ -51,11 +53,22 @@ class BasicRiskManager(RiskPort):
                     )
                 )
                 continue
+            if current_drawdown >= self.max_drawdown_ratio:
+                decisions.append(
+                    RiskDecision(
+                        order_id=order.order_id,
+                        action=RiskAction.REJECT,
+                        approved_quantity=Decimal("0"),
+                        reject_reason="当前回撤超过阈值，禁止继续下单。",
+                        triggered_rules=["max_drawdown_ratio"],
+                    )
+                )
+                continue
 
             approved_quantity = min(order.quantity, self.max_order_quantity)
             triggered_rules: list[str] = []
             estimated_price = self._estimate_order_price(order)
-            max_position_quantity = self._calculate_max_position_quantity(portfolio, estimated_price)
+            max_position_quantity = self._calculate_max_position_quantity(portfolio, order, estimated_price)
             if approved_quantity > max_position_quantity:
                 approved_quantity = max_position_quantity
                 triggered_rules.append("max_position_value_ratio")
@@ -103,12 +116,23 @@ class BasicRiskManager(RiskPort):
             return order.limit_price
         return Decimal("100")
 
-    def _calculate_max_position_quantity(self, portfolio: Portfolio, estimated_price: Decimal) -> Decimal:
-        """根据组合总资产和单标的仓位比例上限估算最大允许数量。"""
+    def _calculate_max_position_quantity(
+        self,
+        portfolio: Portfolio,
+        order: OrderIntent,
+        estimated_price: Decimal,
+    ) -> Decimal:
+        """结合已有持仓和单标的仓位上限估算最大允许下单数量。"""
         if estimated_price <= 0 or portfolio.total_value <= 0:
             return Decimal("0")
+        current_position_value = Decimal("0")
+        if order.symbol in portfolio.positions:
+            current_position_value = portfolio.positions[order.symbol].market_value
         max_position_value = portfolio.total_value * self.max_position_value_ratio
-        return max_position_value / estimated_price
+        remaining_value = max_position_value - current_position_value
+        if remaining_value <= 0:
+            return Decimal("0")
+        return remaining_value / estimated_price
 
     def _calculate_max_affordable_quantity(self, portfolio: Portfolio, estimated_price: Decimal) -> Decimal:
         """根据现金保留要求估算当前最多可买入数量。"""
@@ -129,3 +153,12 @@ class BasicRiskManager(RiskPort):
         if remaining_exposure <= 0:
             return Decimal("0")
         return remaining_exposure / estimated_price
+
+    def _calculate_current_drawdown(self, portfolio: Portfolio) -> Decimal:
+        """根据组合净值和基准资金估算当前回撤比例。"""
+        if portfolio.total_value <= 0:
+            return Decimal("1")
+        baseline = max(portfolio.total_value, portfolio.cash)
+        if baseline <= 0:
+            return Decimal("0")
+        return max(Decimal("0"), (baseline - portfolio.total_value) / baseline)

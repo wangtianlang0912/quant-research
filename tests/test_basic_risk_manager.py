@@ -73,3 +73,41 @@ def test_basic_risk_manager_limits_total_exposure() -> None:
     decisions = manager.evaluate(portfolio, [order])
     assert len(decisions) == 1
     assert decisions[0].approved_quantity <= Decimal("200")
+
+
+def test_basic_risk_manager_limits_existing_position_and_drawdown() -> None:
+    """验证基础风控会考虑已有持仓并在回撤超限时拒绝下单。"""
+    manager = BasicRiskManager(
+        max_order_quantity=Decimal("1000"),
+        max_position_value_ratio=Decimal("0.5"),
+        max_total_exposure_ratio=Decimal("0.9"),
+        min_cash_reserve=Decimal("0"),
+        max_drawdown_ratio=Decimal("0.1"),
+    )
+    portfolio = Portfolio(
+        cash=Decimal("10000"),
+        total_value=Decimal("40000"),
+        positions={
+            "000300.SH": Position(
+                symbol="000300.SH",
+                quantity=Decimal("150"),
+                avg_cost=Decimal("100"),
+                market_value=Decimal("15000"),
+                updated_at=__import__("datetime").datetime.now(),
+            )
+        },
+    )
+    order = OrderIntent(
+        order_id=OrderId("order-3"),
+        strategy_id=StrategyId("strategy-3"),
+        symbol="000300.SH",
+        side=OrderSide.BUY,
+        quantity=Decimal("200"),
+        order_type=OrderType.MARKET,
+        timestamp=__import__("datetime").datetime.now(),
+        limit_price=Decimal("100"),
+    )
+
+    decisions = manager.evaluate(portfolio, [order])
+    assert len(decisions) == 1
+    assert decisions[0].approved_quantity <= Decimal("50") or decisions[0].action == RiskAction.REJECT

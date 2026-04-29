@@ -32,7 +32,22 @@ def run_backtest(data_path: str, symbol: str) -> RunSummary:
     )
     summary = runner.run(context)
     report_writer = BacktestReportWriter()
-    report_path = report_writer.write_json_report(output_dir="reports/backtest", context=context, summary=summary)
+    risk_summary = {
+        "engine": container.risk_manager.__class__.__name__,
+        "enabled": getattr(container.risk_manager, "enabled", None),
+        "kill_switch": getattr(container.risk_manager, "kill_switch", None),
+        "max_order_quantity": str(getattr(container.risk_manager, "max_order_quantity", "")),
+        "max_position_value_ratio": str(getattr(container.risk_manager, "max_position_value_ratio", "")),
+        "max_total_exposure_ratio": str(getattr(container.risk_manager, "max_total_exposure_ratio", "")),
+        "max_drawdown_ratio": str(getattr(container.risk_manager, "max_drawdown_ratio", "")),
+        "min_cash_reserve": str(getattr(container.risk_manager, "min_cash_reserve", "")),
+    }
+    report_path = report_writer.write_json_report(
+        output_dir="reports/backtest",
+        context=context,
+        summary=summary,
+        risk_summary=risk_summary,
+    )
     return RunSummary(
         run_id=summary.run_id,
         mode=summary.mode,
