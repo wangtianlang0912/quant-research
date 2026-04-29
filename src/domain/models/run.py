@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import date, datetime
+from decimal import Decimal
 
 from src.domain.enums import Frequency, RunMode
 from src.domain.ids import RunId, StrategyId
@@ -29,3 +30,7 @@ class RunSummary:
     finished_at: datetime | None
     status: str
     message: str = ""
+    final_equity: Decimal | None = None
+    total_return: Decimal | None = None
+    max_drawdown: Decimal | None = None
+    sharpe_ratio: Decimal | None = None

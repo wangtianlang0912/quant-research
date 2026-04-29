@@ -19,8 +19,10 @@ def main() -> int:
     if args.command == "backtest":
         summary = run_backtest(data_path=args.data_path, symbol=args.symbol)
         print(
-            f"run_id={summary.run_id.value} mode={summary.mode.value} "
-            f"status={summary.status} message={summary.message}"
+            f"run_id={summary.run_id.value} mode={summary.mode.value} status={summary.status} "
+            f"final_equity={summary.final_equity} total_return={summary.total_return} "
+            f"max_drawdown={summary.max_drawdown} sharpe_ratio={summary.sharpe_ratio} "
+            f"message={summary.message}"
         )
         return 0
 

@@ -8,7 +8,7 @@ from src.domain.models.portfolio import Portfolio
 from src.domain.models.run import RunContext, RunSummary
 from src.domain.models.strategy import StrategyConfig, StrategyContext
 from src.domain.ports.market_data_port import MarketDataPort
-from src.engines.backtest import BacktestEngine
+from src.engines.backtest import BacktestEngine, MetricsEngine
 from src.orchestrators.order_pipeline import OrderPipeline
 from src.orchestrators.signal_pipeline import SignalPipeline
 from src.app.bootstrap import AppContainer
@@ -21,10 +21,12 @@ class BacktestRunner:
         self,
         container: AppContainer,
         backtest_engine: BacktestEngine | None = None,
+        metrics_engine: MetricsEngine | None = None,
     ) -> None:
         """初始化回测运行器。"""
         self.container = container
         self.backtest_engine = backtest_engine or BacktestEngine()
+        self.metrics_engine = metrics_engine or MetricsEngine()
         self.signal_pipeline = SignalPipeline(
             strategy=container.strategy,
             event_repository=container.event_repository,
@@ -56,6 +58,7 @@ class BacktestRunner:
                 positions={},
                 updated_at=self.container.clock.now(),
             )
+        equity_curve = [portfolio.total_value]
 
         for symbol in context.symbols:
             bars = self._load_bars(self.container.market_data, symbol, context)
@@ -80,7 +83,9 @@ class BacktestRunner:
             fills = self.backtest_engine.simulate_orders(portfolio, approved_orders, latest_prices)
             portfolio = self.backtest_engine.apply_fills(portfolio, fills)
             self.container.portfolio_repository.save_portfolio(context.run_id, portfolio)
+            equity_curve.append(portfolio.total_value)
 
+        metrics = self.metrics_engine.calculate(equity_curve)
         summary = RunSummary(
             run_id=context.run_id,
             mode=RunMode.BACKTEST,
@@ -88,6 +93,10 @@ class BacktestRunner:
             finished_at=self.container.clock.now(),
             status="completed",
             message="Backtest finished successfully.",
+            final_equity=portfolio.total_value,
+            total_return=metrics.total_return,
+            max_drawdown=metrics.max_drawdown,
+            sharpe_ratio=metrics.sharpe_ratio,
         )
         self.container.run_repository.save_run_summary(summary)
         self.container.event_repository.append(
@@ -96,7 +105,13 @@ class BacktestRunner:
                 run_id=context.run_id,
                 strategy_id=context.strategy_id,
                 timestamp=self.container.clock.now(),
-                payload={"status": summary.status},
+                payload={
+                    "status": summary.status,
+                    "final_equity": str(summary.final_equity),
+                    "total_return": str(summary.total_return),
+                    "max_drawdown": str(summary.max_drawdown),
+                    "sharpe_ratio": str(summary.sharpe_ratio),
+                },
             )
         )
         return summary
