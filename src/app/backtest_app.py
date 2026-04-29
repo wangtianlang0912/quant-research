@@ -31,7 +31,6 @@ def run_backtest(data_path: str, symbol: str) -> RunSummary:
         metadata={"data_path": data_path},
     )
     summary = runner.run(context)
-    report_writer = BacktestReportWriter()
     risk_summary = {
         "engine": container.risk_manager.__class__.__name__,
         "enabled": getattr(container.risk_manager, "enabled", None),
@@ -42,11 +41,23 @@ def run_backtest(data_path: str, symbol: str) -> RunSummary:
         "max_drawdown_ratio": str(getattr(container.risk_manager, "max_drawdown_ratio", "")),
         "min_cash_reserve": str(getattr(container.risk_manager, "min_cash_reserve", "")),
     }
+    strategy_metadata = {
+        "strategy_id": strategy.metadata().strategy_id.value,
+        "name": strategy.metadata().name,
+        "version": strategy.metadata().version,
+        "author": strategy.metadata().author,
+    }
+    event_summary = {
+        "event_count": len(container.event_repository.list_by_run(context.run_id)),
+    }
+    report_writer = BacktestReportWriter()
     report_path = report_writer.write_json_report(
         output_dir="reports/backtest",
         context=context,
         summary=summary,
         risk_summary=risk_summary,
+        strategy_metadata=strategy_metadata,
+        event_summary=event_summary,
     )
     return RunSummary(
         run_id=summary.run_id,

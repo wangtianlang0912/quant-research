@@ -1,9 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime
 from decimal import Decimal
 
-from src.domain.enums import EventType, OrderSide, OrderType, RiskAction
+from src.domain.enums import EventType, OrderSide, OrderType, RiskAction, SignalDirection
 from src.domain.events import DomainEvent
 from src.domain.ids import OrderId
 from src.domain.models.execution import ExecutionReport
@@ -121,6 +122,8 @@ class OrderPipeline:
         """记录一次风控评估事件，便于后续审计和排查。"""
         if self.event_repository is None:
             return
+        reject_reasons = [decision.reject_reason for decision in decisions if decision.reject_reason]
+        adjusted_order_count = sum(1 for decision in decisions if decision.action == RiskAction.ADJUST)
         self.event_repository.append(
             DomainEvent(
                 event_type=EventType.RISK_EVALUATED,
@@ -131,7 +134,9 @@ class OrderPipeline:
                     "decision_count": len(decisions),
                     "approved_count": sum(1 for d in decisions if d.action != RiskAction.REJECT),
                     "rejected_count": sum(1 for d in decisions if d.action == RiskAction.REJECT),
+                    "adjusted_order_count": adjusted_order_count,
                     "triggered_rules": [rule for d in decisions for rule in d.triggered_rules],
+                    "reject_reasons": reject_reasons,
                 },
             )
         )

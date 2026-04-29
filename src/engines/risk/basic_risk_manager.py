@@ -155,7 +155,7 @@ class BasicRiskManager(RiskPort):
         return remaining_exposure / estimated_price
 
     def _calculate_current_drawdown(self, portfolio: Portfolio) -> Decimal:
-        """根据组合净值和基准资金估算当前回撤比例。"""
+        """根据组合净值和现金水平估算当前回撤比例。"""
         if portfolio.total_value <= 0:
             return Decimal("1")
         baseline = max(portfolio.total_value, portfolio.cash)

@@ -2,11 +2,13 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import json
+
 from src.app.backtest_app import run_backtest
 
 
 def test_run_backtest_writes_json_report(tmp_path: Path, monkeypatch) -> None:
-    """验证回测入口会生成可归档的JSON报告文件。"""
+    """验证回测入口会生成包含风控和策略摘要的JSON报告文件。"""
     data_dir = tmp_path / "1d"
     data_dir.mkdir(parents=True, exist_ok=True)
     file_path = data_dir / "000300.SH.csv"
@@ -22,7 +24,11 @@ def test_run_backtest_writes_json_report(tmp_path: Path, monkeypatch) -> None:
     summary = run_backtest(data_path=str(tmp_path), symbol="000300.SH")
 
     report_dir = tmp_path / "reports" / "backtest"
-    report_files = list(report_dir.glob("backtest-000300.SH.json"))
+    report_path = report_dir / "backtest-000300.SH.json"
+    report_payload = json.loads(report_path.read_text(encoding="utf-8"))
     assert summary.status == "completed"
-    assert len(report_files) == 1
+    assert report_path.exists()
     assert "report_path=" in summary.message
+    assert "risk_summary" in report_payload
+    assert "strategy_metadata" in report_payload
+    assert "event_summary" in report_payload

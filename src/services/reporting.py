@@ -9,7 +9,7 @@ from src.domain.models.run import RunContext, RunSummary
 
 
 class BacktestReportWriter:
-    """负责将回测摘要、运行上下文和风控摘要输出为可归档的报告文件。"""
+    """负责将回测摘要、运行上下文和扩展信息输出为可归档的报告文件。"""
 
     def write_json_report(
         self,
@@ -17,8 +17,10 @@ class BacktestReportWriter:
         context: RunContext,
         summary: RunSummary,
         risk_summary: dict[str, Any] | None = None,
+        strategy_metadata: dict[str, Any] | None = None,
+        event_summary: dict[str, Any] | None = None,
     ) -> str:
-        """将回测上下文、摘要和风控汇总写入JSON报告并返回文件路径。"""
+        """将回测上下文、摘要和扩展信息写入JSON报告并返回文件路径。"""
         report_dir = Path(output_dir)
         report_dir.mkdir(parents=True, exist_ok=True)
         report_path = report_dir / f"{context.run_id.value}.json"
@@ -26,6 +28,8 @@ class BacktestReportWriter:
             "context": self._serialize(asdict(context)),
             "summary": self._serialize(asdict(summary)),
             "risk_summary": self._serialize(risk_summary or {}),
+            "strategy_metadata": self._serialize(strategy_metadata or {}),
+            "event_summary": self._serialize(event_summary or {}),
         }
         report_path.write_text(
             json.dumps(payload, ensure_ascii=False, indent=2),
