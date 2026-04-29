@@ -16,4 +16,5 @@ def test_metrics_engine_calculates_core_metrics() -> None:
     ])
 
     assert metrics.total_return > Decimal("0")
+    assert metrics.annualized_return > Decimal("0")
     assert metrics.max_drawdown >= Decimal("0")

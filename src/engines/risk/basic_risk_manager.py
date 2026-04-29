@@ -16,6 +16,7 @@ class BasicRiskManager(RiskPort):
 
     max_order_quantity: Decimal = Decimal("1000")
     max_position_value_ratio: Decimal = Decimal("0.2")
+    max_total_exposure_ratio: Decimal = Decimal("0.8")
     min_cash_reserve: Decimal = Decimal("50000")
     enabled: bool = True
     kill_switch: bool = False
@@ -63,6 +64,11 @@ class BasicRiskManager(RiskPort):
             if approved_quantity > max_affordable_quantity:
                 approved_quantity = max_affordable_quantity
                 triggered_rules.append("min_cash_reserve")
+
+            max_exposure_quantity = self._calculate_max_exposure_quantity(portfolio, estimated_price)
+            if approved_quantity > max_exposure_quantity:
+                approved_quantity = max_exposure_quantity
+                triggered_rules.append("max_total_exposure_ratio")
 
             if order.quantity > self.max_order_quantity:
                 triggered_rules.append("max_order_quantity")
@@ -112,3 +118,14 @@ class BasicRiskManager(RiskPort):
         if available_cash <= 0:
             return Decimal("0")
         return available_cash / estimated_price
+
+    def _calculate_max_exposure_quantity(self, portfolio: Portfolio, estimated_price: Decimal) -> Decimal:
+        """根据组合总暴露上限估算当前还能新增的最大数量。"""
+        if estimated_price <= 0 or portfolio.total_value <= 0:
+            return Decimal("0")
+        current_exposure = sum(position.market_value for position in portfolio.positions.values())
+        max_total_exposure = portfolio.total_value * self.max_total_exposure_ratio
+        remaining_exposure = max_total_exposure - current_exposure
+        if remaining_exposure <= 0:
+            return Decimal("0")
+        return remaining_exposure / estimated_price

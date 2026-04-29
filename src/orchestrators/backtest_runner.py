@@ -95,6 +95,7 @@ class BacktestRunner:
             message="Backtest finished successfully.",
             final_equity=portfolio.total_value,
             total_return=metrics.total_return,
+            annualized_return=metrics.annualized_return,
             max_drawdown=metrics.max_drawdown,
             sharpe_ratio=metrics.sharpe_ratio,
         )
@@ -109,6 +110,7 @@ class BacktestRunner:
                     "status": summary.status,
                     "final_equity": str(summary.final_equity),
                     "total_return": str(summary.total_return),
+                    "annualized_return": str(summary.annualized_return),
                     "max_drawdown": str(summary.max_drawdown),
                     "sharpe_ratio": str(summary.sharpe_ratio),
                 },

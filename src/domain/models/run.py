@@ -32,5 +32,6 @@ class RunSummary:
     message: str = ""
     final_equity: Decimal | None = None
     total_return: Decimal | None = None
+    annualized_return: Decimal | None = None
     max_drawdown: Decimal | None = None
     sharpe_ratio: Decimal | None = None
