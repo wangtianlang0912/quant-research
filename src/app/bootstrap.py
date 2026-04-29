@@ -4,7 +4,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from decimal import Decimal
 
-from src.domain.enums import OrderStatus
+from src.domain.enums import EventType, OrderStatus
 from src.domain.events import DomainEvent
 from src.domain.ids import BrokerOrderId, RunId
 from src.domain.models.execution import ExecutionReport, Fill
@@ -158,6 +158,48 @@ class NoopExecutionGateway(ExecutionPort):
         return []
 
 
+class PaperExecutionGateway(ExecutionPort):
+    def submit_orders(self, orders: list[OrderIntent]) -> list[ExecutionReport]:
+        """在纸盘模式下记录订单已提交状态。"""
+        now = datetime.now()
+        return [
+            ExecutionReport(
+                order_id=order.order_id,
+                broker_order_id=BrokerOrderId(f"paper-{order.order_id.value}"),
+                status=OrderStatus.SUBMITTED,
+                message="accepted by paper execution gateway",
+                timestamp=now,
+            )
+            for order in orders
+        ]
+
+    def get_fills(self, order_ids: list[str]) -> list[Fill]:
+        """纸盘模式下暂不返回真实成交。"""
+        return []
+
+    def cancel_order(self, broker_order_id: str) -> bool:
+        """模拟纸盘撤单成功。"""
+        return True
+
+    def get_order_status(self, broker_order_id: str) -> OrderStatus:
+        """返回纸盘订单状态。"""
+        return OrderStatus.SUBMITTED
+
+    def get_account_state(self) -> AccountState:
+        """返回默认纸盘账户状态。"""
+        return AccountState(
+            account_id="paper-account",
+            cash_available=Decimal("1000000"),
+            equity=Decimal("1000000"),
+            positions={},
+            updated_at=datetime.now(),
+        )
+
+    def get_positions(self) -> list[Position]:
+        """返回纸盘持仓列表，当前为占位实现。"""
+        return []
+
+
 def build_backtest_container(
     strategy: StrategyPort,
     market_data: MarketDataPort,
@@ -186,7 +228,7 @@ def build_paper_container(
         market_data=market_data,
         strategy=strategy,
         risk_manager=BasicRiskManager(),
-        execution_gateway=NoopExecutionGateway(),
+        execution_gateway=PaperExecutionGateway(),
         run_repository=InMemoryRunRepository(),
         portfolio_repository=InMemoryPortfolioRepository(),
         order_repository=InMemoryOrderRepository(),
