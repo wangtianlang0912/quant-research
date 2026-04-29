@@ -1,16 +1,17 @@
 from __future__ import annotations
 
-from pathlib import Path
+from decimal import Decimal
 
-from src.app.bootstrap import AppContainer
-from src.domain.enums import Frequency, RunMode
+from src.domain.enums import EventType, RunMode
 from src.domain.events import DomainEvent
-from src.domain.ids import RunId
 from src.domain.models.portfolio import Portfolio
 from src.domain.models.run import RunContext, RunSummary
+from src.domain.models.strategy import StrategyConfig, StrategyContext
 from src.domain.ports.market_data_port import MarketDataPort
 from src.engines.backtest import BacktestEngine
-from src.orchestrators import OrderPipeline, SignalPipeline
+from src.orchestrators.order_pipeline import OrderPipeline
+from src.orchestrators.signal_pipeline import SignalPipeline
+from src.app.bootstrap import AppContainer
 
 
 class BacktestRunner:
@@ -39,7 +40,7 @@ class BacktestRunner:
         self.container.run_repository.save_run_context(context)
         self.container.event_repository.append(
             DomainEvent(
-                event_type=RunMode.BACKTEST and __import__("src.domain.enums", fromlist=["EventType"]).EventType.RUN_STARTED,
+                event_type=EventType.RUN_STARTED,
                 run_id=context.run_id,
                 strategy_id=context.strategy_id,
                 timestamp=self.container.clock.now(),
@@ -49,19 +50,23 @@ class BacktestRunner:
 
         portfolio = self.container.portfolio_repository.load_latest_portfolio(context.run_id)
         if portfolio is None:
-            portfolio = Portfolio(cash=__import__("decimal").Decimal("1000000"), total_value=__import__("decimal").Decimal("1000000"), positions={})
+            portfolio = Portfolio(
+                cash=Decimal("1000000"),
+                total_value=Decimal("1000000"),
+                positions={},
+                updated_at=self.container.clock.now(),
+            )
 
-        latest_prices = {}
         for symbol in context.symbols:
             bars = self._load_bars(self.container.market_data, symbol, context)
             if not bars:
                 continue
-            strategy_context = __import__("src.domain.models.strategy", fromlist=["StrategyContext", "StrategyConfig"]).StrategyContext(
+            strategy_context = StrategyContext(
                 run_id=context.run_id,
                 as_of=bars[-1].timestamp,
                 bars=bars,
                 portfolio=portfolio,
-                config=__import__("src.domain.models.strategy", fromlist=["StrategyConfig"]).StrategyConfig(params={}),
+                config=StrategyConfig(params={}),
                 metadata=self.container.strategy.metadata(),
             )
             outputs = self.signal_pipeline.run(strategy_context)
@@ -71,7 +76,7 @@ class BacktestRunner:
             approved_orders = self.order_pipeline.filter_approved_orders(orders, decisions)
             reports = self.order_pipeline.execute(approved_orders)
             self.order_pipeline.record_execution_event(context.run_id, context.strategy_id, reports)
-            latest_prices[symbol] = bars[-1].close
+            latest_prices = {symbol: bars[-1].close}
             fills = self.backtest_engine.simulate_orders(portfolio, approved_orders, latest_prices)
             portfolio = self.backtest_engine.apply_fills(portfolio, fills)
             self.container.portfolio_repository.save_portfolio(context.run_id, portfolio)
@@ -87,7 +92,7 @@ class BacktestRunner:
         self.container.run_repository.save_run_summary(summary)
         self.container.event_repository.append(
             DomainEvent(
-                event_type=__import__("src.domain.enums", fromlist=["EventType"]).EventType.RUN_FINISHED,
+                event_type=EventType.RUN_FINISHED,
                 run_id=context.run_id,
                 strategy_id=context.strategy_id,
                 timestamp=self.container.clock.now(),
