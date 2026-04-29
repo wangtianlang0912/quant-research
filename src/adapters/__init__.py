@@ -1,3 +1,5 @@
-from .market_data import LocalParquetAdapter
+from __future__ import annotations
 
-__all__ = ["LocalParquetAdapter"]
+from .market_data import LocalCsvAdapter
+
+__all__ = ["LocalCsvAdapter"]

@@ -2,9 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-import pytest
-
-from src.adapters.market_data import LocalParquetAdapter
+from src.adapters.market_data import LocalCsvAdapter
 from src.domain.enums import Frequency
 
 
@@ -27,7 +25,7 @@ def test_get_bars_returns_rows_within_range(sample_csv: Path) -> None:
     """验证本地行情适配器能够返回指定区间内的K线。"""
     from datetime import datetime
 
-    adapter = LocalParquetAdapter(base_path=str(sample_csv))
+    adapter = LocalCsvAdapter(base_path=str(sample_csv))
     bars = adapter.get_bars(
         symbol="000300.SH",
         start=datetime(2024, 1, 1),

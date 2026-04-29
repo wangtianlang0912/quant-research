@@ -6,15 +6,16 @@ from src.domain.ids import RunId
 from src.domain.models.run import RunContext, RunSummary
 from src.orchestrators import BacktestRunner
 from src.strategies import TrendFollowingStrategy
-from src.adapters import LocalParquetAdapter
+from src.adapters import LocalCsvAdapter
+from src.services.reporting import BacktestReportWriter
 
 
 def run_backtest(data_path: str, symbol: str) -> RunSummary:
-    """使用本地CSV数据运行一次趋势策略回测。"""
+    """使用本地CSV数据运行一次趋势策略回测并输出报告。"""
     from datetime import date, datetime
 
     strategy = TrendFollowingStrategy()
-    market_data = LocalParquetAdapter(base_path=data_path)
+    market_data = LocalCsvAdapter(base_path=data_path)
     container = build_backtest_container(strategy=strategy, market_data=market_data)
     runner = BacktestRunner(container)
     context = RunContext(
@@ -29,4 +30,19 @@ def run_backtest(data_path: str, symbol: str) -> RunSummary:
         environment="dev",
         metadata={"data_path": data_path},
     )
-    return runner.run(context)
+    summary = runner.run(context)
+    report_writer = BacktestReportWriter()
+    report_path = report_writer.write_json_report(output_dir="reports/backtest", context=context, summary=summary)
+    return RunSummary(
+        run_id=summary.run_id,
+        mode=summary.mode,
+        started_at=summary.started_at,
+        finished_at=summary.finished_at,
+        status=summary.status,
+        message=f"{summary.message} report_path={report_path}",
+        final_equity=summary.final_equity,
+        total_return=summary.total_return,
+        annualized_return=summary.annualized_return,
+        max_drawdown=summary.max_drawdown,
+        sharpe_ratio=summary.sharpe_ratio,
+    )

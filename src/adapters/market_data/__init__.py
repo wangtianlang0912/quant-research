@@ -1,3 +1,5 @@
-from .local_parquet_adapter import LocalParquetAdapter
+from __future__ import annotations
 
-__all__ = ["LocalParquetAdapter"]
+from .local_csv_adapter import LocalCsvAdapter
+
+__all__ = ["LocalCsvAdapter"]

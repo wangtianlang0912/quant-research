@@ -4,7 +4,7 @@ from datetime import date, datetime
 from decimal import Decimal
 from pathlib import Path
 
-from src.adapters.market_data import LocalParquetAdapter
+from src.adapters.market_data import LocalCsvAdapter
 from src.app.bootstrap import build_backtest_container
 from src.domain.enums import Frequency, RunMode
 from src.domain.ids import RunId
@@ -27,7 +27,7 @@ def test_backtest_runner_completes_with_local_data(tmp_path: Path) -> None:
     )
 
     strategy = TrendFollowingStrategy(short_window=2, long_window=3)
-    market_data = LocalParquetAdapter(base_path=str(tmp_path))
+    market_data = LocalCsvAdapter(base_path=str(tmp_path))
     container = build_backtest_container(strategy=strategy, market_data=market_data)
     runner = BacktestRunner(container)
     context = RunContext(

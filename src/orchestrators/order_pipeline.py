@@ -1,10 +1,9 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from datetime import datetime
 from decimal import Decimal
 
-from src.domain.enums import EventType, OrderSide, OrderType, RiskAction, SignalDirection
+from src.domain.enums import EventType, OrderSide, OrderType, RiskAction
 from src.domain.events import DomainEvent
 from src.domain.ids import OrderId
 from src.domain.models.execution import ExecutionReport
@@ -29,6 +28,7 @@ class OrderPipeline:
         outputs: list[Signal] | list[TargetPosition],
         metadata: StrategyMetadata,
     ) -> list[OrderIntent]:
+        """根据策略输出构造订单意图列表。"""
         orders: list[OrderIntent] = []
         now = datetime.now()
         for idx, item in enumerate(outputs, start=1):
@@ -73,6 +73,7 @@ class OrderPipeline:
         portfolio: Portfolio,
         order_intents: list[OrderIntent],
     ) -> list[RiskDecision]:
+        """调用风控模块对订单意图进行审核。"""
         decisions = self.risk_manager.evaluate(portfolio, order_intents)
         return decisions
 
@@ -81,6 +82,7 @@ class OrderPipeline:
         order_intents: list[OrderIntent],
         decisions: list[RiskDecision],
     ) -> list[OrderIntent]:
+        """根据风控决策筛选并调整允许执行的订单列表。"""
         decision_map = {decision.order_id: decision for decision in decisions}
         approved: list[OrderIntent] = []
         for order in order_intents:
@@ -106,6 +108,7 @@ class OrderPipeline:
         return approved
 
     def execute(self, approved_orders: list[OrderIntent]) -> list[ExecutionReport]:
+        """将通过风控的订单提交给执行网关。"""
         reports = self.execution_gateway.submit_orders(approved_orders)
         return reports
 
@@ -115,6 +118,7 @@ class OrderPipeline:
         strategy_id,
         decisions: list[RiskDecision],
     ) -> None:
+        """记录一次风控评估事件，便于后续审计和排查。"""
         if self.event_repository is None:
             return
         self.event_repository.append(
@@ -127,6 +131,7 @@ class OrderPipeline:
                     "decision_count": len(decisions),
                     "approved_count": sum(1 for d in decisions if d.action != RiskAction.REJECT),
                     "rejected_count": sum(1 for d in decisions if d.action == RiskAction.REJECT),
+                    "triggered_rules": [rule for d in decisions for rule in d.triggered_rules],
                 },
             )
         )
@@ -137,6 +142,7 @@ class OrderPipeline:
         strategy_id,
         reports: list[ExecutionReport],
     ) -> None:
+        """记录一次订单提交事件，便于后续追踪执行结果。"""
         if self.event_repository is None:
             return
         self.event_repository.append(
