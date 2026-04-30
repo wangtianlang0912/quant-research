@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+import csv
+from pathlib import Path
+
 from src.app.bootstrap import build_paper_container
 from src.domain.enums import Frequency, RunMode
 from src.domain.ids import RunId
@@ -32,9 +35,21 @@ def run_paper(data_path: str, symbol: str, strategy_name: str = "trend_following
     )
     summary = runner.run(context)
     execution_gateway = container.execution_gateway
+    portfolio_repository = container.portfolio_repository
+    portfolio_history = (
+        portfolio_repository.list_portfolio_history(context.run_id)
+        if hasattr(portfolio_repository, "list_portfolio_history")
+        else []
+    )
+    equity_log_path = _write_equity_log(context.run_id.value, portfolio_history)
+    position_log_path = _write_position_log(context.run_id.value, portfolio_history)
+    performance_report_path = _write_performance_report(context.run_id.value, summary, portfolio_history)
     event_summary = {
         "event_count": len(container.event_repository.list_by_run(context.run_id)),
         "paper_order_report_count": len(execution_gateway.list_reports()) if hasattr(execution_gateway, "list_reports") else 0,
+        "equity_log_path": equity_log_path,
+        "position_log_path": position_log_path,
+        "performance_report_path": performance_report_path,
     }
     report_writer = BacktestReportWriter()
     report_path = report_writer.write_json_report(
@@ -66,6 +81,69 @@ def run_paper(data_path: str, symbol: str, strategy_name: str = "trend_following
         annualized_return=summary.annualized_return,
         max_drawdown=summary.max_drawdown,
         sharpe_ratio=summary.sharpe_ratio,
+    )
+
+
+def _write_equity_log(run_id: str, portfolio_history: list) -> str:
+    """将纸盘净值历史写入CSV日志。"""
+    report_dir = Path("reports/paper/logs")
+    report_dir.mkdir(parents=True, exist_ok=True)
+    file_path = report_dir / f"{run_id}-equity.csv"
+    with file_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["timestamp", "cash", "total_value"])
+        for snapshot in portfolio_history:
+            writer.writerow([
+                snapshot.updated_at.isoformat() if snapshot.updated_at else "",
+                str(snapshot.cash),
+                str(snapshot.total_value),
+            ])
+    return str(file_path)
+
+
+def _write_position_log(run_id: str, portfolio_history: list) -> str:
+    """将纸盘持仓历史写入CSV日志。"""
+    report_dir = Path("reports/paper/logs")
+    report_dir.mkdir(parents=True, exist_ok=True)
+    file_path = report_dir / f"{run_id}-positions.csv"
+    with file_path.open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.writer(handle)
+        writer.writerow(["timestamp", "symbol", "quantity", "avg_cost", "market_value"])
+        for snapshot in portfolio_history:
+            timestamp = snapshot.updated_at.isoformat() if snapshot.updated_at else ""
+            for position in snapshot.positions.values():
+                writer.writerow([
+                    timestamp,
+                    position.symbol,
+                    str(position.quantity),
+                    str(position.avg_cost),
+                    str(position.market_value),
+                ])
+    return str(file_path)
+
+
+def _write_performance_report(run_id: str, summary: RunSummary, portfolio_history: list) -> str:
+    """写出纸盘阶段性绩效摘要报告。"""
+    report_writer = BacktestReportWriter()
+    context = RunContext(
+        run_id=RunId(f"performance-{run_id}"),
+        mode=RunMode.PAPER,
+        strategy_id=RunId(run_id),
+        symbols=[],
+        frequency=Frequency.DAY_1,
+        start_date=summary.started_at.date(),
+        end_date=(summary.finished_at or summary.started_at).date(),
+        created_at=summary.started_at,
+        environment="paper-report",
+        metadata={"source_run_id": run_id},
+    )
+    return report_writer.write_json_report(
+        output_dir="reports/paper/performance",
+        context=context,
+        summary=summary,
+        risk_summary={"snapshot_count": len(portfolio_history)},
+        strategy_metadata={},
+        event_summary={"report_type": "paper_performance"},
     )
 
 

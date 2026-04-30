@@ -78,14 +78,20 @@ class InMemoryPortfolioRepository(PortfolioRepositoryPort):
     def __init__(self) -> None:
         """初始化组合状态的内存存储。"""
         self._data: dict[str, Portfolio] = {}
+        self._history: dict[str, list[Portfolio]] = {}
 
     def save_portfolio(self, run_id: RunId, portfolio: Portfolio) -> None:
         """保存指定运行的组合快照。"""
         self._data[run_id.value] = portfolio
+        self._history.setdefault(run_id.value, []).append(portfolio)
 
     def load_latest_portfolio(self, run_id: RunId) -> Portfolio | None:
         """读取指定运行最近一次保存的组合状态。"""
         return self._data.get(run_id.value)
+
+    def list_portfolio_history(self, run_id: RunId) -> list[Portfolio]:
+        """返回指定运行下保存过的全部组合快照。"""
+        return list(self._history.get(run_id.value, []))
 
 
 class InMemoryOrderRepository(OrderRepositoryPort):
@@ -118,7 +124,7 @@ class InMemoryEventRepository(EventRepositoryPort):
 
 class NoopExecutionGateway(ExecutionPort):
     def submit_orders(self, orders: list[OrderIntent]) -> list[ExecutionReport]:
-        """接收订单并返回已提交状态的模拟回报。"""
+        """接收订单并返回已提交状态的模拟回��。"""
         now = datetime.now()
         return [
             ExecutionReport(
@@ -185,14 +191,14 @@ class PaperExecutionGateway(ExecutionPort):
         return []
 
     def cancel_order(self, broker_order_id: str) -> bool:
-        """模拟纸盘撤单成功，并将状态更新为已取消。"""
+        """模拟纸盘撤单成功，并将状态��新为已取消。"""
         if broker_order_id not in self._reports:
             return False
         report = self._reports[broker_order_id]
         self._reports[broker_order_id] = ExecutionReport(
             order_id=report.order_id,
             broker_order_id=report.broker_order_id,
-            status=OrderStatus.CANCELLED,
+            status=OrderStatus.CANCELED,
             message="cancelled by paper execution gateway",
             timestamp=datetime.now(),
         )
