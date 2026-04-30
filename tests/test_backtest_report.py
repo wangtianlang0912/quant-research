@@ -9,6 +9,7 @@ from src.app.backtest_app import (
     run_oos_validation,
     run_parameter_robustness,
     run_portfolio_backtest,
+    run_stage2_report,
     run_stress_test,
 )
 
@@ -63,6 +64,7 @@ def test_run_oos_validation_writes_report(tmp_path: Path, monkeypatch) -> None:
     assert report_path.exists()
     assert "summary" in result
     assert "validation_score" in report_payload["risk_summary"]
+    assert "failed_checks" in report_payload["risk_summary"]
 
 
 def test_run_stage2_execution_flows(tmp_path: Path, monkeypatch) -> None:
@@ -86,7 +88,9 @@ def test_run_stage2_execution_flows(tmp_path: Path, monkeypatch) -> None:
     stress_result = run_stress_test(data_path=str(tmp_path), symbol="000300.SH", strategy_name="trend_following")
     robustness_result = run_parameter_robustness(data_path=str(tmp_path), symbol="000300.SH", strategy_name="trend_following")
     portfolio_result = run_portfolio_backtest(data_path=str(tmp_path), symbol="000300.SH")
+    stage2_result = run_stage2_report(data_path=str(tmp_path), symbol="000300.SH")
 
     assert "scenario_count" in stress_result
     assert "best_score" in robustness_result
     assert portfolio_result["strategy_count"] == "2"
+    assert "report_path" in stage2_result
