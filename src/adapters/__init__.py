@@ -1,5 +1,5 @@
 from __future__ import annotations
 
-from .market_data import LocalCsvAdapter
+from .market_data import AkshareAdapter, LocalCsvAdapter, TushareAdapter
 
-__all__ = ["LocalCsvAdapter"]
+__all__ = ["LocalCsvAdapter", "AkshareAdapter", "TushareAdapter"]

@@ -19,7 +19,7 @@ class LocalCsvAdapter(MarketDataPort):
     base_path: str
 
     def _csv_path(self, symbol: str, frequency: Frequency) -> Path:
-        """根据��的和周期计算本地CSV文件路径。"""
+        """根据标的和周期计算本地CSV文件路径。"""
         return Path(self.base_path) / frequency.value / f"{symbol}.csv"
 
     def get_bars(
@@ -78,13 +78,19 @@ class LocalCsvAdapter(MarketDataPort):
                     volume=Decimal(row.get("volume", "0")),
                     amount=Decimal(row["amount"]) if row.get("amount") else None,
                     frequency=frequency,
+                    adjust_type=AdjustType.NONE,
                     source="local_csv",
                 )
         return last_bar
 
     def get_latest_quote(self, symbol: str) -> Quote | None:
-        """使用最新日线收盘价构造一份简化报价。"""
+        """使用最新日线或分钟线收盘价构造一份简化报价。"""
         bar = self.get_latest_bar(symbol, Frequency.DAY_1)
+        if bar is None:
+            for minute_frequency in [Frequency.MIN_1, Frequency.MIN_5, Frequency.MIN_15, Frequency.MIN_30, Frequency.MIN_60]:
+                bar = self.get_latest_bar(symbol, minute_frequency)
+                if bar is not None:
+                    break
         if bar is None:
             return None
         return Quote(

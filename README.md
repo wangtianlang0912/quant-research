@@ -9,10 +9,10 @@
 
 | 阶段 | 状态 | 说明 |
 |------|------|------|
-| 基础设施搭建 | 🔄 进行中 | 目录骨架已建立，数据管道待开发 |
-| 策略研究与回测 | ⏳ 待启动 | 目标：趋势策略 + 均值回归策略 |
-| 纸盘交易 | ⏳ 待启动 | 需完成回测验证后启动 |
-| 实盘交易 | 🔒 未开放 | 需满足所有上线门禁后决策 |
+| 基础设施搭建 | ✅ 基本完成 | 目录骨架、报告输出、市场数据抽象已具备 |
+| 策略研究与回测 | ✅ 基本完成 | 已具备趋势、均值回归、OOS、压力测试、稳健性分析、组合回测 |
+| 纸盘交易 | 🔄 进行中 | 已具备纸盘日志、月度报告、对齐分析 |
+| 实盘交易 | 🔒 未开放 | 需完成外部数据源、分钟线增强和实盘门禁 |
 
 ---
 
@@ -44,48 +44,42 @@
 
 ---
 
-## 仓库结构
+## 当前已实现能力
 
-```
-quant-research/
-├── docs/                                      # 项目执行文档
-│   ├── project-plan.md                        # 可执行项目计划书
-│   ├── strategy-template.md                   # 策略研究文档模板
-│   ├── risk-rules.md                          # 风险控制规则
-│   └── release-checklist.md                   # 策略发布检查清单
-│
-├── src/                                       # 核心源代码（待开发）
-│   ├── data/                                  # 数据层
-│   ├── strategy/                              # 策略层
-│   ├── risk/                                  # 风控层
-│   └── execution/                             # 执行层
-│
-├── configs/                                   # 配置文件
-├── research/                                  # 策略研究材料（Notebook 等）
-├── tests/                                     # 测试代码
-│
-├── quant-system-design.md                     # 系统架构设计参考
-├── quant-core-principles.md                   # 策略核心本质提炼
-├── quantitative-trading-strategies-guide.md   # 策略全体系参考手册
-└── README.md                                  # 本文件
-```
+- 本地 CSV 日线 / 分钟线数据读取（`1d` / `1m` / `5m` / `15m` / `30m` / `60m`）
+- 趋势跟随与均值回归策略
+- 回测报告、OOS 报告、压力测试、稳健性分析、组合回测报告
+- 纸盘净值日志、持仓日志、阶段绩效报告、月度报告、纸盘/回测对齐分析
+- 外部数据源适配器骨架：`AkshareAdapter`、`TushareAdapter`
 
 ---
 
-## 研究参考文档
+## 仓库结构
 
-| 文件 | 说明 |
-|------|------|
-| `quantitative-trading-strategies-guide.md` | 量化策略全体系参考手册（研究用，非执行计划）|
-| `quant-core-principles.md` | 各策略核心本质提炼：盈利逻辑、适用场景、关键风险 |
-| `quant-system-design.md` | 系统架构设计参考（完整系统愿景，首期按 MVP 实现）|
-
-> ⚠️ 以上研究文档描述的是系统的完整愿景和参考知识体系。  
-> 首期 MVP 仅实现其中的核心子集，高级功能（HFT、LLM 因子、大规模分布式等）标注为未来阶段。
+```text
+quant-research/
+├── docs/
+├── src/
+│   ├── adapters/
+│   ├── app/
+│   ├── domain/
+│   ├── engines/
+│   ├─��� orchestrators/
+│   ├── services/
+│   └── strategies/
+├── configs/
+├── research/
+├── tests/
+├── quant-system-design.md
+├── quant-core-principles.md
+├── quantitative-trading-strategies-guide.md
+└── README.md
+```
 
 ---
 
 ## 更新日志
 
+- **2026-04-30**：完善 `docs/risk-rules.md` 的代码映射说明；新增外部数据源适配器骨架；补全分钟线本地数据读取说明
 - **2026-04-29**：补全项目骨架，添加 `docs/`、`src/`、`configs/`、`research/`、`tests/` 目录结构，重写 README 为可执行项目入口
 - **2026-04-23**：初始版本，包含策略核心提炼与系统设计方案
