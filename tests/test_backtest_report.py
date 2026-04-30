@@ -4,7 +4,13 @@ from pathlib import Path
 
 import json
 
-from src.app.backtest_app import run_backtest, run_oos_validation
+from src.app.backtest_app import (
+    run_backtest,
+    run_oos_validation,
+    run_parameter_robustness,
+    run_portfolio_backtest,
+    run_stress_test,
+)
 
 
 def test_run_backtest_writes_json_report(tmp_path: Path, monkeypatch) -> None:
@@ -57,3 +63,30 @@ def test_run_oos_validation_writes_report(tmp_path: Path, monkeypatch) -> None:
     assert report_path.exists()
     assert "summary" in result
     assert "validation_score" in report_payload["risk_summary"]
+
+
+def test_run_stage2_execution_flows(tmp_path: Path, monkeypatch) -> None:
+    """验证阶段二真实执行入口能够返回压力测试、稳健性分析和组合回测结果。"""
+    data_dir = tmp_path / "1d"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    file_path = data_dir / "000300.SH.csv"
+    file_path.write_text(
+        "timestamp,open,high,low,close,volume,amount\n"
+        "2018-01-02T00:00:00,10,10,9,9,1000,9000\n"
+        "2018-06-01T00:00:00,9,10,8,8.5,1100,9350\n"
+        "2020-03-01T00:00:00,8.5,9,7.5,7.8,1200,9360\n"
+        "2020-10-01T00:00:00,7.8,8.5,7.7,8.3,1300,10790\n"
+        "2024-01-02T00:00:00,8.3,9,8.1,8.9,1400,12460\n"
+        "2024-06-01T00:00:00,8.9,9.4,8.8,9.2,1500,13800\n"
+        "2024-12-01T00:00:00,9.2,9.8,9.1,9.6,1600,15360\n",
+        encoding="utf-8",
+    )
+    monkeypatch.chdir(tmp_path)
+
+    stress_result = run_stress_test(data_path=str(tmp_path), symbol="000300.SH", strategy_name="trend_following")
+    robustness_result = run_parameter_robustness(data_path=str(tmp_path), symbol="000300.SH", strategy_name="trend_following")
+    portfolio_result = run_portfolio_backtest(data_path=str(tmp_path), symbol="000300.SH")
+
+    assert "scenario_count" in stress_result
+    assert "best_score" in robustness_result
+    assert portfolio_result["strategy_count"] == "2"

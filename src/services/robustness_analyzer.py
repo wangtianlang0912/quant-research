@@ -5,8 +5,6 @@ from decimal import Decimal
 from itertools import product
 from typing import Any
 
-from src.domain.models.run import RunSummary
-
 
 @dataclass(frozen=True)
 class RobustnessResult:
@@ -39,6 +37,18 @@ class ParameterRobustnessAnalyzer:
         keys = list(parameter_space.keys())
         values = [parameter_space[key] for key in keys]
         return [dict(zip(keys, combination)) for combination in product(*values)]
+
+    def build_trend_parameter_space(self) -> dict[str, list[int]]:
+        """返回趋势策略默认的参数扰动空间。"""
+        return {"short_window": [3, 5, 8], "long_window": [15, 20, 30]}
+
+    def build_mean_reversion_parameter_space(self) -> dict[str, list[Decimal]]:
+        """返回均值回归策略默认的参数扰动空间。"""
+        return {
+            "lookback_window": [10, 20, 30],
+            "entry_zscore": [Decimal("1.5"), Decimal("2.0")],
+            "exit_zscore": [Decimal("0.3"), Decimal("0.5")],
+        }
 
     def _score_scenario(self, scenario_metric: dict[str, Any]) -> Decimal:
         """根据收益与回撤粗略计算单个参数场景的质量分数。"""
