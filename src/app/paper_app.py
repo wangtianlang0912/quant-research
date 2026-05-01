@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+from decimal import Decimal
 from pathlib import Path
 
 from src.app.backtest_app import run_backtest

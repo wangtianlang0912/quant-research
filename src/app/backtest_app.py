@@ -16,8 +16,24 @@ from src.services.robustness_analyzer import ParameterRobustnessAnalyzer
 from src.services.stress_test_runner import StressScenarioResult, StressTestRunner
 
 
-def run_backtest(data_path: str, symbol: str, strategy_name: str = "trend_following") -> RunSummary:
-    """使用本地CSV数据运行指定策略回测并输出报告。"""
+def run_backtest(
+    data_path: str,
+    symbol: str,
+    strategy_name: str = "trend_following",
+    frequency: Frequency = Frequency.DAY_1,
+) -> RunSummary:
+    """使用本地CSV数据运行指定策略回测并输出报告。
+
+    Args:
+        data_path: 本地历史数据根目录，其下应有 `<frequency>/` 子目录。
+        symbol: 回测标的代码，如 ``000300.SH``。
+        strategy_name: 策略名称，支持 ``trend_following`` / ``mean_reversion``。
+        frequency: 回测频率，支持 ``1d`` / ``1m`` / ``5m`` / ``15m`` / ``30m`` / ``60m``，
+            默认为日线 ``1d``。
+
+    Returns:
+        回测运行摘要（含报告路径）。
+    """
     from datetime import date, datetime
 
     strategy = _build_strategy(strategy_name)
@@ -29,12 +45,12 @@ def run_backtest(data_path: str, symbol: str, strategy_name: str = "trend_follow
         mode=RunMode.BACKTEST,
         strategy_id=strategy.metadata().strategy_id,
         symbols=[symbol],
-        frequency=Frequency.DAY_1,
+        frequency=frequency,
         start_date=date(2024, 1, 1),
         end_date=date(2024, 12, 31),
         created_at=datetime.now(),
         environment="dev",
-        metadata={"data_path": data_path, "strategy_name": strategy_name},
+        metadata={"data_path": data_path, "strategy_name": strategy_name, "frequency": frequency.value},
     )
     summary = runner.run(context)
     risk_summary = {
@@ -77,6 +93,52 @@ def run_backtest(data_path: str, symbol: str, strategy_name: str = "trend_follow
         annualized_return=summary.annualized_return,
         max_drawdown=summary.max_drawdown,
         sharpe_ratio=summary.sharpe_ratio,
+    )
+
+
+def run_minute_backtest(
+    data_path: str,
+    symbol: str,
+    strategy_name: str = "trend_following",
+    frequency: str = "1m",
+) -> RunSummary:
+    """分钟线回测入口，支持指定分钟级频率运行回测。
+
+    该入口调用现有回测主流程，仅将频率固定到分钟级别，
+    报告同样输出到 ``reports/backtest/``，并在报告中记录频率。
+
+    Args:
+        data_path: 本地历史数据根目录，其下应有 ``<frequency>/`` 子目录。
+            例如分钟线数据应放在 ``<data_path>/1m/<symbol>.csv``。
+        symbol: 回测标的代码，如 ``000300.SH``。
+        strategy_name: 策略名称，支持 ``trend_following`` / ``mean_reversion``。
+        frequency: 分钟线频率字符串，支持 ``1m`` / ``5m`` / ``15m`` / ``30m`` / ``60m``，
+            默认 ``1m``。若传入 ``1d`` 将自动回退到日线入口 :func:`run_backtest`。
+
+    Returns:
+        回测运行摘要（含报告路径）。
+
+    Raises:
+        ValueError: 当传入不支持的频率字符串时。
+    """
+    _minute_freq_map: dict[str, Frequency] = {
+        "1m": Frequency.MIN_1,
+        "5m": Frequency.MIN_5,
+        "15m": Frequency.MIN_15,
+        "30m": Frequency.MIN_30,
+        "60m": Frequency.MIN_60,
+        "1d": Frequency.DAY_1,
+    }
+    freq_enum = _minute_freq_map.get(frequency)
+    if freq_enum is None:
+        raise ValueError(
+            f"不支持的频率 '{frequency}'，可选值：{list(_minute_freq_map.keys())}"
+        )
+    return run_backtest(
+        data_path=data_path,
+        symbol=symbol,
+        strategy_name=strategy_name,
+        frequency=freq_enum,
     )
 
 
