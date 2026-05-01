@@ -12,6 +12,7 @@ from src.app.backtest_app import (
     run_stage2_report,
     run_stress_test,
 )
+from src.domain.enums import Frequency
 
 
 def test_run_backtest_writes_json_report(tmp_path: Path, monkeypatch) -> None:
@@ -31,7 +32,7 @@ def test_run_backtest_writes_json_report(tmp_path: Path, monkeypatch) -> None:
     summary = run_backtest(data_path=str(tmp_path), symbol="000300.SH")
 
     report_dir = tmp_path / "reports" / "backtest"
-    report_path = report_dir / "backtest-trend_following-000300.SH.json"
+    report_path = report_dir / "backtest-trend_following-1d-000300.SH.json"
     report_payload = json.loads(report_path.read_text(encoding="utf-8"))
     assert summary.status == "completed"
     assert report_path.exists()
@@ -39,6 +40,34 @@ def test_run_backtest_writes_json_report(tmp_path: Path, monkeypatch) -> None:
     assert "risk_summary" in report_payload
     assert "strategy_metadata" in report_payload
     assert "event_summary" in report_payload
+
+
+def test_run_backtest_supports_intraday_frequency(tmp_path: Path, monkeypatch) -> None:
+    """验证回测入口支持分钟线频率并正确写出报告。"""
+    data_dir = tmp_path / "5m"
+    data_dir.mkdir(parents=True, exist_ok=True)
+    file_path = data_dir / "000300.SH.csv"
+    file_path.write_text(
+        "timestamp,open,high,low,close,volume,amount\n"
+        "2024-01-02T09:35:00,10,10,9,9.5,1000,9500\n"
+        "2024-01-02T09:40:00,9.5,10.2,9.4,10.1,1100,11110\n"
+        "2024-01-02T09:45:00,10.1,10.5,10,10.4,1200,12480\n",
+        encoding="utf-8",
+    )
+    monkeypatch.chdir(tmp_path)
+
+    summary = run_backtest(
+        data_path=str(tmp_path),
+        symbol="000300.SH",
+        frequency=Frequency.MIN_5,
+    )
+
+    report_path = tmp_path / "reports" / "backtest" / "backtest-trend_following-5m-000300.SH.json"
+    report_payload = json.loads(report_path.read_text(encoding="utf-8"))
+    assert summary.status == "completed"
+    assert report_path.exists()
+    assert report_payload["context"]["frequency"] == "5m"
+    assert report_payload["event_summary"]["frequency"] == "5m"
 
 
 def test_run_oos_validation_writes_report(tmp_path: Path, monkeypatch) -> None:
