@@ -50,11 +50,9 @@ class AkshareAdapter(BaseRemoteMarketDataAdapter):
         AKSHARE_TOKEN: （可选）AKShare API token，当前多数接口无需设置。
     """
 
+    # 覆盖父类 token 字段：优先使用显式传入值，否则从环境变量读取
+    token: str | None = field(default_factory=lambda: os.environ.get("AKSHARE_TOKEN"))
     source_name: str = "akshare"
-
-    def __post_init__(self) -> None:
-        if self.token is None:
-            self.token = os.environ.get("AKSHARE_TOKEN")
 
     def get_bars(
         self,
