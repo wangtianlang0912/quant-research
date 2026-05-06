@@ -1,0 +1,1071 @@
+[
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 0.5,
+      "xz": 0.2
+    },
+    "total_return": 2.8699092787889997,
+    "annualized": 1.419132893187468,
+    "max_drawdown": 4.2589797787730115,
+    "sharpe": 0.4244057627177676,
+    "score": 5.931175030380533
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 0.75,
+      "xz": 0.2
+    },
+    "total_return": 2.4718112421125,
+    "annualized": 1.2234765008396804,
+    "max_drawdown": 3.9735503597413873,
+    "sharpe": 0.4006463853335665,
+    "score": 5.1342938345588625
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 1.0,
+      "xz": 0.2
+    },
+    "total_return": 2.319263000161,
+    "annualized": 1.1484013127869201,
+    "max_drawdown": 3.3961138726422613,
+    "sharpe": 0.43791680885758144,
+    "score": 4.856355336462229
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 0.75,
+      "xz": 0.5
+    },
+    "total_return": 2.2449879543006297,
+    "annualized": 1.1118272066791688,
+    "max_drawdown": 7.438140768254997,
+    "sharpe": 0.23947429048279667,
+    "score": 4.590993401006354
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 0.5,
+      "xz": 0.3
+    },
+    "total_return": 1.9782160524155001,
+    "annualized": 0.9803547669466962,
+    "max_drawdown": 6.413215783168805,
+    "sharpe": 0.23902492166426256,
+    "score": 4.064834020785343
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 5,
+      "lw": 20
+    },
+    "total_return": 1.043588018825,
+    "annualized": 0.5183773253969293,
+    "max_drawdown": 0.2998149688944708,
+    "sharpe": 1.1936516252926446,
+    "score": 2.7897002767633037
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 1.0,
+      "xz": 0.5
+    },
+    "total_return": 1.2621459829410728,
+    "annualized": 0.6265998815599688,
+    "max_drawdown": 7.458451620173862,
+    "sharpe": 0.1553684504820794,
+    "score": 2.599620596529123
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 0.5,
+      "xz": 0.3
+    },
+    "total_return": 1.1192026976045,
+    "annualized": 0.5558324544036088,
+    "max_drawdown": 1.7080711682886562,
+    "sharpe": 0.37781054831013616,
+    "score": 2.4500161466005173
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 0.75,
+      "xz": 0.3
+    },
+    "total_return": 1.0431861161125,
+    "annualized": 0.5181782085050578,
+    "max_drawdown": 5.979440080394591,
+    "sharpe": 0.15505309115344043,
+    "score": 2.1657446887122953
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 10,
+      "lw": 20
+    },
+    "total_return": 0.7845163961999999,
+    "annualized": 0.3899414569404394,
+    "max_drawdown": 0.39884922568212444,
+    "sharpe": 0.8991406890113615,
+    "score": 2.0992502411685745
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 0.5,
+      "xz": 0.2
+    },
+    "total_return": 0.8283336102765,
+    "annualized": 0.411675663369557,
+    "max_drawdown": 1.0677690802110262,
+    "sharpe": 0.45686740878000914,
+    "score": 1.9208230987462338
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 1.5,
+      "xz": 0.5
+    },
+    "total_return": 0.791352590603,
+    "annualized": 0.3933326570658566,
+    "max_drawdown": 0.7838829668477253,
+    "sharpe": 0.5710473082629426,
+    "score": 1.915959013221192
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 1.5,
+      "xz": 0.2
+    },
+    "total_return": 0.7104240498500001,
+    "annualized": 0.35317939071931725,
+    "max_drawdown": 0.33900130018694763,
+    "sharpe": 0.822016475063555,
+    "score": 1.905927447915402
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 1.0,
+      "xz": 0.3
+    },
+    "total_return": 0.890637874161,
+    "annualized": 0.442571650698403,
+    "max_drawdown": 5.461081368846324,
+    "sharpe": 0.1480338214027159,
+    "score": 1.8591068956352415
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 1.0,
+      "xz": 0.2
+    },
+    "total_return": 0.7492408037514999,
+    "annualized": 0.3724406174308375,
+    "max_drawdown": 1.9428607792168908,
+    "sharpe": 0.29689894863431154,
+    "score": 1.667901838903937
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 1.0,
+      "xz": 0.3
+    },
+    "total_return": 0.7012705857015,
+    "annualized": 0.3486368154932299,
+    "max_drawdown": 1.41262696899798,
+    "sharpe": 0.3738434607507138,
+    "score": 1.6188533384233479
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 0.75,
+      "xz": 0.2
+    },
+    "total_return": 0.6330969918014999,
+    "annualized": 0.3147978909096277,
+    "max_drawdown": 1.3640916115412385,
+    "sharpe": 0.30907993842758014,
+    "score": 1.4446395266950587
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 0.75,
+      "xz": 0.3
+    },
+    "total_return": 0.5851267737515,
+    "annualized": 0.29098029899596706,
+    "max_drawdown": 0.8275002755422163,
+    "sharpe": 0.42116475897201167,
+    "score": 1.4166200513670753
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 1.0,
+      "xz": 0.5
+    },
+    "total_return": 0.668972347761,
+    "annualized": 0.3326065636439316,
+    "max_drawdown": 5.153967060168663,
+    "sharpe": 0.12291703367226549,
+    "score": 1.404176474779086
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 1.5,
+      "xz": 0.2
+    },
+    "total_return": 0.6043315572529999,
+    "annualized": 0.300516309875239,
+    "max_drawdown": 1.9456158382475153,
+    "sharpe": 0.2501948666071422,
+    "score": 1.3521821594652415
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 1.5,
+      "xz": 0.5
+    },
+    "total_return": 0.5706288599015,
+    "annualized": 0.283780848339767,
+    "max_drawdown": 1.1890463050687747,
+    "sharpe": 0.34849953335421796,
+    "score": 1.344223113371599
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 1.5,
+      "xz": 0.3
+    },
+    "total_return": 0.556361339203,
+    "annualized": 0.27669529889192374,
+    "max_drawdown": 1.414640438204092,
+    "sharpe": 0.30868415758253304,
+    "score": 1.2919916901172148
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 0.75,
+      "xz": 0.5
+    },
+    "total_return": 0.6039908671233838,
+    "annualized": 0.3003471503594467,
+    "max_drawdown": 7.500245052634537,
+    "sharpe": 0.08829335819517574,
+    "score": 1.2543646163548923
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 15,
+      "lw": 40
+    },
+    "total_return": 0.43254890163299997,
+    "annualized": 0.21518624665364527,
+    "max_drawdown": 0.4569161246828401,
+    "sharpe": 0.4698168652662699,
+    "score": 1.142635105774343
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 1.5,
+      "xz": 0.5
+    },
+    "total_return": 0.461201582933,
+    "annualized": 0.22942405857891754,
+    "max_drawdown": 0.947818819592668,
+    "sharpe": 0.330940077584857,
+    "score": 1.1162602808665842
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 10,
+      "lw": 60
+    },
+    "total_return": 0.40992612707500004,
+    "annualized": 0.20394331682784686,
+    "max_drawdown": 0.4309213358819204,
+    "sharpe": 0.4385209417706277,
+    "score": 1.0788858323737642
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 15,
+      "lw": 20
+    },
+    "total_return": 0.374969535225,
+    "annualized": 0.1865683003222035,
+    "max_drawdown": 0.5546715778998961,
+    "sharpe": 0.4307055220776614,
+    "score": 1.0046965145354108
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 5,
+      "lw": 90
+    },
+    "total_return": 0.37717290635,
+    "annualized": 0.18766356569974874,
+    "max_drawdown": 0.5245271215032058,
+    "sharpe": 0.38611404685291356,
+    "score": 0.9823226909107431
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 1.5,
+      "xz": 0.3
+    },
+    "total_return": 0.3822568312515,
+    "annualized": 0.19019066855752725,
+    "max_drawdown": 1.369775004048274,
+    "sharpe": 0.23084833651884934,
+    "score": 0.8992716761414186
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 5,
+      "lw": 40
+    },
+    "total_return": 0.3355972953815,
+    "annualized": 0.16699486824005813,
+    "max_drawdown": 0.6297775744205858,
+    "sharpe": 0.35754723886552,
+    "score": 0.8825078162795446
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 1.5,
+      "xz": 0.2
+    },
+    "total_return": 0.34142211487650004,
+    "annualized": 0.16989084966495324,
+    "max_drawdown": 0.7873754396765554,
+    "sharpe": 0.3269924799366834,
+    "score": 0.8757588866218231
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 10,
+      "lw": 40
+    },
+    "total_return": 0.3219216930565,
+    "annualized": 0.16019530606577403,
+    "max_drawdown": 0.5640830966432878,
+    "sharpe": 0.3460606551233072,
+    "score": 0.8484176173370804
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 20,
+      "lw": 40
+    },
+    "total_return": 0.307705071733,
+    "annualized": 0.15312625388756382,
+    "max_drawdown": 0.5006239482229973,
+    "sharpe": 0.3349670125149899,
+    "score": 0.8134852230592493
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 1.0,
+      "xz": 0.5
+    },
+    "total_return": 0.35752054787800003,
+    "annualized": 0.17789422326009455,
+    "max_drawdown": 1.9483594904969967,
+    "sharpe": 0.15123317696070473,
+    "score": 0.802316799216801
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 15,
+      "lw": 60
+    },
+    "total_return": 0.29222409315,
+    "annualized": 0.1454279425047235,
+    "max_drawdown": 0.5283942679057005,
+    "sharpe": 0.31350979535824103,
+    "score": 0.7698176472338386
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 5,
+      "lw": 60
+    },
+    "total_return": 0.255876503975,
+    "annualized": 0.12735083216874976,
+    "max_drawdown": 0.5641405707606753,
+    "sharpe": 0.27331538745637113,
+    "score": 0.6733925611488217
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 30,
+      "lw": 60
+    },
+    "total_return": 0.2174632822,
+    "annualized": 0.10824282411285603,
+    "max_drawdown": 0.648252712192544,
+    "sharpe": 0.23204927065795994,
+    "score": 0.5722008588462002
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 10,
+      "lw": 90
+    },
+    "total_return": 0.2165328819,
+    "annualized": 0.10777996660740466,
+    "max_drawdown": 0.5850469800912539,
+    "sharpe": 0.2235960532839842,
+    "score": 0.5652774984000092
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 1.5,
+      "xz": 0.3
+    },
+    "total_return": 0.2075292947765,
+    "annualized": 0.10330073163532531,
+    "max_drawdown": 0.7884207656482314,
+    "sharpe": 0.20903351200166959,
+    "score": 0.538623033742303
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 1.0,
+      "xz": 0.3
+    },
+    "total_return": 0.20940689537649998,
+    "annualized": 0.1042348442572557,
+    "max_drawdown": 0.8798798691215517,
+    "sharpe": 0.17903682348622815,
+    "score": 0.5243614711207597
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 1.5,
+      "xz": 0.2
+    },
+    "total_return": 0.189835092933,
+    "annualized": 0.0944973750613892,
+    "max_drawdown": 0.950426320548548,
+    "sharpe": 0.16361392109432113,
+    "score": 0.4761578529021495
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 1.5,
+      "xz": 0.3
+    },
+    "total_return": 0.189835092933,
+    "annualized": 0.0944973750613892,
+    "max_drawdown": 0.950426320548548,
+    "sharpe": 0.16361392109432113,
+    "score": 0.4761578529021495
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 10,
+      "lw": 120
+    },
+    "total_return": 0.1538404481515,
+    "annualized": 0.07658663119083935,
+    "max_drawdown": 0.4227760953162591,
+    "sharpe": 0.15665174638958454,
+    "score": 0.40033757259710817
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 20,
+      "lw": 60
+    },
+    "total_return": 0.13354005315,
+    "annualized": 0.0664838374832573,
+    "max_drawdown": 0.7420570293124673,
+    "sharpe": 0.1429629862874016,
+    "score": 0.35171314170547013
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 1.5,
+      "xz": 0.5
+    },
+    "total_return": 0.11699529565300001,
+    "annualized": 0.05824933223505998,
+    "max_drawdown": 2.4841307472108634,
+    "sharpe": 0.0504743160925534,
+    "score": 0.263281918595772
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 0.5,
+      "xz": 0.3
+    },
+    "total_return": 0.0979566758,
+    "annualized": 0.04877275930978752,
+    "max_drawdown": 0.8817434970596317,
+    "sharpe": 0.10288247884857525,
+    "score": 0.25682052454829524
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 1.0,
+      "xz": 0.2
+    },
+    "total_return": 0.0922524775265,
+    "annualized": 0.045933288541206825,
+    "max_drawdown": 0.8809021971294666,
+    "sharpe": 0.08719113338420545,
+    "score": 0.23604783419535058
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 1.5,
+      "xz": 0.5
+    },
+    "total_return": 0.050777283533000005,
+    "annualized": 0.02528506935754345,
+    "max_drawdown": 1.4909841057760385,
+    "sharpe": 0.033903450859531344,
+    "score": 0.1214823479458926
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 15,
+      "lw": 90
+    },
+    "total_return": 0.018770835975,
+    "annualized": 0.009347881091627357,
+    "max_drawdown": 0.7016043334747095,
+    "sharpe": 0.021751475077135568,
+    "score": 0.050442409412790774
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 0.75,
+      "xz": 0.5
+    },
+    "total_return": 0.00624911675,
+    "annualized": 0.0031121595298618143,
+    "max_drawdown": 1.4208905378653884,
+    "sharpe": 0.007893683429852272,
+    "score": 0.01718484817735862
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 5,
+      "lw": 120
+    },
+    "total_return": 0.0055460424015,
+    "annualized": 0.0027620221960795678,
+    "max_drawdown": 0.4944420314278673,
+    "sharpe": 0.008046378114526609,
+    "score": 0.01587591565303424
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 30,
+      "lw": 40
+    },
+    "total_return": 0.000757025683,
+    "annualized": 0.00037701602696630363,
+    "max_drawdown": 0.7709650320553765,
+    "sharpe": 0.003134045510191534,
+    "score": 0.003388491413980135
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 0.5,
+      "xz": 0.2
+    },
+    "total_return": -0.0241505428,
+    "annualized": -0.01202827219221641,
+    "max_drawdown": 0.8828136186894643,
+    "sharpe": -0.023932628494553396,
+    "score": -0.06247266586559768
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 0.75,
+      "xz": 0.3
+    },
+    "total_return": -0.02606513195,
+    "annualized": -0.012981903192973487,
+    "max_drawdown": 0.8819370895367533,
+    "sharpe": -0.022970667226158415,
+    "score": -0.065710013107589
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 30,
+      "lw": 90
+    },
+    "total_return": -0.0546651830485,
+    "annualized": -0.027228293882744187,
+    "max_drawdown": 0.7266975775896457,
+    "sharpe": -0.054736418827942175,
+    "score": -0.14175502682774205
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 15,
+      "lw": 120
+    },
+    "total_return": -0.07876518664849999,
+    "annualized": -0.039234688781755546,
+    "max_drawdown": 0.47873340166519757,
+    "sharpe": -0.07673428421295586,
+    "score": -0.2029793256547957
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 20,
+      "lw": 90
+    },
+    "total_return": -0.10276478224999999,
+    "annualized": -0.051192506010376886,
+    "max_drawdown": 0.7299906717164883,
+    "sharpe": -0.10381388673816028,
+    "score": -0.2670583560844037
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 0.75,
+      "xz": 0.2
+    },
+    "total_return": -0.11619794574999999,
+    "annualized": -0.05788621968111509,
+    "max_drawdown": 0.8827270902897427,
+    "sharpe": -0.11755113027282446,
+    "score": -0.3020755568881551
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 20,
+      "lw": 120
+    },
+    "total_return": -0.1457935970735,
+    "annualized": -0.07263525761074759,
+    "max_drawdown": 0.502278610884458,
+    "sharpe": -0.1438555521758264,
+    "score": -0.3768543617484862
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 0.5,
+      "xz": 0.3
+    },
+    "total_return": -0.21031915618549998,
+    "annualized": -0.10479927770490816,
+    "max_drawdown": 4.061858917446963,
+    "sharpe": -0.032194800520985674,
+    "score": -0.438513991132224
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 0.5,
+      "xz": 0.2
+    },
+    "total_return": -0.2610476109655,
+    "annualized": -0.1300931936115198,
+    "max_drawdown": 4.136118596354335,
+    "sharpe": -0.041354200929765675,
+    "score": -0.5451852950039386
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 0.5,
+      "xz": 0.2
+    },
+    "total_return": -0.312356177967,
+    "annualized": -0.15568293144907655,
+    "max_drawdown": 3.507443474982361,
+    "sharpe": -0.06929386304608313,
+    "score": -0.6643080436239561
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 1.0,
+      "xz": 0.5
+    },
+    "total_return": -0.3277687077485,
+    "annualized": -0.16337109875923558,
+    "max_drawdown": 3.5431708489015175,
+    "sharpe": -0.08030995242561333,
+    "score": -0.7016703664923104
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 1.5,
+      "xz": 0.2
+    },
+    "total_return": -0.321269750967,
+    "annualized": -0.16012917876290295,
+    "max_drawdown": 0.9552119390426457,
+    "sharpe": -0.24082248371052806,
+    "score": -0.7850102052779286
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 1.5,
+      "xz": 0.3
+    },
+    "total_return": -0.321269750967,
+    "annualized": -0.16012917876290295,
+    "max_drawdown": 0.9552119390426457,
+    "sharpe": -0.24082248371052806,
+    "score": -0.7850102052779286
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 1.0,
+      "xz": 0.2
+    },
+    "total_return": -0.44403732399199997,
+    "annualized": -0.22138812488764958,
+    "max_drawdown": 3.0936785771357216,
+    "sharpe": -0.11913418276215458,
+    "score": -0.9570330092078911
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 0.75,
+      "xz": 0.2
+    },
+    "total_return": -0.451716908967,
+    "annualized": -0.22522136800208056,
+    "max_drawdown": 3.093911321007715,
+    "sharpe": -0.12125932516304193,
+    "score": -0.9736410671061475
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 30,
+      "lw": 120
+    },
+    "total_return": -0.3777856318735,
+    "annualized": -0.18832494193612184,
+    "max_drawdown": 0.587768698592805,
+    "sharpe": -0.3793721857506874,
+    "score": -0.9809230791948997
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 0.75,
+      "xz": 0.5
+    },
+    "total_return": -0.4699333235985,
+    "annualized": -0.23431463354140017,
+    "max_drawdown": 2.9772061248121187,
+    "sharpe": -0.14302353797184963,
+    "score": -1.0230726569487105
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 0.75,
+      "xz": 0.3
+    },
+    "total_return": -0.5274914804605,
+    "annualized": -0.2630519921601352,
+    "max_drawdown": 4.065080014577406,
+    "sharpe": -0.10630064136246788,
+    "score": -1.1159883534580217
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 1.0,
+      "xz": 0.3
+    },
+    "total_return": -0.5998079193420001,
+    "annualized": -0.29916962897313293,
+    "max_drawdown": 3.15564265402595,
+    "sharpe": -0.16981424366866604,
+    "score": -1.2985670620937313
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 0.5,
+      "xz": 0.3
+    },
+    "total_return": -0.6492172688655,
+    "annualized": -0.323854161373979,
+    "max_drawdown": 4.151731882261771,
+    "sharpe": -0.12543275135637416,
+    "score": -1.3706762963097405
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 1.0,
+      "xz": 0.2
+    },
+    "total_return": -0.6328269354420001,
+    "annualized": -0.3156649934895625,
+    "max_drawdown": 3.1144523158981814,
+    "sharpe": -0.18710273506665268,
+    "score": -1.374921614998242
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 0.75,
+      "xz": 0.2
+    },
+    "total_return": -0.6490129051669999,
+    "annualized": -0.323752050146395,
+    "max_drawdown": 3.5089055596176615,
+    "sharpe": -0.16608065954779078,
+    "score": -1.3946565963142548
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 1.0,
+      "xz": 0.3
+    },
+    "total_return": -0.734276756342,
+    "annualized": -0.3663636697500586,
+    "max_drawdown": 3.62587628049883,
+    "sharpe": -0.17447681231054002,
+    "score": -1.5701407663865583
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 0.75,
+      "xz": 0.3
+    },
+    "total_return": -0.8398865668669999,
+    "annualized": -0.4191689039029907,
+    "max_drawdown": 3.1057213069668834,
+    "sharpe": -0.24171332612630364,
+    "score": -1.8217036112877452
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 1.0,
+      "xz": 0.5
+    },
+    "total_return": -1.645666659617,
+    "annualized": -0.8229944265873587,
+    "max_drawdown": 5.21305608207762,
+    "sharpe": -0.27939766601261146,
+    "score": -3.4596163059570015
+  },
+  {
+    "symbol": "9988.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 0.75,
+      "xz": 0.5
+    },
+    "total_return": -2.1710769027655,
+    "annualized": -1.0872045881611214,
+    "max_drawdown": 5.750975999994062,
+    "sharpe": -0.3323451058592212,
+    "score": -4.548225416160019
+  }
+]

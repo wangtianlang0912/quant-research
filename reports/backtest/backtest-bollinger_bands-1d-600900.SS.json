@@ -1,0 +1,61 @@
+{
+  "context": {
+    "run_id": {
+      "value": "backtest-bollinger_bands-1d-600900.SS"
+    },
+    "mode": "backtest",
+    "strategy_id": {
+      "value": "bollinger_bands"
+    },
+    "symbols": [
+      "600900.SS"
+    ],
+    "frequency": "1d",
+    "start_date": "2024-04-09",
+    "end_date": "2026-04-30",
+    "created_at": "2026-05-06T21:12:46.321016",
+    "environment": "dev",
+    "metadata": {
+      "data_path": "data",
+      "strategy_name": "bollinger_bands",
+      "market_data_source": "local_csv",
+      "frequency": "1d"
+    }
+  },
+  "summary": {
+    "run_id": {
+      "value": "backtest-bollinger_bands-1d-600900.SS"
+    },
+    "mode": "backtest",
+    "started_at": "2026-05-06T21:12:46.321016",
+    "finished_at": "2026-05-06T21:12:46.365387",
+    "status": "completed",
+    "message": "Run finished successfully.",
+    "final_equity": "1000014.3451953000",
+    "total_return": "0.0000143451953",
+    "annualized_return": "0.000007229952709951748498314",
+    "max_drawdown": "0.0003673840691750772178521113151",
+    "sharpe_ratio": "0.02708929807266013916146511709"
+  },
+  "risk_summary": {
+    "engine": "BasicRiskManager",
+    "enabled": true,
+    "kill_switch": false,
+    "max_order_quantity": "1000",
+    "max_position_value_ratio": "0.2",
+    "max_total_exposure_ratio": "0.8",
+    "max_drawdown_ratio": "0.15",
+    "min_cash_reserve": "50000"
+  },
+  "strategy_metadata": {
+    "strategy_id": "bollinger_bands",
+    "name": "Bollinger Bands",
+    "version": "0.1.0",
+    "author": "copilot"
+  },
+  "event_summary": {
+    "event_count": 1499,
+    "frequency": "1d",
+    "market_data_source": "local_csv"
+  }
+}

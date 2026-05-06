@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quant Research Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.2.1/dist/chartjs-chart-financial.min.js"></script>
+<style>
+:root {
+  --bg: #0f1117;
+  --card: #1a1d27;
+  --card2: #21253a;
+  --border: #2a2d3e;
+  --accent: #6366f1;
+  --accent2: #22d3ee;
+  --green: #10b981;
+  --red: #ef4444;
+  --yellow: #f59e0b;
+  --text: #e2e8f0;
+  --text2: #94a3b8;
+  --text3: #64748b;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+.header {
+  background: var(--card);
+  border-bottom: 1px solid var(--border);
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.header h1 { font-size: 18px; font-weight: 700; color: var(--accent); letter-spacing: -0.3px; }
+.header .subtitle { font-size: 13px; color: var(--text3); }
+.header-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+.badge { background: var(--accent); color: white; font-size: 11px; padding: 3px 10px; border-radius: 20px; font-weight: 600; }
+.badge-green { background: var(--green); }
+.badge-red { background: var(--red); }
+
+/* ── Layout ── */
+.layout {
+  display: grid;
+  grid-template-columns: 300px 1fr;
+  min-height: calc(100vh - 56px);
+}
+.sidebar {
+  border-right: 1px solid var(--border);
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.main { overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 16px; }
+
+/* ── Cards ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+.card-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card-header .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+.card-body { padding: 12px 16px; }
+
+/* ── Symbol list ── */
+.symbol-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.symbol-item:hover { background: var(--card2); }
+.symbol-item.active { background: var(--card2); border: 1px solid var(--accent); }
+.symbol-item .sym { font-size: 13px; font-weight: 600; color: var(--text); }
+.symbol-item .info { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.symbol-item .rows { font-size: 11px; color: var(--text3); }
+
+/* ── K-line chart ── */
+.chart-container { position: relative; height: 340px; }
+#klineChart { width: 100% !important; height: 100% !important; }
+
+/* ── Param panel ── */
+.param-group { margin-bottom: 16px; }
+.param-group label {
+  display: block;
+  font-size: 12px;
+  color: var(--text2);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+.param-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.param-row label { min-width: 80px; font-size: 12px; color: var(--text3); }
+.param-row input[type=range] {
+  flex: 1;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.param-row input[type=number] {
+  width: 70px;
+  background: var(--card2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  padding: 4px 8px;
+  font-size: 13px;
+  text-align: center;
+}
+.param-value {
+  min-width: 50px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── Buttons ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  width: 100%;
+}
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: #4f46e5; }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--card2); color: var(--text); }
+.btn-scan { background: var(--green); color: white; }
+.btn-scan:hover { background: #059669; }
+
+/* ── Metrics grid ── */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border-radius: 0 0 10px 10px;
+  overflow: hidden;
+}
+.metric {
+  background: var(--card);
+  padding: 14px 16px;
+  text-align: center;
+}
+.metric .val {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.2;
+}
+.metric .val.green { color: var(--green); }
+.metric .val.red { color: var(--red); }
+.metric .lbl {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ── Equity curve ── */
+#equityChart { width: 100% !important; }
+
+/* ── Comparison table ── */
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+thead tr { border-bottom: 1px solid var(--border); }
+th {
+  padding: 8px 12px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+td {
+  padding: 9px 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: var(--card2); }
+td .mono { font-variant-numeric: tabular-nums; font-size: 12px; }
+td .tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  background: var(--card2);
+  color: var(--text2);
+}
+td .tag.tf { background: rgba(99,102,241,0.2); color: var(--accent); }
+td .tag.mr { background: rgba(34,211,238,0.15); color: var(--accent2); }
+.sharpe { font-weight: 700; }
+.sharpe.high { color: var(--green); }
+.sharpe.low { color: var(--red); }
+
+/* ── Heatmap ── */
+.scan-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+.scan-card {
+  background: var(--card2);
+  border-radius: 8px;
+  padding: 12px;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+}
+.scan-card:hover { border-color: var(--accent); }
+.scan-card.best { border-color: var(--green); background: rgba(16,185,129,0.08); }
+.scan-card .params { font-size: 12px; color: var(--text2); margin-bottom: 6px; }
+.scan-card .metrics { display: flex; gap: 10px; flex-wrap: wrap; }
+.scan-card .m { font-size: 12px; }
+.scan-card .m .v { font-weight: 700; }
+.scan-card .m .v.g { color: var(--green); }
+.scan-card .m .m .v.r { color: var(--red); }
+
+/* ── Strategy tabs ── */
+.tabs { display: flex; gap: 4px; margin-bottom: 14px; }
+.tab {
+  flex: 1;
+  padding: 8px;
+  text-align: center;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  background: var(--card2);
+  color: var(--text3);
+  border: 1px solid transparent;
+  transition: all 0.15s;
+}
+.tab.active { background: rgba(99,102,241,0.2); color: var(--accent); border-color: var(--accent); }
+.tab:hover:not(.active) { color: var(--text); }
+
+/* ── Loading spinner ── */
+.spinner {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  vertical-align: middle;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Alert ── */
+.alert { padding: 10px 14px; border-radius: 8px; font-size: 13px; margin-top: 8px; }
+.alert-error { background: rgba(239,68,68,0.1); border: 1px solid var(--red); color: var(--red); }
+.alert-success { background: rgba(16,185,129,0.1); border: 1px solid var(--green); color: var(--green); }
+
+/* ── Two-col grid ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+    <path d="M3 17l6-6 4 4 8-10" stroke="#6366f1" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M14 7h7v7" stroke="#22d3ee" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+  </svg>
+  <h1>Quant Research</h1>
+  <span class="subtitle">回测 · 参数调优 · 可视化</span>
+  <div class="header-right">
+    <span class="badge badge-green" id="statusBadge">就绪</span>
+  </div>
+</div>
+
+<!-- Layout -->
+<div class="layout">
+
+  <!-- ── Left Sidebar ── -->
+  <div class="sidebar">
+
+    <!-- 数据标的 -->
+    <div class="card">
+      <div class="card-header"><div class="dot"></div>数据标的</div>
+      <div class="card-body" style="padding:8px;">
+        <div id="symbolList"><div style="color:var(--text3);font-size:12px;padding:8px;">加载中...</div></div>
+      </div>
+    </div>
+
+    <!-- 策略选择 -->
+    <div class="card">
+      <div class="card-header"><div class="dot"></div>策略</div>
+      <div class="card-body">
+        <div class="tabs">
+          <div class="tab active" data-strategy="trend_following">趋势跟随</div>
+          <div class="tab" data-strategy="mean_reversion">均值回归</div>
+        </div>
+        <div id="paramPanel">
+          <!-- 动态填充 -->
+        </div>
+        <div style="margin-top:12px; display:flex;flex-direction:column;gap:8px;">
+          <button class="btn btn-primary" id="btnRun">▶ 运行回测</button>
+          <button class="btn btn-scan" id="btnScan">⚡ 参数扫描</button>
+        </div>
+        <div id="runAlert"></div>
+      </div>
+    </div>
+
+    <!-- 回测参数 -->
+    <div class="card">
+      <div class="card-header"><div class="dot"></div>风控参数</div>
+      <div class="card-body">
+        <div id="riskParams">
+          <!-- 动态填充 -->
+        </div>
+      </div>
+    </div>
+
+    <!-- 快速参数预设 -->
+    <div class="card">
+      <div class="card-header"><div class="dot"></div>快速预设</div>
+      <div class="card-body" style="padding:8px;">
+        <div id="presets" style="display:flex;flex-direction:column;gap:4px;"></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Main Content ── -->
+  <div class="main">
+
+    <!-- 行情 K 线 -->
+    <div class="card">
+      <div class="card-header">
+        <div class="dot"></div>
+        <span id="chartTitle">沪深300 日线</span>
+        <span style="margin-left:auto;font-size:11px;color:var(--text3)" id="chartRange"></span>
+      </div>
+      <div class="card-body">
+        <div class="chart-container">
+          <canvas id="klineChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- 回测结果 -->
+    <div class="card" id="resultsCard" style="display:none;">
+      <div class="card-header"><div class="dot"></div>回测结果 &nbsp;<span id="resultRunId" style="font-weight:400;font-size:11px;color:var(--text3)"></span></div>
+      <div class="metrics-grid" id="metricsGrid">
+        <div class="metric">
+          <div class="val" id="mEquity">-</div>
+          <div class="lbl">期末净值</div>
+        </div>
+        <div class="metric">
+          <div class="val" id="mReturn">-</div>
+          <div class="lbl">总收益</div>
+        </div>
+        <div class="metric">
+          <div class="val" id="mAnnual">-</div>
+          <div class="lbl">年化收益</div>
+        </div>
+        <div class="metric">
+          <div class="val" id="mSharpe">-</div>
+          <div class="lbl">Sharpe</div>
+        </div>
+        <div class="metric">
+          <div class="val" id="mDD" style="font-size:16px;">-</div>
+          <div class="lbl">最大回撤</div>
+        </div>
+        <div class="metric">
+          <div class="val" id="mStatus" style="font-size:14px;">-</div>
+          <div class="lbl">状态</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 净值曲线 -->
+    <div class="card" id="equityCard" style="display:none;">
+      <div class="card-header"><div class="dot"></div>净值曲线 vs 买入持有</div>
+      <div class="card-body">
+        <div style="height:260px;">
+          <canvas id="equityChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- 参数扫描结果 -->
+    <div class="card" id="scanCard" style="display:none;">
+      <div class="card-header"><div class="dot"></div>参数扫描结果</div>
+      <div class="card-body">
+        <div id="scanResults" class="scan-results"></div>
+      </div>
+    </div>
+
+    <!-- 历史回测记录 -->
+    <div class="card">
+      <div class="card-header"><div class="dot"></div>历史回测记录</div>
+      <div class="card-body" style="padding:0;">
+        <div style="max-height:320px;overflow-y:auto;">
+          <table id="reportsTable">
+            <thead>
+              <tr>
+                <th>时间</th>
+                <th>策略</th>
+                <th>标的</th>
+                <th>总收益</th>
+                <th>年化</th>
+                <th>Sharpe</th>
+                <th>最大回撤</th>
+              </tr>
+            </thead>
+            <tbody id="reportsBody">
+              <tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px;">加载中...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────────────
+// State
+// ─────────────────────────────────────────────────────────────────────────
+let currentSymbol = null;
+let currentStrategy = 'trend_following';
+let klineChart = null;
+let equityChart = null;
+let lastReport = null;
+
+const STRATEGY_SCHEMA = {
+  trend_following: [
+    { name: 'short_window', label: '短期均线', type: 'int', default: 5, min: 2, max: 60, step: 1 },
+    { name: 'long_window',  label: '长期均线',  type: 'int', default: 20, min: 5, max: 200, step: 5 },
+  ],
+  mean_reversion: [
+    { name: 'lookback_window', label: '历史窗口', type: 'int', default: 20, min: 5, max: 200, step: 5 },
+    { name: 'entry_zscore',   label: '入场阈值', type: 'float', default: 1.0, min: 0.5, max: 3.0, step: 0.1 },
+    { name: 'exit_zscore',    label: '平仓阈值', type: 'float', default: 0.3, min: 0.1, max: 1.5, step: 0.05 },
+  ],
+};
+
+const RISK_SCHEMA = [
+  { name: 'commission_rate',      label: '佣金率',    type: 'float', default: 0.0003, min: 0.0,   max: 0.01,   step: 0.0001 },
+  { name: 'slippage_rate',        label: '滑点率',    type: 'float', default: 0.0005, min: 0.0,   max: 0.01,   step: 0.0001 },
+  { name: 'max_drawdown_ratio',   label: '回撤熔断',  type: 'float', default: 0.15,   min: 0.01,  max: 0.5,   step: 0.01 },
+];
+
+const PRESETS = {
+  trend_following: [
+    { label: '默认 (5/20)',  params: { short_window: 5,  long_window: 20 } },
+    { label: '短线 (5/30)',  params: { short_window: 5,  long_window: 30 } },
+    { label: '中线 (10/30)', params: { short_window: 10, long_window: 30 } },
+    { label: '长线 (10/60)', params: { short_window: 10, long_window: 60 } },
+  ],
+  mean_reversion: [
+    { label: '敏感 (0.8/0.2)', params: { lookback_window: 20, entry_zscore: 0.8, exit_zscore: 0.2 } },
+    { label: '默认 (1.0/0.3)', params: { lookback_window: 20, entry_zscore: 1.0, exit_zscore: 0.3 } },
+    { label: '保守 (1.5/0.5)', params: { lookback_window: 30, entry_zscore: 1.5, exit_zscore: 0.5 } },
+  ],
+};
+
+// ─────────────────────────────────────────────────────────────────────────
+// Utils
+// ─────────────────────────────────────────────────────────────────────────
+function setStatus(text, type = 'ready') {
+  const badge = document.getElementById('statusBadge');
+  badge.textContent = text;
+  badge.className = 'badge' + (type === 'loading' ? '' : type === 'error' ? ' badge-red' : ' badge-green');
+}
+
+function fmtPct(v) {
+  if (!v || v === 'N/A') return '—';
+  try { return (parseFloat(v) * 100).toFixed(2) + '%'; } catch { return v; }
+}
+
+function fmtNum(v) {
+  if (!v || v === 'N/A') return '—';
+  try { return parseFloat(v).toLocaleString('zh-CN', {minimumFractionDigits: 2, maximumFractionDigits: 2}); } catch { return v; }
+}
+
+function fmtDate(ts) {
+  if (!ts) return '—';
+  return ts.replace('T', ' ').slice(0, 16);
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// API calls
+// ─────────────────────────────────────────────────────────────────────────
+async function fetchJSON(url) {
+  const r = await fetch(url);
+  if (!r.ok) throw new Error(url + ' → ' + r.status);
+  return r.json();
+}
+
+async function postJSON(url, body) {
+  const r = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  return r.json();
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Symbol list
+// ─────────────────────────────────────────────────────────────────────────
+async function loadSymbols() {
+  try {
+    const symbols = await fetchJSON('/api/symbols');
+    const container = document.getElementById('symbolList');
+    if (!symbols.length) {
+      container.innerHTML = '<div style="color:var(--text3);font-size:12px;padding:8px;">暂无数据</div>';
+      return;
+    }
+    container.innerHTML = symbols.map(s => `
+      <div class="symbol-item${currentSymbol === s.symbol ? ' active' : ''}" data-symbol="${s.symbol}">
+        <div>
+          <div class="sym">${s.symbol}</div>
+          <div class="info">${s.start_date} ~ ${s.end_date}</div>
+        </div>
+        <div class="rows">${s.rows}条</div>
+      </div>
+    `).join('');
+    container.querySelectorAll('.symbol-item').forEach(el => {
+      el.addEventListener('click', () => {
+        currentSymbol = el.dataset.symbol;
+        loadSymbols();
+        loadTimeseries(currentSymbol);
+        document.getElementById('chartTitle').textContent = currentSymbol + ' 日线';
+      });
+    });
+    // 默认选第一个
+    if (!currentSymbol && symbols.length) {
+      currentSymbol = symbols[0].symbol;
+      loadTimeseries(currentSymbol);
+      document.getElementById('chartTitle').textContent = currentSymbol + ' 日线';
+    }
+  } catch(e) { console.error('loadSymbols', e); }
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// K-line chart
+// ─────────────────────────────────────────────────────────────────────────
+async function loadTimeseries(symbol) {
+  try {
+    const data = await fetchJSON(`/api/timeseries/${encodeURIComponent(symbol)}`);
+    if (!data.length) return;
+    renderKline(data);
+    document.getElementById('chartRange').textContent = data[0].timestamp.slice(0,10) + ' → ' + data[data.length-1].timestamp.slice(0,10);
+  } catch(e) { console.error('loadTimeseries', e); }
+}
+
+function renderKline(bars) {
+  const labels = bars.map(b => b.timestamp.slice(0,10));
+  // 计算 MA5, MA20
+  const closes = bars.map(b => b.close);
+  const ma5 = calcMA(closes, 5);
+  const ma20 = calcMA(closes, 20);
+  const ma60 = calcMA(closes, 60);
+
+  const datasets = [
+    {
+      label: 'MA5',
+      data: ma5.map((v, i) => v == null ? null : { x: labels[i], y: v }),
+      borderColor: 'rgba(99,102,241,0.8)',
+      backgroundColor: 'transparent',
+      type: 'line',
+      tension: 0.2,
+      pointRadius: 0,
+      borderWidth: 1.5,
+      order: 2,
+    },
+    {
+      label: 'MA20',
+      data: ma20.map((v, i) => v == null ? null : { x: labels[i], y: v }),
+      borderColor: 'rgba(34,211,238,0.8)',
+      backgroundColor: 'transparent',
+      type: 'line',
+      tension: 0.2,
+      pointRadius: 0,
+      borderWidth: 1.5,
+      order: 2,
+    },
+    {
+      label: 'MA60',
+      data: ma60.map((v, i) => v == null ? null : { x: labels[i], y: v }),
+      borderColor: 'rgba(245,158,11,0.8)',
+      backgroundColor: 'transparent',
+      type: 'line',
+      tension: 0.2,
+      pointRadius: 0,
+      borderWidth: 1.5,
+      order: 2,
+    },
+    {
+      label: 'Close',
+      data: bars.map(b => ({ x: b.timestamp.slice(0,10), y: b.close })),
+      borderColor: 'rgba(148,163,184,0.6)',
+      backgroundColor: 'rgba(148,163,184,0.1)',
+      type: 'line',
+      tension: 0.1,
+      pointRadius: 0,
+      borderWidth: 1,
+      order: 3,
+    },
+  ];
+
+  if (klineChart) klineChart.destroy();
+
+  const ctx = document.getElementById('klineChart').getContext('2d');
+  klineChart = new Chart(ctx, {
+    data: {
+      datasets: datasets,
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { color: '#94a3b8', font: { size: 11 }, boxWidth: 12 } },
+        tooltip: {
+          backgroundColor: '#21253a',
+          titleColor: '#e2e8f0',
+          bodyColor: '#94a3b8',
+          borderColor: '#2a2d3e',
+          borderWidth: 1,
+        },
+      },
+      scales: {
+        x: {
+          type: 'category',
+          ticks: {
+            color: '#64748b',
+            maxTicksLimit: 12,
+            font: { size: 11 },
+          },
+          grid: { color: 'rgba(42,45,62,0.5)' },
+        },
+        y: {
+          position: 'right',
+          ticks: { color: '#64748b', font: { size: 11 } },
+          grid: { color: 'rgba(42,45,62,0.5)' },
+        },
+      },
+    },
+  });
+}
+
+function calcMA(closes, period) {
+  return closes.map((_, i) => {
+    if (i < period - 1) return null;
+    const slice = closes.slice(i - period + 1, i + 1);
+    return slice.reduce((a, b) => a + b, 0) / period;
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Param panel
+// ─────────────────────────────────────────────────────────────────────────
+function renderParamPanel() {
+  const container = document.getElementById('paramPanel');
+  const schema = STRATEGY_SCHEMA[currentStrategy];
+  container.innerHTML = schema.map(p => `
+    <div class="param-group">
+      <label>${p.label}</label>
+      <div class="param-row">
+        <input type="range"
+          id="range_${p.name}"
+          min="${p.min}" max="${p.max}" step="${p.step}"
+          value="${p.default}"
+          oninput="onSlider('${p.name}', this.value)">
+        <input type="number"
+          id="num_${p.name}"
+          min="${p.min}" max="${p.max}" step="${p.step}"
+          value="${p.default}"
+          style="width:65px"
+          onchange="onNum('${p.name}', this.value)">
+      </div>
+    </div>
+  `).join('');
+  // 也渲染风控参数
+  renderRiskPanel();
+  renderPresets();
+}
+
+function onSlider(name, val) {
+  document.getElementById('num_' + name).value = val;
+}
+function onNum(name, val) {
+  document.getElementById('range_' + name).value = val;
+}
+
+function renderRiskPanel() {
+  const container = document.getElementById('riskParams');
+  container.innerHTML = RISK_SCHEMA.map(p => {
+    const displayVal = p.type === 'float' ? parseFloat(p.default).toFixed(4) : p.default;
+    return `
+    <div class="param-row">
+      <label>${p.label}</label>
+      <input type="range"
+        id="risk_range_${p.name}"
+        min="${p.min}" max="${p.max}" step="${p.step}"
+        value="${p.default}"
+        oninput="onRiskSlider('${p.name}', this.value)">
+      <span class="param-value" id="risk_val_${p.name}">${displayVal}</span>
+    </div>
+  `}).join('');
+}
+
+function onRiskSlider(name, val) {
+  const p = RISK_SCHEMA.find(x => x.name === name);
+  const display = p.type === 'float' ? parseFloat(val).toFixed(4) : val;
+  document.getElementById('risk_val_' + name).textContent = display;
+}
+
+function renderPresets() {
+  const container = document.getElementById('presets');
+  const presets = PRESETS[currentStrategy] || [];
+  container.innerHTML = presets.map((p, i) => `
+    <button class="btn btn-ghost" style="font-size:11px;padding:6px 10px;"
+      onclick="applyPreset(${JSON.stringify(p.params).replace(/"/g, '&quot;')})">
+      ${p.label}
+    </button>
+  `).join('');
+}
+
+function applyPreset(params) {
+  for (const [k, v] of Object.entries(params)) {
+    const schema = [...(STRATEGY_SCHEMA[currentStrategy] || [])];
+    const p = schema.find(x => x.name === k);
+    if (!p) continue;
+    const display = p.type === 'float' ? v.toFixed ? v.toFixed(2) : v : v;
+    document.getElementById('range_' + k).value = v;
+    document.getElementById('num_' + k).value = v;
+  }
+}
+
+function getStrategyParams() {
+  const schema = STRATEGY_SCHEMA[currentStrategy];
+  const params = {};
+  schema.forEach(p => {
+    const el = document.getElementById('num_' + p.name);
+    if (el) params[p.name] = p.type === 'int' ? parseInt(el.value) : parseFloat(el.value);
+  });
+  return params;
+}
+
+function getRiskParams() {
+  const params = {};
+  RISK_SCHEMA.forEach(p => {
+    const el = document.getElementById('risk_range_' + p.name);
+    if (el) params[p.name] = p.type === 'float' ? parseFloat(el.value) : parseFloat(el.value);
+  });
+  return params;
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Run backtest
+// ─────────────────────────────────────────────────────────────────────────
+document.getElementById('btnRun').addEventListener('click', async () => {
+  if (!currentSymbol) { alert('请先选择标的'); return; }
+  const btn = document.getElementById('btnRun');
+  const alertEl = document.getElementById('runAlert');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> 运行中...';
+  setStatus('回测中...', 'loading');
+
+  try {
+    const result = await postJSON('/api/backtest', {
+      symbol: currentSymbol,
+      strategy: currentStrategy,
+      params: getStrategyParams(),
+      risk_params: getRiskParams(),
+    });
+
+    if (result.stderr && result.stderr.includes('Error')) {
+      alertEl.innerHTML = `<div class="alert alert-error">运行出错: ${result.stderr.slice(0,200)}</div>`;
+      setStatus('失败', 'error');
+    } else {
+      alertEl.innerHTML = '';
+      lastReport = result.report;
+      if (lastReport) renderResults(lastReport);
+      loadReports();
+      setStatus('完成', 'ready');
+    }
+  } catch(e) {
+    alertEl.innerHTML = `<div class="alert alert-error">请求失败: ${e.message}</div>`;
+    setStatus('错误', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '▶ 运行回测';
+  }
+});
+
+// ─────────────────────────────────────────────────────────────────────────
+// Render results
+// ─────────────────────────────────────────────────────────────────────────
+function renderResults(report) {
+  const card = document.getElementById('resultsCard');
+  card.style.display = '';
+  document.getElementById('resultRunId').textContent = report.run_id || '';
+
+  const totalReturn = parseFloat(report.total_return || 0);
+  document.getElementById('mEquity').textContent = fmtNum(report.final_equity);
+  document.getElementById('mEquity').className = 'val' + (totalReturn >= 0 ? ' green' : ' red');
+  document.getElementById('mReturn').textContent = fmtPct(report.total_return);
+  document.getElementById('mReturn').className = 'val' + (totalReturn >= 0 ? ' green' : ' red');
+  document.getElementById('mAnnual').textContent = fmtPct(report.annualized_return);
+  document.getElementById('mAnnual').className = 'val' + (parseFloat(report.annualized_return||0) >= 0 ? ' green' : ' red');
+  const sharpe = parseFloat(report.sharpe_ratio || 0);
+  document.getElementById('mSharpe').textContent = sharpe.toFixed(3);
+  document.getElementById('mSharpe').className = 'val ' + (sharpe >= 1 ? 'green' : sharpe >= 0 ? '' : 'red');
+  const dd = parseFloat(report.max_drawdown || 0);
+  document.getElementById('mDD').textContent = fmtPct(report.max_drawdown);
+  document.getElementById('mDD').className = 'val red';
+  document.getElementById('mStatus').textContent = report.status === 'completed' ? '✅ 完成' : '⚠️ ' + report.status;
+
+  // 尝试绘制净值曲线（如果有）
+  renderEquityCurve(report.run_id, totalReturn);
+}
+
+function renderEquityCurve(runId, totalReturn) {
+  // 尝试加载净值数据，如果没有则用模拟数据
+  const equityCard = document.getElementById('equityCard');
+  equityCard.style.display = '';
+
+  // 从当前 K 线数据构造买入持有基准
+  if (!klineChart) return;
+  const klineData = klineChart.data.datasets.find(d => d.label === 'Close');
+  if (!klineData || !klineData.data.length) return;
+
+  const equityCard2 = document.getElementById('equityCard');
+  const labels = klineData.data.map(d => d.x);
+  const closes = klineData.data.map(d => d.y);
+  if (!closes.length) return;
+
+  const firstClose = closes[0];
+  const benchmark = closes.map(c => 1000000 * (c / firstClose));
+  // 策略净值: 简化处理，用买入持有 * (1 + totalReturn)
+  const strategy = closes.map(() => null); // 无真实数据时留空
+  // 如果有真实回测报告中的 equity_curve，从报告加载
+
+  if (equityChart) equityChart.destroy();
+  const ctx = document.getElementById('equityChart').getContext('2d');
+
+  equityChart = new Chart(ctx, {
+    data: {
+      labels: labels,
+      datasets: [
+        {
+          label: '买入持有',
+          data: benchmark,
+          borderColor: 'rgba(148,163,184,0.5)',
+          backgroundColor: 'transparent',
+          borderWidth: 1.5,
+          pointRadius: 0,
+          tension: 0.1,
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      plugins: {
+        legend: { labels: { color: '#94a3b8', font: { size: 11 } } },
+        tooltip: {
+          backgroundColor: '#21253a',
+          titleColor: '#e2e8f0',
+          bodyColor: '#94a3b8',
+        },
+      },
+      scales: {
+        x: {
+          type: 'category',
+          ticks: { color: '#64748b', maxTicksLimit: 10, font: { size: 11 } },
+          grid: { color: 'rgba(42,45,62,0.5)' },
+        },
+        y: {
+          position: 'right',
+          ticks: { color: '#64748b', font: { size: 11 }, callback: v => v.toLocaleString() },
+          grid: { color: 'rgba(42,45,62,0.5)' },
+        },
+      },
+    },
+  });
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Reports table
+// ─────────────────────────────────────────────────────────────────────────
+async function loadReports() {
+  try {
+    const reports = await fetchJSON('/api/reports');
+    const tbody = document.getElementById('reportsBody');
+    if (!reports.length) {
+      tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px;">暂无记录</td></tr>';
+      return;
+    }
+    tbody.innerHTML = reports.slice(0, 50).map(r => {
+      const tagClass = r.strategy === 'trend_following' ? 'tf' : 'mr';
+      const sharpe = parseFloat(r.sharpe_ratio || 0);
+      return `
+        <tr onclick="loadReportDetail('${r.run_id}')" style="cursor:pointer">
+          <td><span class="mono">${fmtDate(r.created_at)}</span></td>
+          <td><span class="tag ${tagClass}">${r.strategy === 'trend_following' ? '趋势' : '均值'}</span></td>
+          <td>${r.symbol}</td>
+          <td class="mono" style="color:${parseFloat(r.total_return||0)>=0?'var(--green)':'var(--red)'}">${fmtPct(r.total_return)}</td>
+          <td class="mono">${fmtPct(r.annualized_return)}</td>
+          <td class="mono sharpe ${sharpe>=1?'high':sharpe<0?'low':''}">${r.sharpe_ratio||'—'}</td>
+          <td class="mono" style="color:var(--red)">${fmtPct(r.max_drawdown)}</td>
+        </tr>
+      `;
+    }).join('');
+  } catch(e) { console.error('loadReports', e); }
+}
+
+async function loadReportDetail(runId) {
+  try {
+    const data = await fetchJSON('/api/report/' + encodeURIComponent(runId));
+    if (!data) return;
+    const summary = data.summary || {};
+    renderResults({
+      run_id: runId,
+      final_equity: summary.final_equity,
+      total_return: summary.total_return,
+      annualized_return: summary.annualized_return,
+      max_drawdown: summary.max_drawdown,
+      sharpe_ratio: summary.sharpe_ratio,
+      status: summary.status,
+    });
+  } catch(e) { console.error('loadReportDetail', e); }
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Param scan
+// ─────────────────────────────────────────────────────────────────────────
+document.getElementById('btnScan').addEventListener('click', async () => {
+  if (!currentSymbol) return;
+  const btn = document.getElementById('btnScan');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> 扫描中...';
+  setStatus('参数扫描中...', 'loading');
+
+  const scanGrid = {
+    trend_following: {
+      short_window: [3, 5, 10, 15],
+      long_window: [20, 30, 60],
+    },
+    mean_reversion: {
+      lookback_window: [10, 20, 30],
+      entry_zscore: [0.8, 1.0, 1.5],
+    },
+  };
+
+  try {
+    const result = await postJSON('/api/scan', {
+      symbol: currentSymbol,
+      strategy: currentStrategy,
+      grid: scanGrid[currentStrategy],
+    });
+
+    renderScanResults(result.results || []);
+    setStatus('扫描完成', 'ready');
+  } catch(e) {
+    setStatus('扫描失败', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '⚡ 参数扫描';
+  }
+});
+
+function renderScanResults(results) {
+  const card = document.getElementById('scanCard');
+  card.style.display = '';
+  const container = document.getElementById('scanResults');
+  if (!results.length) {
+    container.innerHTML = '<div style="color:var(--text3);padding:16px;text-align:center">无结果</div>';
+    return;
+  }
+  container.innerHTML = results.map((r, i) => {
+    const paramsStr = Object.entries(r.params).map(([k,v]) => `${k}=${v}`).join(', ');
+    const ret = parseFloat(r.total_return || 0);
+    const sharpe = parseFloat(r.sharpe_ratio || 0);
+    return `
+      <div class="scan-card${i===0?' best':''}" onclick="loadReportDetail('${r.run_id}')">
+        <div class="params">${paramsStr}</div>
+        <div class="metrics">
+          <div class="m"><span class="v ${ret>=0?'g':'r'}" style="color:var(--${ret>=0?'green':'red'})">${fmtPct(r.total_return)}</span> <span style="color:var(--text3)">收益</span></div>
+          <div class="m"><span class="v">${sharpe.toFixed(2)}</span> <span style="color:var(--text3)">Sharpe</span></div>
+          <div class="m"><span class="v" style="color:var(--red)">${fmtPct(r.max_drawdown)}</span> <span style="color:var(--text3)">回撤</span></div>
+        </div>
+        ${i===0?'<div style="font-size:10px;color:var(--green);margin-top:4px">★ 最优</div>':''}
+      </div>
+    `;
+  }).join('');
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Strategy tab switching
+// ─────────────────────────────────────────────────────────────────────────
+document.querySelectorAll('.tab').forEach(tab => {
+  tab.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    currentStrategy = tab.dataset.strategy;
+    renderParamPanel();
+    document.getElementById('resultsCard').style.display = 'none';
+    document.getElementById('equityCard').style.display = 'none';
+    document.getElementById('scanCard').style.display = 'none';
+  });
+});
+
+// ─────────────────────────────────────────────────────────────────────────
+// Boot
+// ─────────────────────────────────────────────────────────────────────────
+renderParamPanel();
+loadSymbols();
+loadReports();
+</script>
+</body>
+</html>

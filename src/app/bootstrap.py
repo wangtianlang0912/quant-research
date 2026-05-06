@@ -24,6 +24,7 @@ from src.domain.ports.repository_port import (
 from src.domain.ports.risk_port import RiskPort
 from src.domain.ports.strategy_port import StrategyPort
 from src.engines.risk import BasicRiskManager
+from src.engines.backtest import BacktestEngine
 from src.services.clock.system_clock import SystemClock
 
 
@@ -233,12 +234,22 @@ class PaperExecutionGateway(ExecutionPort):
 def build_backtest_container(
     strategy: StrategyPort,
     market_data: MarketDataPort,
-) -> AppContainer:
-    """构建用于本地回测的应用容器。"""
+    risk_params: dict | None = None,
+) -> tuple[AppContainer, BacktestEngine]:
+    """构建用于本地回测的应用容器，返回 (容器, 回测引擎)。"""
+    risk_params = risk_params or {}
+    risk_kwargs = {}
+    engine_kwargs = {}
+    for k, v in risk_params.items():
+        if hasattr(BasicRiskManager, k):
+            risk_kwargs[k] = v
+        elif hasattr(BacktestEngine, k):
+            engine_kwargs[k] = v
+    backtest_engine = BacktestEngine(**engine_kwargs)
     return AppContainer(
         market_data=market_data,
         strategy=strategy,
-        risk_manager=BasicRiskManager(),
+        risk_manager=BasicRiskManager(**risk_kwargs),
         execution_gateway=NoopExecutionGateway(),
         run_repository=InMemoryRunRepository(),
         portfolio_repository=InMemoryPortfolioRepository(),
@@ -246,7 +257,7 @@ def build_backtest_container(
         event_repository=InMemoryEventRepository(),
         notifier=NullNotificationAdapter(),
         clock=SystemClock(),
-    )
+    ), backtest_engine
 
 
 def build_paper_container(

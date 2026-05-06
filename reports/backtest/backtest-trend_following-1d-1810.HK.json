@@ -1,0 +1,61 @@
+{
+  "context": {
+    "run_id": {
+      "value": "backtest-trend_following-1d-1810.HK"
+    },
+    "mode": "backtest",
+    "strategy_id": {
+      "value": "trend_following"
+    },
+    "symbols": [
+      "1810.HK"
+    ],
+    "frequency": "1d",
+    "start_date": "2024-04-09",
+    "end_date": "2026-04-30",
+    "created_at": "2026-05-06T12:39:53.303649",
+    "environment": "dev",
+    "metadata": {
+      "data_path": "data",
+      "strategy_name": "trend_following",
+      "market_data_source": "local_csv",
+      "frequency": "1d"
+    }
+  },
+  "summary": {
+    "run_id": {
+      "value": "backtest-trend_following-1d-1810.HK"
+    },
+    "mode": "backtest",
+    "started_at": "2026-05-06T12:39:53.303649",
+    "finished_at": "2026-05-06T12:39:53.350265",
+    "status": "completed",
+    "message": "Run finished successfully.",
+    "final_equity": "1002235.3595361500",
+    "total_return": "0.00223535953615",
+    "annualized_return": "0.001112638165248203531220512",
+    "max_drawdown": "0.002167601811063066466697112514",
+    "sharpe_ratio": "0.7005905594909992317131754977"
+  },
+  "risk_summary": {
+    "engine": "BasicRiskManager",
+    "enabled": true,
+    "kill_switch": false,
+    "max_order_quantity": "1000",
+    "max_position_value_ratio": "0.2",
+    "max_total_exposure_ratio": "0.8",
+    "max_drawdown_ratio": "0.15",
+    "min_cash_reserve": "50000"
+  },
+  "strategy_metadata": {
+    "strategy_id": "trend_following",
+    "name": "Trend Following",
+    "version": "0.1.0",
+    "author": "copilot"
+  },
+  "event_summary": {
+    "event_count": 1517,
+    "frequency": "1d",
+    "market_data_source": "local_csv"
+  }
+}

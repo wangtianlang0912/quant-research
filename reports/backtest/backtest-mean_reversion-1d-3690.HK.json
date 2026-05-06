@@ -1,0 +1,61 @@
+{
+  "context": {
+    "run_id": {
+      "value": "backtest-mean_reversion-1d-3690.HK"
+    },
+    "mode": "backtest",
+    "strategy_id": {
+      "value": "mean_reversion"
+    },
+    "symbols": [
+      "3690.HK"
+    ],
+    "frequency": "1d",
+    "start_date": "2024-04-09",
+    "end_date": "2026-04-30",
+    "created_at": "2026-05-06T14:27:40.097864",
+    "environment": "dev",
+    "metadata": {
+      "data_path": "data",
+      "strategy_name": "mean_reversion",
+      "market_data_source": "local_csv",
+      "frequency": "1d"
+    }
+  },
+  "summary": {
+    "run_id": {
+      "value": "backtest-mean_reversion-1d-3690.HK"
+    },
+    "mode": "backtest",
+    "started_at": "2026-05-06T14:27:40.097864",
+    "finished_at": "2026-05-06T14:27:40.139336",
+    "status": "completed",
+    "message": "Run finished successfully.",
+    "final_equity": "1006090.6357382500",
+    "total_return": "0.00609063573825",
+    "annualized_return": "0.003028658217409041383069674",
+    "max_drawdown": "0.009050410516271024119659933930",
+    "sharpe_ratio": "0.3652140645900955164690214143"
+  },
+  "risk_summary": {
+    "engine": "BasicRiskManager",
+    "enabled": true,
+    "kill_switch": false,
+    "max_order_quantity": "1000",
+    "max_position_value_ratio": "0.2",
+    "max_total_exposure_ratio": "0.8",
+    "max_drawdown_ratio": "0.15",
+    "min_cash_reserve": "50000"
+  },
+  "strategy_metadata": {
+    "strategy_id": "mean_reversion",
+    "name": "Mean Reversion",
+    "version": "0.1.0",
+    "author": "copilot"
+  },
+  "event_summary": {
+    "event_count": 1517,
+    "frequency": "1d",
+    "market_data_source": "local_csv"
+  }
+}

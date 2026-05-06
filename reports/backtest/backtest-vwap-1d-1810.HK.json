@@ -1,0 +1,61 @@
+{
+  "context": {
+    "run_id": {
+      "value": "backtest-vwap-1d-1810.HK"
+    },
+    "mode": "backtest",
+    "strategy_id": {
+      "value": "vwap"
+    },
+    "symbols": [
+      "1810.HK"
+    ],
+    "frequency": "1d",
+    "start_date": "2024-04-09",
+    "end_date": "2026-04-30",
+    "created_at": "2026-05-06T21:12:47.651440",
+    "environment": "dev",
+    "metadata": {
+      "data_path": "data",
+      "strategy_name": "vwap",
+      "market_data_source": "local_csv",
+      "frequency": "1d"
+    }
+  },
+  "summary": {
+    "run_id": {
+      "value": "backtest-vwap-1d-1810.HK"
+    },
+    "mode": "backtest",
+    "started_at": "2026-05-06T21:12:47.651440",
+    "finished_at": "2026-05-06T21:12:47.726646",
+    "status": "completed",
+    "message": "Run finished successfully.",
+    "final_equity": "1000686.9096353000",
+    "total_return": "0.0006869096353",
+    "annualized_return": "0.000342038329316875950755037",
+    "max_drawdown": "0.003793375618212346986255324245",
+    "sharpe_ratio": "0.1709384522835024286479862451"
+  },
+  "risk_summary": {
+    "engine": "BasicRiskManager",
+    "enabled": true,
+    "kill_switch": false,
+    "max_order_quantity": "1000",
+    "max_position_value_ratio": "0.2",
+    "max_total_exposure_ratio": "0.8",
+    "max_drawdown_ratio": "0.15",
+    "min_cash_reserve": "50000"
+  },
+  "strategy_metadata": {
+    "strategy_id": "vwap",
+    "name": "VWAP",
+    "version": "0.1.0",
+    "author": "copilot"
+  },
+  "event_summary": {
+    "event_count": 1517,
+    "frequency": "1d",
+    "market_data_source": "local_csv"
+  }
+}

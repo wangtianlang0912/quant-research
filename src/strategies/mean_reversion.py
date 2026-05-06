@@ -14,8 +14,8 @@ from src.strategies.base import BaseStrategy
 @dataclass
 class MeanReversionStrategy(BaseStrategy):
     lookback_window: int = 20
-    entry_zscore: Decimal = Decimal("2.0")
-    exit_zscore: Decimal = Decimal("0.5")
+    entry_zscore: Decimal = Decimal("1.0")   # 降至1.0，A股波动足够触发
+    exit_zscore: Decimal = Decimal("0.3")
 
     def __init__(
         self,
@@ -38,6 +38,7 @@ class MeanReversionStrategy(BaseStrategy):
         self.lookback_window = lookback_window
         self.entry_zscore = entry_zscore
         self.exit_zscore = exit_zscore
+        self._current_direction: SignalDirection | None = None
 
     def on_bar(self, context: StrategyContext) -> list[Signal]:
         """基于价格相对均值的偏离程度生成均值回归信号。"""
@@ -54,17 +55,22 @@ class MeanReversionStrategy(BaseStrategy):
             return []
 
         zscore = (latest.close - mean_price) / std_price
+
         if zscore <= -self.entry_zscore:
-            direction = SignalDirection.LONG
-            reason = f"zscore({zscore}) <= -entry_zscore({self.entry_zscore})"
+            new_direction = SignalDirection.LONG
+            reason = f"zscore({zscore:.2f}) <= -{self.entry_zscore} 超卖入场"
         elif zscore >= self.entry_zscore:
-            direction = SignalDirection.SHORT
-            reason = f"zscore({zscore}) >= entry_zscore({self.entry_zscore})"
+            new_direction = SignalDirection.SHORT
+            reason = f"zscore({zscore:.2f}) >= {self.entry_zscore} 超买入场"
         elif abs(zscore) <= self.exit_zscore:
-            direction = SignalDirection.FLAT
-            reason = f"abs(zscore({zscore})) <= exit_zscore({self.exit_zscore})"
+            new_direction = SignalDirection.FLAT
+            reason = f"zscore({zscore:.2f}) 回归均衡，平仓"
         else:
             return []
+
+        if new_direction == self._current_direction:
+            return []
+        self._current_direction = new_direction
 
         return [
             Signal(
@@ -72,14 +78,17 @@ class MeanReversionStrategy(BaseStrategy):
                 strategy_id=context.metadata.strategy_id,
                 symbol=latest.symbol,
                 timestamp=latest.timestamp,
-                direction=direction,
+                direction=new_direction,
                 strength=Decimal("1.0"),
                 reason=reason,
                 metadata={
                     "lookback_window": str(self.lookback_window),
                     "entry_zscore": str(self.entry_zscore),
                     "exit_zscore": str(self.exit_zscore),
-                    "zscore": str(zscore),
+                    "zscore": str(round(float(zscore), 4)),
+                    "mean_price": str(round(float(mean_price), 4)),
                 },
             )
         ]
+
+

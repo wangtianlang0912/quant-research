@@ -1,0 +1,61 @@
+{
+  "context": {
+    "run_id": {
+      "value": "backtest-macd_rsi-1d-3690.HK"
+    },
+    "mode": "backtest",
+    "strategy_id": {
+      "value": "macd_rsi"
+    },
+    "symbols": [
+      "3690.HK"
+    ],
+    "frequency": "1d",
+    "start_date": "2024-04-09",
+    "end_date": "2026-04-30",
+    "created_at": "2026-05-06T21:12:46.950507",
+    "environment": "dev",
+    "metadata": {
+      "data_path": "data",
+      "strategy_name": "macd_rsi",
+      "market_data_source": "local_csv",
+      "frequency": "1d"
+    }
+  },
+  "summary": {
+    "run_id": {
+      "value": "backtest-macd_rsi-1d-3690.HK"
+    },
+    "mode": "backtest",
+    "started_at": "2026-05-06T21:12:46.950507",
+    "finished_at": "2026-05-06T21:12:46.985949",
+    "status": "completed",
+    "message": "Run finished successfully.",
+    "final_equity": "997136.2516242500",
+    "total_return": "-0.00286374837575",
+    "annualized_return": "-0.0014272411943430965156126627",
+    "max_drawdown": "0.01162838772900762024800700521",
+    "sharpe_ratio": "-0.2667895091618010312003863332"
+  },
+  "risk_summary": {
+    "engine": "BasicRiskManager",
+    "enabled": true,
+    "kill_switch": false,
+    "max_order_quantity": "1000",
+    "max_position_value_ratio": "0.2",
+    "max_total_exposure_ratio": "0.8",
+    "max_drawdown_ratio": "0.15",
+    "min_cash_reserve": "50000"
+  },
+  "strategy_metadata": {
+    "strategy_id": "macd_rsi",
+    "name": "MACD+RSI",
+    "version": "0.1.0",
+    "author": "copilot"
+  },
+  "event_summary": {
+    "event_count": 1517,
+    "frequency": "1d",
+    "market_data_source": "local_csv"
+  }
+}

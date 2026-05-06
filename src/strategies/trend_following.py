@@ -15,6 +15,7 @@ from src.strategies.base import BaseStrategy
 class TrendFollowingStrategy(BaseStrategy):
     short_window: int = 5
     long_window: int = 20
+    _current_direction: SignalDirection | None = None  # 追踪当前持仓方向
 
     def __init__(
         self,
@@ -34,6 +35,7 @@ class TrendFollowingStrategy(BaseStrategy):
         )
         self.short_window = short_window
         self.long_window = long_window
+        self._current_direction: SignalDirection | None = None
 
     def on_bar(self, context: StrategyContext) -> list[Signal]:
         bars = context.bars
@@ -45,15 +47,22 @@ class TrendFollowingStrategy(BaseStrategy):
         long_ma = sum(closes[-self.long_window:]) / Decimal(str(self.long_window))
         latest = bars[-1]
 
+        # 金叉：短期均线向上穿越长期均线 → 做多
+        # 死叉：短期均线向下穿越长期均线 → 做空/平仓
         if short_ma > long_ma:
-            direction = SignalDirection.LONG
-            reason = f"short_ma({short_ma}) > long_ma({long_ma})"
+            new_direction = SignalDirection.LONG
+            reason = f"short_ma({round(short_ma,2)}) > long_ma({round(long_ma,2)}) 金叉"
         elif short_ma < long_ma:
-            direction = SignalDirection.SHORT
-            reason = f"short_ma({short_ma}) < long_ma({long_ma})"
+            new_direction = SignalDirection.SHORT
+            reason = f"short_ma({round(short_ma,2)}) < long_ma({round(long_ma,2)}) 死叉"
         else:
-            direction = SignalDirection.FLAT
-            reason = f"short_ma({short_ma}) == long_ma({long_ma})"
+            new_direction = SignalDirection.FLAT
+            reason = f"short_ma == long_ma({round(long_ma,2)})"
+
+        # 只有方向发生变化时才发出信号，避免重复下单
+        if new_direction == self._current_direction:
+            return []
+        self._current_direction = new_direction
 
         return [
             Signal(
@@ -61,12 +70,14 @@ class TrendFollowingStrategy(BaseStrategy):
                 strategy_id=context.metadata.strategy_id,
                 symbol=latest.symbol,
                 timestamp=latest.timestamp,
-                direction=direction,
+                direction=new_direction,
                 strength=Decimal("1.0"),
                 reason=reason,
                 metadata={
                     "short_window": str(self.short_window),
                     "long_window": str(self.long_window),
+                    "short_ma": str(round(short_ma, 4)),
+                    "long_ma": str(round(long_ma, 4)),
                 },
             )
         ]

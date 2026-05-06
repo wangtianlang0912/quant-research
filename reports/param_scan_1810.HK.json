@@ -1,0 +1,1071 @@
+[
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 0.5,
+      "xz": 0.3
+    },
+    "total_return": 0.941079641155,
+    "annualized": 0.46757814340826914,
+    "max_drawdown": 0.9807489889491384,
+    "sharpe": 0.6726160418926949,
+    "score": 2.2738821987686935
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 0.75,
+      "xz": 0.3
+    },
+    "total_return": 0.8854392761800001,
+    "annualized": 0.43999409042187854,
+    "max_drawdown": 0.7432264294787685,
+    "sharpe": 0.8257123114640474,
+    "score": 2.255403748565943
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 0.75,
+      "xz": 0.5
+    },
+    "total_return": 0.754262012865,
+    "annualized": 0.3749319149876165,
+    "max_drawdown": 0.7246910217144547,
+    "sharpe": 0.6855707163112194,
+    "score": 1.9110700897371977
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 0.75,
+      "xz": 0.5
+    },
+    "total_return": 0.67107264055,
+    "annualized": 0.3336490588123769,
+    "max_drawdown": 0.5592494649363965,
+    "sharpe": 0.7666013345873882,
+    "score": 1.7945570360019405
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 0.75,
+      "xz": 0.2
+    },
+    "total_return": 0.57355243629,
+    "annualized": 0.2852326952826757,
+    "max_drawdown": 0.5308206981956571,
+    "sharpe": 0.7395088226597555,
+    "score": 1.584636074726556
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 1.0,
+      "xz": 0.5
+    },
+    "total_return": 0.6019067099000001,
+    "annualized": 0.2993123180326166,
+    "max_drawdown": 0.741708428895204,
+    "sharpe": 0.5363388128676503,
+    "score": 1.5190525598510567
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 0.5,
+      "xz": 0.2
+    },
+    "total_return": 0.518536348175,
+    "annualized": 0.25790817373105757,
+    "max_drawdown": 0.5576937371417255,
+    "sharpe": 0.6635565550001385,
+    "score": 1.4297666279243133
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 5,
+      "lw": 90
+    },
+    "total_return": 0.359346694345,
+    "annualized": 0.17880205554493414,
+    "max_drawdown": 0.21661909718291403,
+    "sharpe": 1.1536235792635032,
+    "score": 1.4073823697378385
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 0.5,
+      "xz": 0.2
+    },
+    "total_return": 0.49517094786500004,
+    "annualized": 0.24630114464948305,
+    "max_drawdown": 0.5121524696866023,
+    "sharpe": 0.6757953074480503,
+    "score": 1.3906817630667623
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 1.0,
+      "xz": 0.2
+    },
+    "total_return": 0.49622990110500004,
+    "annualized": 0.24682722105317964,
+    "max_drawdown": 0.5307539795611399,
+    "sharpe": 0.5962997761661838,
+    "score": 1.3450887499124289
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 1.0,
+      "xz": 0.3
+    },
+    "total_return": 0.474180254305,
+    "annualized": 0.235872623031754,
+    "max_drawdown": 0.5307539795611399,
+    "sharpe": 0.5679629590134581,
+    "score": 1.284268267535091
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 30,
+      "lw": 90
+    },
+    "total_return": 0.304091325825,
+    "annualized": 0.15132927994411383,
+    "max_drawdown": 0.21664932941596418,
+    "sharpe": 1.0079449517668677,
+    "score": 1.2100840908365758
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 5,
+      "lw": 40
+    },
+    "total_return": 0.25588403879,
+    "annualized": 0.12735457987460252,
+    "max_drawdown": 0.1580700130993267,
+    "sharpe": 1.0024267629176493,
+    "score": 1.1108743772489995
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 0.75,
+      "xz": 0.5
+    },
+    "total_return": 0.35690928573499997,
+    "annualized": 0.17759034462787723,
+    "max_drawdown": 0.4772789005395105,
+    "sharpe": 0.6569915816011092,
+    "score": 1.1045563274721746
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 10,
+      "lw": 90
+    },
+    "total_return": 0.26763428047000004,
+    "annualized": 0.1331988047646638,
+    "max_drawdown": 0.2166450100088858,
+    "sharpe": 0.8722497427861856,
+    "score": 1.0561450647303667
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 20,
+      "lw": 90
+    },
+    "total_return": 0.26956916065000003,
+    "annualized": 0.1341611243357038,
+    "max_drawdown": 0.2166549449026689,
+    "sharpe": 0.8620912744072441,
+    "score": 1.0538992619871617
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 30,
+      "lw": 60
+    },
+    "total_return": 0.249876597815,
+    "annualized": 0.12436652245206715,
+    "max_drawdown": 0.2166523531034022,
+    "sharpe": 0.8538265588634156,
+    "score": 1.0097620251263182
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 5,
+      "lw": 20
+    },
+    "total_return": 0.23841619693000002,
+    "annualized": 0.11866595315130404,
+    "max_drawdown": 0.145253667074781,
+    "sharpe": 0.8868402144842297,
+    "score": 1.006767941295754
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 1.5,
+      "xz": 0.3
+    },
+    "total_return": 0.28158151234,
+    "annualized": 0.14013530180505157,
+    "max_drawdown": 0.2748971670499522,
+    "sharpe": 0.7113025119215802,
+    "score": 0.9873227143731544
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 5,
+      "lw": 120
+    },
+    "total_return": 0.250023797845,
+    "annualized": 0.12443973974995909,
+    "max_drawdown": 0.21676018110630665,
+    "sharpe": 0.7918880210920566,
+    "score": 0.9728917716550702
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 15,
+      "lw": 90
+    },
+    "total_return": 0.24499763696,
+    "annualized": 0.12193969668573869,
+    "max_drawdown": 0.21664846552076952,
+    "sharpe": 0.7829291849703127,
+    "score": 0.9575162977251424
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 10,
+      "lw": 20
+    },
+    "total_return": 0.21667179328499997,
+    "annualized": 0.10784907267346105,
+    "max_drawdown": 0.14971961272399673,
+    "sharpe": 0.8091793122281894,
+    "score": 0.9169038780307579
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 10,
+      "lw": 120
+    },
+    "total_return": 0.23477027543,
+    "annualized": 0.11685235042287444,
+    "max_drawdown": 0.21676018110630665,
+    "sharpe": 0.7450305321401652,
+    "score": 0.9144277209755969
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 20,
+      "lw": 120
+    },
+    "total_return": 0.230330514635,
+    "annualized": 0.11464382088702271,
+    "max_drawdown": 0.21676018110630665,
+    "sharpe": 0.7223062240048201,
+    "score": 0.891959017950983
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 15,
+      "lw": 120
+    },
+    "total_return": 0.227068434275,
+    "annualized": 0.11302108936996523,
+    "max_drawdown": 0.21676018110630665,
+    "sharpe": 0.7159841019675707,
+    "score": 0.8816748186604033
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 5,
+      "lw": 60
+    },
+    "total_return": 0.21401619243,
+    "annualized": 0.10652794780796726,
+    "max_drawdown": 0.22182509748822363,
+    "sharpe": 0.7390459982889482,
+    "score": 0.869539390205238
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 30,
+      "lw": 120
+    },
+    "total_return": 0.223535953615,
+    "annualized": 0.11126381652482036,
+    "max_drawdown": 0.21676018110630665,
+    "sharpe": 0.7005905594909992,
+    "score": 0.865409601793881
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 0.75,
+      "xz": 0.3
+    },
+    "total_return": 0.22374890897000002,
+    "annualized": 0.11136975447875877,
+    "max_drawdown": 0.4002782433599295,
+    "sharpe": 0.4983654739676938,
+    "score": 0.7444983022956513
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 1.0,
+      "xz": 0.5
+    },
+    "total_return": 0.237307375255,
+    "annualized": 0.11811439184096066,
+    "max_drawdown": 0.5140456026285892,
+    "sharpe": 0.367999895172245,
+    "score": 0.6932575044671897
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 15,
+      "lw": 40
+    },
+    "total_return": 0.16876850568,
+    "annualized": 0.08401514534053496,
+    "max_drawdown": 0.22254631872621003,
+    "sharpe": 0.5738502345159738,
+    "score": 0.6803707220717241
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 1.5,
+      "xz": 0.2
+    },
+    "total_return": 0.188010378255,
+    "annualized": 0.09358948446882308,
+    "max_drawdown": 0.2751532023126976,
+    "sharpe": 0.5099757871825373,
+    "score": 0.6803434101848147
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 10,
+      "lw": 60
+    },
+    "total_return": 0.16143682454,
+    "annualized": 0.08036681666432964,
+    "max_drawdown": 0.23130206799990652,
+    "sharpe": 0.5459009350544634,
+    "score": 0.6490078276899967
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 0.75,
+      "xz": 0.2
+    },
+    "total_return": 0.202762103915,
+    "annualized": 0.10092899865357795,
+    "max_drawdown": 0.3486498668832382,
+    "sharpe": 0.39008084148277744,
+    "score": 0.6377644995039782
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 0.5,
+      "xz": 0.3
+    },
+    "total_return": 0.22545925695500002,
+    "annualized": 0.11222058959092453,
+    "max_drawdown": 0.6440460690158224,
+    "sharpe": 0.26813992329140995,
+    "score": 0.6097663123385442
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 10,
+      "lw": 40
+    },
+    "total_return": 0.147916102545,
+    "annualized": 0.07363839865407411,
+    "max_drawdown": 0.2492703676566346,
+    "sharpe": 0.5081054431872299,
+    "score": 0.5994168605286344
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 15,
+      "lw": 60
+    },
+    "total_return": 0.14884194265,
+    "annualized": 0.0740991459325057,
+    "max_drawdown": 0.2514230078038293,
+    "sharpe": 0.5048991570880176,
+    "score": 0.5993360779828334
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 15,
+      "lw": 20
+    },
+    "total_return": 0.139630662035,
+    "annualized": 0.06951502759295802,
+    "max_drawdown": 0.22177457698570846,
+    "sharpe": 0.5298871283857229,
+    "score": 0.5959923874032658
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 0.5,
+      "xz": 0.3
+    },
+    "total_return": 0.16061322008999998,
+    "annualized": 0.07995697326284475,
+    "max_drawdown": 0.3955261309632374,
+    "sharpe": 0.38152838795948213,
+    "score": 0.5487449258270682
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 20,
+      "lw": 60
+    },
+    "total_return": 0.119300258225,
+    "annualized": 0.05939657805767289,
+    "max_drawdown": 0.2718815824726846,
+    "sharpe": 0.4056138458344109,
+    "score": 0.48095461973133813
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 30,
+      "lw": 40
+    },
+    "total_return": 0.119483458375,
+    "annualized": 0.059487761445357834,
+    "max_drawdown": 0.25870899554554455,
+    "sharpe": 0.4044433980792442,
+    "score": 0.48061708462897784
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 1.0,
+      "xz": 0.3
+    },
+    "total_return": 0.12352553361,
+    "annualized": 0.06149958408459941,
+    "max_drawdown": 0.3400026646732653,
+    "sharpe": 0.3049352887232416,
+    "score": 0.42895950957234263
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "tf",
+    "params": {
+      "sw": 20,
+      "lw": 40
+    },
+    "total_return": 0.102625055765,
+    "annualized": 0.051096553654529905,
+    "max_drawdown": 0.294758055291708,
+    "sharpe": 0.34920812504487136,
+    "score": 0.4139110896450425
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 0.75,
+      "xz": 0.3
+    },
+    "total_return": 0.0824787189,
+    "annualized": 0.041067858247769554,
+    "max_drawdown": 0.4607151137149808,
+    "sharpe": 0.14040355164297677,
+    "score": 0.24851356397686428
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 1.5,
+      "xz": 0.2
+    },
+    "total_return": 0.033101191295,
+    "annualized": 0.016483808910641856,
+    "max_drawdown": 0.6369699480751044,
+    "sharpe": 0.058985319288965346,
+    "score": 0.10132642721594663
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 1.5,
+      "xz": 0.5
+    },
+    "total_return": 0.037376537955000004,
+    "annualized": 0.018612656398687845,
+    "max_drawdown": 1.0613765190774112,
+    "sharpe": 0.04008880074329878,
+    "score": 0.09850390604073064
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 1.0,
+      "xz": 0.3
+    },
+    "total_return": 0.01242215573,
+    "annualized": 0.006186335277685848,
+    "max_drawdown": 0.34181705307070365,
+    "sharpe": 0.03815299560931314,
+    "score": 0.047637138476331276
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 1.5,
+      "xz": 0.3
+    },
+    "total_return": 0.007248503925,
+    "annualized": 0.0036098611833267134,
+    "max_drawdown": 0.662649461370968,
+    "sharpe": 0.01329273705125489,
+    "score": 0.022415086964059788
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 1.0,
+      "xz": 0.2
+    },
+    "total_return": -0.038712455900000005,
+    "annualized": -0.019281594771857563,
+    "max_drawdown": 0.5932193781344536,
+    "sharpe": -0.06344593624328754,
+    "score": -0.11519394083340277
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 0.75,
+      "xz": 0.2
+    },
+    "total_return": -0.054051372774999995,
+    "annualized": -0.026922518362838432,
+    "max_drawdown": 0.401386415919744,
+    "sharpe": -0.13958382168374067,
+    "score": -0.19144036646159812
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 40,
+      "ez": 1.0,
+      "xz": 0.3
+    },
+    "total_return": -0.08017762561,
+    "annualized": -0.03993839766564398,
+    "max_drawdown": 0.6344545315631439,
+    "sharpe": -0.12481053815065256,
+    "score": -0.23463991355296743
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 1.0,
+      "xz": 0.2
+    },
+    "total_return": -0.07383913605999999,
+    "annualized": -0.036780458570289463,
+    "max_drawdown": 0.34067191791774576,
+    "sharpe": -0.20371679974049522,
+    "score": -0.269351914125455
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 1.5,
+      "xz": 0.2
+    },
+    "total_return": -0.07526014139,
+    "annualized": -0.03748841790717471,
+    "max_drawdown": 0.3292501108491044,
+    "sharpe": -0.20720703283278524,
+    "score": -0.27427789132837
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 1.0,
+      "xz": 0.5
+    },
+    "total_return": -0.09791554657000001,
+    "annualized": -0.048776254308774476,
+    "max_drawdown": 0.5604185693575494,
+    "sharpe": -0.17802624658667435,
+    "score": -0.30192076518710254
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 1.5,
+      "xz": 0.3
+    },
+    "total_return": -0.0867013066,
+    "annualized": -0.04318870717409369,
+    "max_drawdown": 0.34066219476045523,
+    "sharpe": -0.2372637324247594,
+    "score": -0.3151130681512304
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 1.5,
+      "xz": 0.5
+    },
+    "total_return": -0.1300692399,
+    "annualized": -0.06479872707710352,
+    "max_drawdown": 0.45260277227533363,
+    "sharpe": -0.2665099341219782,
+    "score": -0.419100868781601
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 0.5,
+      "xz": 0.2
+    },
+    "total_return": -0.11718706165500001,
+    "annualized": -0.058379111663738825,
+    "max_drawdown": 0.3966218297141876,
+    "sharpe": -0.3140114641051733,
+    "score": -0.4219233251180593
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 30,
+      "ez": 1.5,
+      "xz": 0.5
+    },
+    "total_return": -0.14020812160999999,
+    "annualized": -0.0698515594325499,
+    "max_drawdown": 0.39403300547032427,
+    "sharpe": -0.3485550329983908,
+    "score": -0.4885392575292341
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 1.0,
+      "xz": 0.2
+    },
+    "total_return": -0.199022319615,
+    "annualized": -0.0991673960422505,
+    "max_drawdown": 0.44023153827412603,
+    "sharpe": -0.551877547662764,
+    "score": -0.7277961127666603
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 1.0,
+      "xz": 0.5
+    },
+    "total_return": -0.28323385902000003,
+    "annualized": -0.14115759645366835,
+    "max_drawdown": 0.45343747904006304,
+    "sharpe": -0.7320394342046515,
+    "score": -1.0038540463374643
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 0.5,
+      "xz": 0.2
+    },
+    "total_return": -0.27700028729,
+    "annualized": -0.13804875543907405,
+    "max_drawdown": 0.4929839855197161,
+    "sharpe": -0.795683450488918,
+    "score": -1.029605092049647
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 1.5,
+      "xz": 0.2
+    },
+    "total_return": -0.3027913749,
+    "annualized": -0.1509120610638143,
+    "max_drawdown": 0.4571402440504296,
+    "sharpe": -0.7684354526589904,
+    "score": -1.0647095158506514
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 1.5,
+      "xz": 0.3
+    },
+    "total_return": -0.35246310584,
+    "annualized": -0.1756905455203452,
+    "max_drawdown": 0.5067350743870419,
+    "sharpe": -0.7682201734539847,
+    "score": -1.1636942861537718
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 0.75,
+      "xz": 0.3
+    },
+    "total_return": -0.288600369255,
+    "annualized": -0.14383408995894045,
+    "max_drawdown": 0.3427942350299441,
+    "sharpe": -0.9857240672113899,
+    "score": -1.1667708001625958
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 0.75,
+      "xz": 0.5
+    },
+    "total_return": -0.33706890679,
+    "annualized": -0.16801056657116392,
+    "max_drawdown": 0.4742588971876927,
+    "sharpe": -0.8674842011701325,
+    "score": -1.1925327869867353
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 0.75,
+      "xz": 0.2
+    },
+    "total_return": -0.381697749935,
+    "annualized": -0.1902769940612336,
+    "max_drawdown": 0.5865732114371099,
+    "sharpe": -0.8068659784371162,
+    "score": -1.2452275633072043
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 0.5,
+      "xz": 0.3
+    },
+    "total_return": -0.35578893902000003,
+    "annualized": -0.1773498415353167,
+    "max_drawdown": 0.46031848226130295,
+    "sharpe": -1.0309482736456033,
+    "score": -1.3279683303286287
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 0.75,
+      "xz": 0.3
+    },
+    "total_return": -0.44920620356,
+    "annualized": -0.22396814016954736,
+    "max_drawdown": 0.6073243426802734,
+    "sharpe": -0.944167900107663,
+    "score": -1.4623733007427873
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 1.0,
+      "xz": 0.2
+    },
+    "total_return": -0.44537020311,
+    "annualized": -0.22205341708316043,
+    "max_drawdown": 0.5781378567914975,
+    "sharpe": -0.9570185705739728,
+    "score": -1.4624248106770255
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 0.5,
+      "xz": 0.2
+    },
+    "total_return": -0.460347361485,
+    "annualized": -0.2295294111129662,
+    "max_drawdown": 0.6057320127056368,
+    "sharpe": -0.9674671941148152,
+    "score": -1.4985979609207538
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 20,
+      "ez": 0.75,
+      "xz": 0.2
+    },
+    "total_return": -0.427656753695,
+    "annualized": -0.21321230548853498,
+    "max_drawdown": 0.46733278695016794,
+    "sharpe": -1.244641622251642,
+    "score": -1.5996341953051252
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 0.75,
+      "xz": 0.5
+    },
+    "total_return": -0.5482162982,
+    "annualized": -0.2734014228480805,
+    "max_drawdown": 0.6527718774244317,
+    "sharpe": -0.9103315240341098,
+    "score": -1.6398046058127878
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 1.0,
+      "xz": 0.3
+    },
+    "total_return": -0.50338625531,
+    "annualized": -0.25101583615348394,
+    "max_drawdown": 0.5973921875682121,
+    "sharpe": -1.0715103338636403,
+    "score": -1.6469695449321198
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 10,
+      "ez": 1.5,
+      "xz": 0.5
+    },
+    "total_return": -0.57213478925,
+    "annualized": -0.2853470360843369,
+    "max_drawdown": 0.7260666672730816,
+    "sharpe": -0.8768906866508581,
+    "score": -1.6675225563278624
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 1.5,
+      "xz": 0.2
+    },
+    "total_return": -0.524510775245,
+    "annualized": -0.26156359514822286,
+    "max_drawdown": 0.5535032884356226,
+    "sharpe": -1.1154965200650084,
+    "score": -1.7155522926318965
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 1.5,
+      "xz": 0.3
+    },
+    "total_return": -0.524510775245,
+    "annualized": -0.26156359514822286,
+    "max_drawdown": 0.5535032884356226,
+    "sharpe": -1.1154965200650084,
+    "score": -1.7155522926318965
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 0.5,
+      "xz": 0.3
+    },
+    "total_return": -0.54584141781,
+    "annualized": -0.2722154149196405,
+    "max_drawdown": 0.6311661372770816,
+    "sharpe": -1.1434533468019499,
+    "score": -1.7749336677597318
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 1.5,
+      "xz": 0.5
+    },
+    "total_return": -0.622821393475,
+    "annualized": -0.3106662178129501,
+    "max_drawdown": 0.651785253658555,
+    "sharpe": -1.0915786558578064,
+    "score": -1.8976120647664847
+  },
+  {
+    "symbol": "1810.HK",
+    "strategy": "mr",
+    "params": {
+      "lb": 15,
+      "ez": 1.0,
+      "xz": 0.5
+    },
+    "total_return": -0.6331219982499999,
+    "annualized": -0.3158124109075196,
+    "max_drawdown": 0.7270053541812068,
+    "sharpe": -1.1002646333253143,
+    "score": -1.923408423625267
+  }
+]
