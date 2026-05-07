@@ -6,6 +6,7 @@ from typing import List, Optional
 from dataclasses import asdict
 
 from src.scanners.factor_scanner import FactorScanner, ScanResult, ScanConfig
+from src.alerts.push_tracker import record_push
 
 import logging
 logger = logging.getLogger(__name__)
@@ -53,6 +54,24 @@ class DailyPicker:
         with open(fp, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
         logger.info(f"已保存: {fp}")
+        
+        # 记录推送（用于后续追踪复盘）
+        for r in results[:2]:  # 只记录实际推送的前2只
+            try:
+                record_push(
+                    code=r.code,
+                    name=r.name,
+                    price=r.price,
+                    change_pct=r.change_pct,
+                    entry_price=r.suggested_entry,
+                    stop_loss=r.stop_loss,
+                    take_profit=r.take_profit,
+                    reason=" | ".join(r.reasons[:2]),
+                    score=r.score
+                )
+                logger.info(f"已记录推送: {r.code} {r.name}")
+            except Exception as e:
+                logger.error(f"记录推送失败: {e}")
     
     def format_message(self, results: List[ScanResult], top_n: int = 2) -> str:
         if not results:
