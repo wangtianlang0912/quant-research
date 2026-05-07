@@ -1,0 +1,26 @@
+{
+  "trackings": [
+    {
+      "track_id": "track_20260507093055",
+      "push_id": "push_7ec1906439fa",
+      "track_date": "2026-05-07",
+      "code": "600010",
+      "current_price": 2.81,
+      "high_price": 2.81,
+      "low_price": 2.81,
+      "return_pct": 1.8115942028985605,
+      "notes": null
+    },
+    {
+      "track_id": "track_20260507093055",
+      "push_id": "push_a35401900e86",
+      "track_date": "2026-05-07",
+      "code": "002049",
+      "current_price": 78.2,
+      "high_price": 78.2,
+      "low_price": 78.2,
+      "return_pct": 0.9423002452562332,
+      "notes": null
+    }
+  ]
+}

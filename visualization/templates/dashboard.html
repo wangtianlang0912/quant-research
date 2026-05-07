@@ -4,8 +4,8 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Quant Research Dashboard</title>
+<script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-chart-financial@0.2.1/dist/chartjs-chart-financial.min.js"></script>
 <style>
 :root {
   --bg: #0f1117;
@@ -101,9 +101,12 @@ body {
 .symbol-item .info { font-size: 11px; color: var(--text3); margin-top: 2px; }
 .symbol-item .rows { font-size: 11px; color: var(--text3); }
 
-/* ── K-line chart ── */
-.chart-container { position: relative; height: 340px; }
-#klineChart { width: 100% !important; height: 100% !important; }
+/* ── K-line chart (Lightweight Charts) ── */
+.chart-container { position: relative; height: 360px; }
+#klineChart { width: 100%; height: 100%; }
+/* MA legend badges */
+#maLegend { display: flex; gap: 12px; margin-top: 8px; justify-content: flex-end; }
+#maLegend span { font-size: 12px; font-weight: 600; font-family: monospace; }
 
 /* ── Param panel ── */
 .param-group { margin-bottom: 16px; }
@@ -293,6 +296,22 @@ td .tag.mr { background: rgba(34,211,238,0.15); color: var(--accent2); }
 /* ── Two-col grid ── */
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+
+/* ── 荐股日历 ── */
+.picks-day { margin-bottom: 14px; }
+.picks-date { font-size: 11px; color: var(--text3); margin-bottom: 6px; font-weight: 600; letter-spacing: 0.3px; }
+.picks-items { display: flex; flex-direction: column; gap: 6px; }
+.picks-item {
+  background: var(--card2);
+  border-radius: 8px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--accent);
+}
+.picks-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+.picks-name { font-size: 13px; font-weight: 600; color: var(--text); }
+.picks-score { font-size: 12px; font-weight: 700; }
+.picks-item-detail { font-size: 11px; color: var(--text2); display: flex; gap: 8px; }
+.picks-item-returns { font-size: 11px; margin-top: 4px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 </style>
 </head>
 <body>
@@ -375,7 +394,12 @@ td .tag.mr { background: rgba(34,211,238,0.15); color: var(--accent2); }
       </div>
       <div class="card-body">
         <div class="chart-container">
-          <canvas id="klineChart"></canvas>
+          <div id="klineChart"></div>
+        </div>
+        <div id="maLegend">
+          <span style="color:#6366f1">MA5</span>
+          <span style="color:#22d3ee">MA20</span>
+          <span style="color:#f59e0b">MA60</span>
         </div>
       </div>
     </div>
@@ -450,6 +474,19 @@ td .tag.mr { background: rgba(34,211,238,0.15); color: var(--accent2); }
               <tr><td colspan="7" style="text-align:center;color:var(--text3);padding:20px;">加载中...</td></tr>
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- 荐股日历 -->
+    <div class="card" id="picksCard">
+      <div class="card-header">
+        <div class="dot"></div>荐股日历
+        <span id="picksCount" style="font-weight:400;font-size:11px;color:var(--text3);margin-left:8px;"></span>
+      </div>
+      <div class="card-body" style="padding:0;">
+        <div id="picksCalendar" style="padding:12px;">
+          <div style="color:var(--text3);font-size:12px;padding:8px;text-align:center;">加载中...</div>
         </div>
       </div>
     </div>
@@ -579,110 +616,107 @@ async function loadSymbols() {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// K-line chart
+// K-line chart (TradingView Lightweight Charts)
 // ─────────────────────────────────────────────────────────────────────────
+
 async function loadTimeseries(symbol) {
   try {
     const data = await fetchJSON(`/api/timeseries/${encodeURIComponent(symbol)}`);
     if (!data.length) return;
     renderKline(data);
-    document.getElementById('chartRange').textContent = data[0].timestamp.slice(0,10) + ' → ' + data[data.length-1].timestamp.slice(0,10);
+    document.getElementById('chartRange').textContent =
+      data[0].timestamp.slice(0,10) + ' \u2192 ' + data[data.length-1].timestamp.slice(0,10);
   } catch(e) { console.error('loadTimeseries', e); }
 }
 
 function renderKline(bars) {
-  const labels = bars.map(b => b.timestamp.slice(0,10));
-  // 计算 MA5, MA20
+  // Destroy existing chart
+  if (klineChart) { klineChart.remove(); klineChart = null; }
+
+  const container = document.getElementById('klineChart');
+  container.innerHTML = '';
+
+  klineChart = LightweightCharts.createChart(container, {
+    width: container.clientWidth,
+    height: 360,
+    layout: {
+      background: { type: 'solid', color: '#1a1d27' },
+      textColor: '#94a3b8',
+      fontSize: 11,
+    },
+    grid: {
+      vertLines: { color: 'rgba(42,45,62,0.6)' },
+      horzLines: { color: 'rgba(42,45,62,0.6)' },
+    },
+    crosshair: {
+      mode: LightweightCharts.CrosshairMode.Normal,
+      vertLine: { color: '#6366f1', labelBackgroundColor: '#6366f1' },
+      horzLine: { color: '#6366f1', labelBackgroundColor: '#6366f1' },
+    },
+    rightPriceScale: { borderColor: '#2a2d3e', scaleMargins: { top: 0.1, bottom: 0.1 } },
+    timeScale: { borderColor: '#2a2d3e', timeVisible: false, secondsVisible: false },
+    handleScale: { mouseWheel: true, pinch: true },
+    handleScroll: { mouseWheel: true, pressedMouseMove: true },
+  });
+
+  // Candlestick series
+  const candleData = bars.map(b => ({
+    time: b.timestamp.slice(0,10),
+    open: b.open,
+    high: b.high,
+    low: b.low,
+    close: b.close,
+  }));
+  const candleSeries = klineChart.addCandlestickSeries({
+    upColor: '#10b981',
+    downColor: '#ef4444',
+    borderUpColor: '#10b981',
+    borderDownColor: '#ef4444',
+    wickUpColor: '#10b981',
+    wickDownColor: '#ef4444',
+  });
+  candleSeries.setData(candleData);
+
+  // Moving averages
   const closes = bars.map(b => b.close);
-  const ma5 = calcMA(closes, 5);
+  const ma5  = calcMA(closes, 5);
   const ma20 = calcMA(closes, 20);
   const ma60 = calcMA(closes, 60);
 
-  const datasets = [
-    {
-      label: 'MA5',
-      data: ma5.map((v, i) => v == null ? null : { x: labels[i], y: v }),
-      borderColor: 'rgba(99,102,241,0.8)',
-      backgroundColor: 'transparent',
-      type: 'line',
-      tension: 0.2,
-      pointRadius: 0,
-      borderWidth: 1.5,
-      order: 2,
-    },
-    {
-      label: 'MA20',
-      data: ma20.map((v, i) => v == null ? null : { x: labels[i], y: v }),
-      borderColor: 'rgba(34,211,238,0.8)',
-      backgroundColor: 'transparent',
-      type: 'line',
-      tension: 0.2,
-      pointRadius: 0,
-      borderWidth: 1.5,
-      order: 2,
-    },
-    {
-      label: 'MA60',
-      data: ma60.map((v, i) => v == null ? null : { x: labels[i], y: v }),
-      borderColor: 'rgba(245,158,11,0.8)',
-      backgroundColor: 'transparent',
-      type: 'line',
-      tension: 0.2,
-      pointRadius: 0,
-      borderWidth: 1.5,
-      order: 2,
-    },
-    {
-      label: 'Close',
-      data: bars.map(b => ({ x: b.timestamp.slice(0,10), y: b.close })),
-      borderColor: 'rgba(148,163,184,0.6)',
-      backgroundColor: 'rgba(148,163,184,0.1)',
-      type: 'line',
-      tension: 0.1,
-      pointRadius: 0,
-      borderWidth: 1,
-      order: 3,
-    },
-  ];
+  const ma5Series = klineChart.addLineSeries({
+    color: '#6366f1',
+    lineWidth: 1.5,
+    priceLineVisible: false,
+    lastValueVisible: false,
+  });
+  ma5Series.setData(ma5.map((v, i) => v == null ? null : { time: bars[i].timestamp.slice(0,10), value: v }));
 
-  if (klineChart) klineChart.destroy();
+  const ma20Series = klineChart.addLineSeries({
+    color: '#22d3ee',
+    lineWidth: 1.5,
+    priceLineVisible: false,
+    lastValueVisible: false,
+  });
+  ma20Series.setData(ma20.map((v, i) => v == null ? null : { time: bars[i].timestamp.slice(0,10), value: v }));
 
-  const ctx = document.getElementById('klineChart').getContext('2d');
-  klineChart = new Chart(ctx, {
-    data: {
-      datasets: datasets,
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { labels: { color: '#94a3b8', font: { size: 11 }, boxWidth: 12 } },
-        tooltip: {
-          backgroundColor: '#21253a',
-          titleColor: '#e2e8f0',
-          bodyColor: '#94a3b8',
-          borderColor: '#2a2d3e',
-          borderWidth: 1,
-        },
-      },
-      scales: {
-        x: {
-          type: 'category',
-          ticks: {
-            color: '#64748b',
-            maxTicksLimit: 12,
-            font: { size: 11 },
-          },
-          grid: { color: 'rgba(42,45,62,0.5)' },
-        },
-        y: {
-          position: 'right',
-          ticks: { color: '#64748b', font: { size: 11 } },
-          grid: { color: 'rgba(42,45,62,0.5)' },
-        },
-      },
-    },
+  const ma60Series = klineChart.addLineSeries({
+    color: '#f59e0b',
+    lineWidth: 1.5,
+    priceLineVisible: false,
+    lastValueVisible: false,
+  });
+  ma60Series.setData(ma60.map((v, i) => v == null ? null : { time: bars[i].timestamp.slice(0,10), value: v }));
+
+  // Fit content
+  klineChart.timeScale().fitContent();
+
+  // Tooltip on crosshair move
+  klineChart.subscribeCrosshairMove(param => {
+    if (!param.time || !param.seriesData) return;
+    const cd = param.seriesData.get(candleSeries);
+    if (!cd) return;
+    const pct = ((cd.close - cd.open) / cd.open * 100).toFixed(2);
+    // could show tooltip here if needed
   });
 }
 
@@ -693,6 +727,15 @@ function calcMA(closes, period) {
     return slice.reduce((a, b) => a + b, 0) / period;
   });
 }
+
+// Resize observer for kline chart
+window.addEventListener('resize', () => {
+  if (klineChart) {
+    const container = document.getElementById('klineChart');
+    klineChart.resize(container.clientWidth, 360);
+  }
+  if (equityChart) equityChart.resize();
+});
 
 // ─────────────────────────────────────────────────────────────────────────
 // Param panel
@@ -1057,6 +1100,106 @@ document.querySelectorAll('.tab').forEach(tab => {
 renderParamPanel();
 loadSymbols();
 loadReports();
+loadPicksCalendar();
+
+// ─────────────────────────────────────────────────────────────────────────
+// 荐股日历
+// ─────────────────────────────────────────────────────────────────────────
+async function loadPicksCalendar() {
+  try {
+    const resp = await fetchJSON('/api/picks?days=90');
+    const picks = resp.picks || [];
+    document.getElementById('picksCount').textContent = `${picks.length} 条记录`;
+    renderPicksCalendar(picks);
+  } catch(e) {
+    document.getElementById('picksCalendar').innerHTML =
+      '<div style="color:var(--text3);font-size:12px;padding:8px;">加载失败: ' + e.message + '</div>';
+  }
+}
+
+function renderPicksCalendar(picks) {
+  const container = document.getElementById('picksCalendar');
+  if (!picks.length) {
+    container.innerHTML = '<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px;">暂无荐股记录</div>';
+    return;
+  }
+
+  // 按 push_date 分组
+  const byDate = {};
+  picks.forEach(p => {
+    const d = p.push_date;
+    if (!byDate[d]) byDate[d] = [];
+    byDate[d].push(p);
+  });
+
+  const dates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
+  let html = '';
+
+  dates.forEach(date => {
+    const dayPicks = byDate[date];
+    html += `<div class="picks-day">`;
+    html += `<div class="picks-date">${formatDateLabel(date)}</div>`;
+    html += `<div class="picks-items">`;
+    dayPicks.forEach(p => {
+      const entry = p.entry_price ? p.entry_price.toFixed(2) : '-';
+      const sl = p.stop_loss ? p.stop_loss.toFixed(2) : '-';
+      const tp = p.take_profit ? p.take_profit.toFixed(2) : '-';
+      const ret = p.final_return;
+      const maxR = p.max_return;
+
+      let retColor = 'var(--text3)';
+      let retText = '-';
+      let statusIcon = '⏳';
+      if (ret !== null && ret !== undefined) {
+        retText = (ret >= 0 ? '+' : '') + ret.toFixed(2) + '%';
+        retColor = ret >= 0 ? 'var(--green)' : 'var(--red)';
+        if (p.status === 'hit_profit') statusIcon = '✅';
+        else if (p.status === 'hit_stop') statusIcon = '❌';
+        else statusIcon = '⏳';
+      } else if (p.tracking_days > 0) {
+        retText = `追踪${p.tracking_days}天`;
+      }
+
+      const scoreColor = p.score >= 80 ? 'var(--green)' : p.score >= 70 ? 'var(--accent2)' : 'var(--text3)';
+
+      html += `
+        <div class="picks-item">
+          <div class="picks-item-header">
+            <span class="picks-name">${statusIcon} ${p.code} ${p.name}</span>
+            <span class="picks-score" style="color:${scoreColor}">${p.score}</span>
+          </div>
+          <div class="picks-item-detail">
+            <span>入场${entry}</span>
+            <span style="color:var(--red)">损${sl}</span>
+            <span style="color:var(--green)">盈${tp}</span>
+          </div>
+          <div class="picks-item-returns">
+            <span style="color:${retColor}">${retText}</span>
+            ${maxR !== null && maxR > 0 ? `<span style="color:var(--accent2);font-size:10px;"> 最高+${maxR.toFixed(1)}%</span>` : ''}
+            <span style="color:var(--text3);font-size:10px;"> ${p.reason || ''}</span>
+          </div>
+        </div>`;
+    });
+    html += `</div></div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function formatDateLabel(dateStr) {
+  // dateStr format: YYYY-MM-DD
+  const d = new Date(dateStr);
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  if (dateStr === formatDate(today)) return '📅 今日';
+  if (dateStr === formatDate(yesterday)) return '🗓 昨日';
+  return '📅 ' + dateStr;
+}
+
+function formatDate(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
 </script>
 </body>
 </html>

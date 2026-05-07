@@ -414,6 +414,92 @@ async def api_equity(run_id: str):
     return JSONResponse(rows)
 
 
+@app.get("/api/picks")
+async def api_picks(days: int = 90):
+    """
+    返回荐股日历：所有历史荐股 + 七日复盘收益。
+    
+    每条记录包含：
+      - 荐股日期、股票代码、名称、价格、推荐理由、评分
+      - 7日追踪：最高收益、最低收益、最终收益、状态
+    """
+    import csv
+    PUSH_FILE = REPORTS_DIR / "push_log.json"
+    TRACK_FILE = REPORTS_DIR / "tracking.json"
+
+    pushes = []
+    if PUSH_FILE.exists():
+        with open(PUSH_FILE, encoding="utf-8") as f:
+            pushes = json.load(f).get("pushes", [])
+
+    # 读取追踪记录，按 push_id 聚合
+    tracking_map: Dict[str, Dict] = {}
+    if TRACK_FILE.exists():
+        with open(TRACK_FILE, encoding="utf-8") as f:
+            data = json.load(f)
+            for t in data.get("trackings", []):
+                pid = t.get("push_id", "")
+                if pid not in tracking_map:
+                    tracking_map[pid] = {
+                        "returns": [],
+                        "highs": [],
+                        "lows": [],
+                    }
+                tracking_map[pid]["returns"].append(t.get("return_pct", 0))
+                tracking_map[pid]["highs"].append(t.get("high_price", 0))
+                tracking_map[pid]["lows"].append(t.get("low_price", 0))
+
+    # 限制天数
+    from datetime import timedelta
+    cutoff = (datetime.now() - timedelta(days=days)).strftime("%Y-%m-%d")
+
+    picks = []
+    for p in pushes:
+        push_date = p.get("push_date", "")
+        if push_date < cutoff:
+            continue
+
+        pid = p.get("push_id", "")
+        tdata = tracking_map.get(pid, {})
+        returns = tdata.get("returns", [])
+
+        max_return = p.get("max_return", 0) or 0
+        min_return = p.get("min_return", 0) or 0
+        final_return = p.get("final_return")
+        status = p.get("status", "pending")
+
+        # 从追踪数据补充
+        if returns:
+            max_return = max(max_return, max(returns))
+            min_return = min(min_return, min(returns))
+            if final_return is None:
+                final_return = returns[-1] if returns else None
+
+        picks.append({
+            "push_id": pid,
+            "push_date": push_date,
+            "push_time": p.get("push_time", ""),
+            "code": p.get("code", ""),
+            "name": p.get("name", ""),
+            "push_price": p.get("push_price"),
+            "entry_price": p.get("entry_price"),
+            "stop_loss": p.get("stop_loss"),
+            "take_profit": p.get("take_profit"),
+            "reason": p.get("reason", ""),
+            "score": p.get("score"),
+            "max_return": round(max_return, 2),
+            "min_return": round(min_return, 2),
+            "final_return": round(final_return, 2) if final_return is not None else None,
+            "status": status,
+            "exit_reason": p.get("exit_reason"),
+            "tracking_days": p.get("tracking_days", 0),
+        })
+
+    # 按日期倒序
+    picks.sort(key=lambda x: x["push_date"], reverse=True)
+    return JSONResponse({"picks": picks, "total": len(picks)})
+
+
 # ─── 启动入口 ─────────────────────────────────────────────────────────────
 
 if __name__ == "__main__":
