@@ -2,14 +2,20 @@
 多市场因子扫描器 - 支持A股/港股/美股 + 技术指标
 """
 from __future__ import annotations
-from datetime import datetime
+from datetime import datetime, date
 from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass, field
 import logging
+import os
+import json
+import time
 
 from src.data.akshare_client import TencentClient, StockQuote, KlineBar
 
 logger = logging.getLogger(__name__)
+
+# 缓存目录
+_CACHE_DIR = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), 'data', 'cache')
 
 
 def calc_rsi(closes: List[float], period: int = 14) -> float:
@@ -86,6 +92,7 @@ class ScanResult:
     price: float
     change_pct: float
     reasons: List[str]
+    industry: str = ""  # 所属行业
     factors: Dict[str, float] = field(default_factory=dict)
     suggested_entry: float = 0.0
     stop_loss: float = 0.0
@@ -136,6 +143,7 @@ class MultiMarketScanner:
     def __init__(self, config: Optional[ScanConfig] = None):
         self.cfg = config or ScanConfig()
         self.client = TencentClient()
+        self._industry_cache = {}  # 行业信息缓存
     
     def scan(self) -> List[ScanResult]:
         """执行扫描"""
@@ -161,15 +169,67 @@ class MultiMarketScanner:
         # 按得分排序
         all_results.sort(key=lambda x: x.score, reverse=True)
         
+        # 获取行业信息并去重（同行业只保留最高分）
+        for result in all_results[:self.cfg.top_n * 2]:
+            if result.market == 'A' and not result.industry:
+                result.industry = self._get_industry(result.code, result.market)
+        
+        # 行业去重：每个行业只保留得分最高的1只
+        seen_industries = set()
+        filtered_results = []
+        for result in all_results:
+            if result.industry:
+                if result.industry not in seen_industries:
+                    seen_industries.add(result.industry)
+                    filtered_results.append(result)
+            else:
+                filtered_results.append(result)
+        
+        all_results = filtered_results
+        
         return all_results[:self.cfg.top_n]
     
-    def _scan_a(self) -> List[ScanResult]:
-        """扫描A股"""
-        codes = self._get_a_codes()
-        quotes = self.client._get_quotes(codes)
+    def _get_industry(self, code: str, market: str) -> str:
+        """
+        获取股票所属行业（仅A股支持）
+        使用缓存避免重复API调用
+        """
+        cache_key = f"{market}:{code}"
+        if cache_key in self._industry_cache:
+            return self._industry_cache[cache_key]
         
+        industry = ""
+        if market == 'A':
+            try:
+                import akshare as ak
+                df = ak.stock_individual_info_em(symbol=code)
+                if df is not None and not df.empty:
+                    for _, row in df.iterrows():
+                        if row['item'] == '行业':
+                            industry = str(row['value'])
+                            break
+            except Exception as e:
+                print(f"获取行业信息失败 {code}: {e}")
+        
+        self._industry_cache[cache_key] = industry
+        return industry
+    def _scan_a(self) -> List[ScanResult]:
+        """扫描A股 - 分批获取行情，先filter再K线打分"""
+        codes = self._get_a_codes()
+        all_quotes = []
+
+        # 分批获取行情（每批800只）
+        for i in range(0, len(codes), 800):
+            batch = codes[i:i+800]
+            quotes = self.client._get_quotes(batch)
+            all_quotes.extend(quotes)
+            if i + 800 < len(codes):
+                time.sleep(0.3)
+
+        print(f"[A股扫描] 获取行情 {len(all_quotes)}/{len(codes)} 只")
+
         results = []
-        for q in quotes:
+        for q in all_quotes:
             if self._filter_a(q):
                 score, reasons, factors, tech = self._score_with_tech(q, 'A')
                 if score > 30:
@@ -183,13 +243,14 @@ class MultiMarketScanner:
                         reasons=reasons,
                         factors=factors,
                         suggested_entry=q.price * 0.98,
-                        stop_loss=q.price * 0.93,
-                        take_profit=q.price * 1.08,
+                        stop_loss=q.price * 0.95,
+                        take_profit=q.price * 1.10,
                         rsi=tech.get('rsi', 50),
                         macd_signal=tech.get('macd_signal', '')
                     ))
-        
+
         results.sort(key=lambda x: x.score, reverse=True)
+        print(f"[A股扫描] 符合条件 {len(results)} 只，取前 {min(len(results), self.cfg.top_n_per_market)} 只")
         return results[:self.cfg.top_n_per_market]
     
     def _scan_hk(self) -> List[ScanResult]:
@@ -212,8 +273,8 @@ class MultiMarketScanner:
                         reasons=reasons,
                         factors=factors,
                         suggested_entry=q.price * 0.98,
-                        stop_loss=q.price * 0.93,
-                        take_profit=q.price * 1.08,
+                        stop_loss=q.price * 0.95,
+                        take_profit=q.price * 1.10,
                         rsi=tech.get('rsi', 50),
                         macd_signal=tech.get('macd_signal', '')
                     ))
@@ -241,8 +302,8 @@ class MultiMarketScanner:
                         reasons=reasons,
                         factors=factors,
                         suggested_entry=q.price * 0.98,
-                        stop_loss=q.price * 0.93,
-                        take_profit=q.price * 1.08,
+                        stop_loss=q.price * 0.95,
+                        take_profit=q.price * 1.10,
                         rsi=tech.get('rsi', 50),
                         macd_signal=tech.get('macd_signal', '')
                     ))
@@ -251,40 +312,68 @@ class MultiMarketScanner:
         return results[:self.cfg.top_n_per_market]
     
     def _get_a_codes(self) -> List[str]:
-        """A股股票池 - 沪深300主要成分股"""
-        return [
-            # 沪市蓝筹
-            'sh600000', 'sh600009', 'sh600010', 'sh600015', 'sh600016',
-            'sh600017', 'sh600019', 'sh600028', 'sh600030', 'sh600036',
-            'sh600048', 'sh600050', 'sh600104', 'sh600111', 'sh600150',
-            'sh600176', 'sh600196', 'sh600276', 'sh600309', 'sh600332',
-            'sh600346', 'sh600406', 'sh600436', 'sh600438', 'sh600519',
-            'sh600585', 'sh600588', 'sh600660', 'sh600703', 'sh600745',
-            'sh600809', 'sh600887', 'sh600893', 'sh600900', 'sh600941',
-            'sh601012', 'sh601066', 'sh601088', 'sh601111', 'sh601138',
-            'sh601166', 'sh601169', 'sh601186', 'sh601211', 'sh601225',
-            'sh601288', 'sh601318', 'sh601328', 'sh601336', 'sh601390',
-            'sh601398', 'sh601601', 'sh601628', 'sh601668', 'sh601669',
-            'sh601688', 'sh601728', 'sh601808', 'sh601818', 'sh601857',
-            'sh601888', 'sh601899', 'sh601919', 'sh601939', 'sh601988',
-            'sh601989',
-            # 深市蓝筹
-            'sz000001', 'sz000002', 'sz000063', 'sz000069', 'sz000100',
-            'sz000157', 'sz000333', 'sz000338', 'sz000425', 'sz000538',
-            'sz000568', 'sz000596', 'sz000625', 'sz000651', 'sz000661',
-            'sz000671', 'sz000703', 'sz000725', 'sz000768', 'sz000776',
-            'sz000783', 'sz000786', 'sz000858', 'sz000876', 'sz000895',
-            'sz000938', 'sz000963', 'sz001979', 'sz002001', 'sz002007',
-            'sz002008', 'sz002027', 'sz002030', 'sz002049', 'sz002050',
-            'sz002129', 'sz002142', 'sz002230', 'sz002241', 'sz002271',
-            'sz002304', 'sz002311', 'sz002352', 'sz002371', 'sz002384',
-            'sz002410', 'sz002415', 'sz002475', 'sz002594', 'sz002600',
-            'sz002601', 'sz002607', 'sz002624', 'sz002648', 'sz002714',
-            'sz002821', 'sz002841', 'sz003816',
-            # 创业板龙头
-            'sz300003', 'sz300014', 'sz300015', 'sz300033', 'sz300059',
-            'sz300124', 'sz300142', 'sz300408', 'sz300450', 'sz300750'
+        """A股股票池 - 动态获取全量A股代码（带本地文件缓存）"""
+        cache_file = os.path.join(_CACHE_DIR, 'a_codes.json')
+        today = date.today().isoformat()
+
+        # 检查缓存：当天有效则直接返回
+        if os.path.exists(cache_file):
+            try:
+                with open(cache_file, 'r') as f:
+                    cached = json.load(f)
+                if cached.get('date') == today:
+                    return cached['codes']
+            except Exception:
+                pass
+
+        # 动态探测全量A股代码
+        print("[全量股票池] 正在探测A股代码，首次运行约需30秒...")
+        all_codes = []
+        ranges = [
+            ('sh', 600000, 605000),   # 沪市主板
+            ('sh', 688000, 689000),   # 科创板
+            ('sz', 0, 5000),          # 深市主板
+            ('sz', 300000, 301500),   # 创业板
         ]
+
+        import requests as _req
+        for market, start, end in ranges:
+            codes = [f"{market}{i:06d}" for i in range(start, end)]
+            for i in range(0, len(codes), 800):
+                batch = codes[i:i+800]
+                try:
+                    url = f"http://qt.gtimg.cn/q={','.join(batch)}"
+                    r = _req.get(url, timeout=10)
+                    text = r.content.decode('gbk', errors='replace')
+                    for line in text.strip().split('\n'):
+                        if line.startswith('v_'):
+                            try:
+                                data = line.split('="', 1)[1].rstrip('";')
+                                parts = data.split('~')
+                                if len(parts) >= 35:
+                                    price = float(parts[3]) if parts[3] else 0
+                                    name = parts[1] if len(parts) > 1 else ''
+                                    # 排除ST、停牌(价格>0即可交易)
+                                    if price > 0 and 'ST' not in name:
+                                        raw = parts[2]  # 如 sh600000 或 sz000001
+                                        code = raw.lower()
+                                        # 确保带市场前缀
+                                        if not code.startswith(('sh', 'sz')):
+                                            code = market + code.zfill(6)
+                                        all_codes.append(code)
+                            except Exception:
+                                pass
+                except Exception as e:
+                    logger.debug(f"探测失败 {market}{start}: {e}")
+                time.sleep(0.3)
+
+        # 去重并保存缓存
+        all_codes = list(set(all_codes))
+        os.makedirs(os.path.dirname(cache_file), exist_ok=True)
+        with open(cache_file, 'w') as f:
+            json.dump({'date': today, 'codes': all_codes}, f)
+        print(f"[全量股票池] 探测完成，共 {len(all_codes)} 只A股")
+        return all_codes
     
     def _get_hk_codes(self) -> List[str]:
         """港股股票池 - 主要蓝筹+科技"""

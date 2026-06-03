@@ -1,0 +1,51 @@
+{
+  "date": "2026-05-15",
+  "timestamp": "2026-05-15T16:00:19.516261",
+  "count": 2,
+  "picks": [
+    {
+      "code": "amd.oq",
+      "name": "美国超威公司",
+      "market": "US",
+      "score": 60.0,
+      "price": 449.7,
+      "change_pct": 4.2,
+      "reasons": [
+        "涨幅适中",
+        "成交额117亿"
+      ],
+      "factors": {
+        "涨幅": 30,
+        "成交额": 25,
+        "趋势": 5
+      },
+      "suggested_entry": 440.70599999999996,
+      "stop_loss": 427.215,
+      "take_profit": 494.67,
+      "rsi": 50,
+      "macd_signal": ""
+    },
+    {
+      "code": "crm.n",
+      "name": "赛富时",
+      "market": "US",
+      "score": 50.0,
+      "price": 167.58,
+      "change_pct": 1.74,
+      "reasons": [
+        "成交额16亿",
+        "PE=21"
+      ],
+      "factors": {
+        "涨幅": 10,
+        "成交额": 25,
+        "估值": 15
+      },
+      "suggested_entry": 164.22840000000002,
+      "stop_loss": 159.201,
+      "take_profit": 184.33800000000002,
+      "rsi": 50,
+      "macd_signal": ""
+    }
+  ]
+}

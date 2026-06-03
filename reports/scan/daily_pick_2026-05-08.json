@@ -1,0 +1,31 @@
+{
+  "date": "2026-05-08",
+  "timestamp": "2026-05-08T16:00:52.816668",
+  "count": 1,
+  "picks": [
+    {
+      "code": "crm.n",
+      "name": "赛富时",
+      "market": "US",
+      "score": 65.0,
+      "price": 186.34,
+      "change_pct": 5.15,
+      "reasons": [
+        "涨幅合理",
+        "成交额26亿",
+        "PE=24"
+      ],
+      "factors": {
+        "涨幅": 20,
+        "成交额": 25,
+        "估值": 15,
+        "趋势": 5
+      },
+      "suggested_entry": 182.6132,
+      "stop_loss": 173.2962,
+      "take_profit": 201.24720000000002,
+      "rsi": 50,
+      "macd_signal": ""
+    }
+  ]
+}

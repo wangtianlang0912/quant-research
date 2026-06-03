@@ -1,0 +1,28 @@
+{
+  "date": "2026-05-11",
+  "timestamp": "2026-05-11T16:00:30.992026",
+  "count": 1,
+  "picks": [
+    {
+      "code": "02328",
+      "name": "中国财险",
+      "market": "HK",
+      "score": 45.0,
+      "price": 15.17,
+      "change_pct": 1.95,
+      "reasons": [
+        "换手率7.5%"
+      ],
+      "factors": {
+        "涨幅": 10,
+        "成交额": 15,
+        "换手率": 20
+      },
+      "suggested_entry": 14.8666,
+      "stop_loss": 14.1081,
+      "take_profit": 16.3836,
+      "rsi": 50,
+      "macd_signal": ""
+    }
+  ]
+}

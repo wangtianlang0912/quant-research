@@ -1,0 +1,51 @@
+{
+  "date": "2026-05-14",
+  "timestamp": "2026-05-14T16:00:30.684860",
+  "count": 2,
+  "picks": [
+    {
+      "code": "qcom.oq",
+      "name": "高通",
+      "market": "US",
+      "score": 60.0,
+      "price": 213.17,
+      "change_pct": 2.86,
+      "reasons": [
+        "涨幅合理",
+        "成交额56亿",
+        "PE=23"
+      ],
+      "factors": {
+        "涨幅": 20,
+        "成交额": 25,
+        "估值": 15
+      },
+      "suggested_entry": 208.9066,
+      "stop_loss": 202.51149999999998,
+      "take_profit": 234.487,
+      "rsi": 50,
+      "macd_signal": ""
+    },
+    {
+      "code": "02328",
+      "name": "中国财险",
+      "market": "HK",
+      "score": 45.0,
+      "price": 15.36,
+      "change_pct": 1.32,
+      "reasons": [
+        "换手率7.6%"
+      ],
+      "factors": {
+        "涨幅": 10,
+        "成交额": 15,
+        "换手率": 20
+      },
+      "suggested_entry": 15.0528,
+      "stop_loss": 14.591999999999999,
+      "take_profit": 16.896,
+      "rsi": 50,
+      "macd_signal": ""
+    }
+  ]
+}

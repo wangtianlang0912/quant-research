@@ -1,0 +1,63 @@
+{
+  "date": "2026-05-19",
+  "timestamp": "2026-05-19T16:00:36.050114",
+  "count": 2,
+  "picks": [
+    {
+      "code": "002049",
+      "name": "�Ϲ��΢",
+      "market": "A",
+      "score": 108.0,
+      "price": 80.97,
+      "change_pct": 3.37,
+      "reasons": [
+        "涨幅适中",
+        "成交额2506亿",
+        "MACD金叉",
+        "均线多头排列"
+      ],
+      "industry": "",
+      "factors": {
+        "涨幅": 30,
+        "成交额": 25,
+        "换手率": 10,
+        "估值": 8,
+        "RSI": 10,
+        "MACD": 15,
+        "均线": 10
+      },
+      "suggested_entry": 79.3506,
+      "stop_loss": 76.9215,
+      "take_profit": 89.06700000000001,
+      "rsi": 68.00437796424663,
+      "macd_signal": "金叉"
+    },
+    {
+      "code": "002129",
+      "name": "TCL�л�",
+      "market": "A",
+      "score": 100.0,
+      "price": 9.81,
+      "change_pct": 4.81,
+      "reasons": [
+        "涨幅适中",
+        "成交额216亿",
+        "换手率5.7%",
+        "MACD金叉"
+      ],
+      "industry": "",
+      "factors": {
+        "涨幅": 30,
+        "成交额": 25,
+        "换手率": 20,
+        "RSI": 10,
+        "MACD": 15
+      },
+      "suggested_entry": 9.6138,
+      "stop_loss": 9.3195,
+      "take_profit": 10.791000000000002,
+      "rsi": 68.3229813664596,
+      "macd_signal": "金叉"
+    }
+  ]
+}

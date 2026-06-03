@@ -1,4 +1,4 @@
-"""每日选股推送"""
+"""每日选股推送 - 支持 Sarah CFA 分析模式"""
 from __future__ import annotations
 import json, os
 from datetime import datetime
@@ -7,6 +7,7 @@ from dataclasses import asdict
 
 from src.scanners.factor_scanner import FactorScanner, ScanResult, ScanConfig
 from src.alerts.push_tracker import record_push
+from src.agents.sarah_analysis import SarahAnalyst, StockProfile
 
 import logging
 logger = logging.getLogger(__name__)
@@ -17,6 +18,7 @@ class DailyPicker:
     
     def __init__(self, config: Optional[ScanConfig] = None):
         self.scanner = FactorScanner(config)
+        self.sarah = SarahAnalyst()
     
     def run(self) -> List[ScanResult]:
         logger.info(f"每日选股开始 {datetime.now()}")
@@ -74,6 +76,7 @@ class DailyPicker:
                 logger.error(f"记录推送失败: {e}")
     
     def format_message(self, results: List[ScanResult], top_n: int = 2) -> str:
+        """简洁版推送消息"""
         if not results:
             return "今日未找到符合条件的候选股"
         
@@ -89,6 +92,88 @@ class DailyPicker:
             lines.append("")
         lines.append("⚠️ 仅供参考，不构成投资建议")
         return '\n'.join(lines)
+    
+    def format_sarah_report(self, result: ScanResult) -> str:
+        """
+        Sarah CFA 分析报告 - 单只股票详细分析
+        
+        用于每天单独推送一只票的深度分析
+        """
+        # 构建 StockProfile
+        profile = StockProfile(
+            code=result.code,
+            name=result.name,
+            market=result.market,
+            price=result.price,
+            change_pct=result.change_pct,
+            pe=result.factors.get('PE', 0) if hasattr(result, 'factors') else 0,
+            # 从 factors 中提取更多数据（如果有）
+            score=result.score,
+            entry=result.suggested_entry,
+            stop_loss=result.stop_loss,
+            take_profit=result.take_profit,
+            rsi=result.rsi if hasattr(result, 'rsi') else 50,
+            macd_signal=result.macd_signal if hasattr(result, 'macd_signal') else "",
+            reasons=result.reasons,
+            risks=self._infer_risks(result)
+        )
+        
+        return self.sarah.format_message(profile, detailed=True)
+    
+    def format_sarah_brief(self, result: ScanResult) -> str:
+        """
+        Sarah 简要版 - 用于每日选股概览
+        
+        保留核心信息，更简洁
+        """
+        profile = StockProfile(
+            code=result.code,
+            name=result.name,
+            market=result.market,
+            price=result.price,
+            change_pct=result.change_pct,
+            score=result.score,
+            entry=result.suggested_entry,
+            stop_loss=result.stop_loss,
+            take_profit=result.take_profit,
+            reasons=result.reasons[:2],
+        )
+        
+        report = self.sarah.analyze(profile)
+        # 只保留关键部分
+        lines = [
+            report['header'],
+            "━" * 16,
+            report['overview'],
+            report['fundamentals'],
+            report['verdict'],
+            report['footer']
+        ]
+        return '\n'.join(lines)
+    
+    def _infer_risks(self, result: ScanResult) -> List[str]:
+        """根据数据推断风险点"""
+        risks = []
+        
+        # PE 过高
+        pe = result.factors.get('PE', 0) if hasattr(result, 'factors') else 0
+        if pe > 50:
+            risks.append("估值偏高，注意回调风险")
+        
+        # RSI 超买
+        rsi = result.rsi if hasattr(result, 'rsi') else 50
+        if rsi > 70:
+            risks.append(f"RSI={rsi:.0f}超买区域")
+        
+        # 涨幅过大
+        if result.change_pct > 5:
+            risks.append("短期涨幅较大，追高需谨慎")
+        
+        # 默认风险提示
+        if not risks:
+            risks.append("市场波动风险")
+        
+        return risks
 
 
 def main():
@@ -96,6 +181,8 @@ def main():
     parser = argparse.ArgumentParser(description='每日选股')
     parser.add_argument('--top', type=int, default=10)
     parser.add_argument('--json', action='store_true')
+    parser.add_argument('--sarah', action='store_true', help='生成 Sarah CFA 分析报告')
+    parser.add_argument('--sarah-brief', action='store_true', help='生成 Sarah 简要报告')
     args = parser.parse_args()
     
     config = ScanConfig(top_n=args.top)
@@ -104,6 +191,14 @@ def main():
     
     if args.json:
         print(json.dumps([asdict(r) for r in results], ensure_ascii=False, indent=2))
+    elif args.sarah and results:
+        # 生成第一只票的详细 Sarah 报告
+        print(picker.format_sarah_report(results[0]))
+    elif args.sarah_brief and results:
+        # 生成所有推荐票的简要 Sarah 报告
+        for r in results[:2]:
+            print(picker.format_sarah_brief(r))
+            print("\n")
     else:
         print(picker.format_message(results))
 

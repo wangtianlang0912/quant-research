@@ -22,7 +22,9 @@ from src.alerts.push_tracker import (
     update_push_status,
     record_tracking,
     analyze_performance,
-    get_review_summary
+    get_review_summary,
+    ensure_files,
+    PUSH_LOG_FILE
 )
 from src.data.akshare_client import TencentClient
 
@@ -31,11 +33,30 @@ def fetch_current_price(code: str) -> Optional[float]:
     """获取股票当前价格"""
     client = TencentClient()
     try:
-        # 转换代码格式: 600010 -> sh600010, 002049 -> sz002049
-        if code.startswith("6"):
+        # 转换代码格式
+        # A股: 600010 -> sh600010, 002049 -> sz002049
+        # 港股: 02328 -> hk02328
+        # 美股: crm.n -> usCRM, amd.oq -> usAMD
+        code_lower = code.lower()
+        
+        if code_lower.startswith("6"):
             full_code = f"sh{code}"
-        elif code.startswith("0") or code.startswith("3"):
-            full_code = f"sz{code}"
+        elif code_lower.startswith("0") or code_lower.startswith("3"):
+            # 判断是港股还是A股
+            # 港股代码通常是4-5位数字，如 02328, 00700
+            # A股代码是6位，如 002049, 300750
+            if len(code) == 4 or (len(code) == 5 and code.startswith("0")):
+                full_code = f"hk{code.zfill(5)}"  # 港股补零到5位
+            else:
+                full_code = f"sz{code}"
+        elif "." in code_lower:
+            # 美股格式: crm.n, amd.oq -> usCRM, usAMD
+            symbol = code.split(".")[0].upper()
+            full_code = f"us{symbol}"
+        elif code_lower.startswith("hk"):
+            full_code = code_lower
+        elif code_lower.startswith("us"):
+            full_code = code_lower
         else:
             full_code = code
 
@@ -170,14 +191,52 @@ def format_daily_report() -> str:
     lines.append(f"平均收益: {summary['avg_return']:+.2f}%")
     lines.append("")
 
-    # 显示最近推送状态
-    if summary['recent_pushes']:
+    # 从文件读取全部持仓数据（recent_pushes只返回最近10条，会截断早期持仓）
+    ensure_files()
+    with open(PUSH_LOG_FILE, "r", encoding="utf-8") as f:
+        all_pushes = json.load(f)["pushes"]
+
+    # 显示待追踪持仓（含推荐日期），按code+push_date去重
+    all_active = [p for p in all_pushes if p['status'] in ('pending', 'tracking')]
+    seen = set()
+    active_pushes = []
+    for p in all_active:
+        key = f"{p['code']}_{p['push_date']}"
+        if key not in seen:
+            seen.add(key)
+            active_pushes.append(p)
+
+    if active_pushes:
         lines.append("---")
-        lines.append("📋 最近推送")
-        for p in summary['recent_pushes'][-5:]:
-            status_emoji = "✅" if p['status'] == 'hit_profit' else "❌" if p['status'] == 'hit_stop' else "⏳"
-            return_str = f"{p.get('final_return', 0):+.2f}%" if p.get('final_return') else "追踪中"
-            lines.append(f"{status_emoji} {p['code']} {p['name']} - {return_str}")
+        lines.append("📋 持仓明细")
+        for p in active_pushes:
+            start_date = p.get('push_date', '?')
+            tracking_days = p.get('tracking_days', 0)
+            entry = p.get('entry_price', 0)
+            stop_loss = p.get('stop_loss', 0)
+            take_profit = p.get('take_profit', 0)
+            lines.append(f"⏳ {p['code']} {p['name']}")
+            lines.append(f"   📅 {start_date} 起 | 第{tracking_days}天")
+            lines.append(f"   入场{entry:.2f} 止损{stop_loss:.2f} 止盈{take_profit:.2f}")
+
+    # 显示已结束推送，同样去重
+    all_closed = [p for p in all_pushes if p['status'] in ('hit_profit', 'hit_stop')]
+    seen_c = set()
+    closed_pushes = []
+    for p in all_closed:
+        key = f"{p['code']}_{p['push_date']}_{p['status']}"
+        if key not in seen_c:
+            seen_c.add(key)
+            closed_pushes.append(p)
+
+    if closed_pushes:
+        lines.append("")
+        lines.append("📋 已结束")
+        for p in closed_pushes:
+            status_emoji = "✅" if p['status'] == 'hit_profit' else "❌"
+            start_date = p.get('push_date', '?')
+            return_str = f"{p.get('final_return', 0):+.2f}%"
+            lines.append(f"{status_emoji} {p['code']} {p['name']} ({start_date}起) - {return_str}")
 
     return '\n'.join(lines)
 
