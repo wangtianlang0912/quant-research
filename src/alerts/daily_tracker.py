@@ -174,69 +174,97 @@ def format_alert_message(alerts: List[Dict]) -> str:
     return '\n'.join(lines)
 
 
+def _strategy_summary(pushes: list) -> dict:
+    """单策略统计"""
+    hp = [p for p in pushes if p['status'] == 'hit_profit']
+    hs = [p for p in pushes if p['status'] == 'hit_stop']
+    pending = [p for p in pushes if p['status'] in ('pending', 'tracking')]
+    finished = len(hp) + len(hs)
+    wr = len(hp) / finished * 100 if finished else 0
+    rets = [p.get('final_return', 0) for p in pushes if p.get('final_return') is not None]
+    avg_ret = sum(rets) / len(rets) if rets else 0
+    return {'total': len(pushes), 'hp': len(hp), 'hs': len(hs), 'pending': len(pending),
+            'finished': finished, 'win_rate': wr, 'avg_return': avg_ret}
+
+
+def _format_position_block(pushes: list, include_closed: bool = False) -> list:
+    """格式化一批持仓为文本块"""
+    lines = []
+    active = [p for p in pushes if p['status'] in ('pending', 'tracking')]
+    seen = set()
+    for p in active:
+        key = f"{p['code']}_{p['push_date']}"
+        if key not in seen:
+            seen.add(key)
+            entry = p.get('entry_price', 0)
+            sl = p.get('stop_loss', 0)
+            tp = p.get('take_profit', 0)
+            days = p.get('tracking_days', 0)
+            max_r = p.get('max_return', 0)
+            # 计算距止损距离
+            dist_sl = (entry - sl) / entry * 100 if entry > 0 else 0
+            warn = ' ⚠️' if max_r < -dist_sl * 0.5 else ''
+            lines.append(f"⏳ {p['code']} {p['name']}{warn}")
+            lines.append(f"   📅 {p.get('push_date','?')} | 第{days}天 | max {max_r:+.1f}%")
+            lines.append(f"   入场{entry:.2f} 止损{sl:.2f}({-dist_sl:.0f}%) 止盈{tp:.2f}")
+
+    if include_closed:
+        closed = [p for p in pushes if p['status'] in ('hit_profit', 'hit_stop')]
+        seen_c = set()
+        for p in closed:
+            key = f"{p['code']}_{p['push_date']}_{p['status']}"
+            if key not in seen_c:
+                seen_c.add(key)
+                emoji = '✅' if p['status'] == 'hit_profit' else '❌'
+                lines.append(f"{emoji} {p['code']} {p['name']} ({p.get('push_date','?')}) → {p.get('final_return',0):+.2f}%")
+    return lines
+
+
 def format_daily_report() -> str:
-    """格式化每日追踪报告"""
-    summary = get_review_summary()
-
-    lines = ["📊 每日追踪报告\n"]
-    lines.append(f"日期: {datetime.now().strftime('%Y-%m-%d')}")
-    lines.append("")
-    lines.append("---")
-    lines.append("📈 统计数据")
-    lines.append(f"总推送: {summary['total']}")
-    lines.append(f"触发止盈: {summary['hit_profit']}")
-    lines.append(f"触发止损: {summary['hit_stop']}")
-    lines.append(f"待追踪: {summary['pending']}")
-    lines.append(f"胜率: {summary['win_rate']:.1f}%")
-    lines.append(f"平均收益: {summary['avg_return']:+.2f}%")
-    lines.append("")
-
-    # 从文件读取全部持仓数据（recent_pushes只返回最近10条，会截断早期持仓）
+    """格式化每日追踪报告 - 按策略分开"""
     ensure_files()
     with open(PUSH_LOG_FILE, "r", encoding="utf-8") as f:
         all_pushes = json.load(f)["pushes"]
 
-    # 显示待追踪持仓（含推荐日期），按code+push_date去重
+    factor = [p for p in all_pushes if p.get('strategy') == 'factor']
+    breakout = [p for p in all_pushes if p.get('strategy') == 'breakout']
+    fs = _strategy_summary(factor)
+    bs = _strategy_summary(breakout)
+
+    date_str = datetime.now().strftime('%Y-%m-%d')
+    lines = [f"📊 每日追踪复盘 | {date_str}\n"]
+
+    # ── Factor ──
+    lines.append("### 🔹 多因子扫描")
+    lines.append(f"总推送 {fs['total']} | ✅{fs['hp']}止盈 ❌{fs['hs']}止损 | 胜率 {fs['win_rate']:.1f}% | 均收益 {fs['avg_return']:+.2f}%")
+    f_positions = _format_position_block(factor, include_closed=True)
+    if f_positions:
+        lines.extend(f_positions)
+    else:
+        lines.append("(无持仓)")
+
+    # ── Breakout ──
+    lines.append(f"\n### 🔹 突破形态 (Qullamaggie)")
+    lines.append(f"总推送 {bs['total']} | ✅{bs['hp']}止盈 ❌{bs['hs']}止损 | 胜率 {bs['win_rate']:.1f}% | 均收益 {bs['avg_return']:+.2f}%")
+    b_positions = _format_position_block(breakout, include_closed=True)
+    if b_positions:
+        lines.extend(b_positions)
+    else:
+        lines.append("(无持仓)")
+
+    # ── 风险警告 ──
     all_active = [p for p in all_pushes if p['status'] in ('pending', 'tracking')]
-    seen = set()
-    active_pushes = []
+    warnings = []
     for p in all_active:
-        key = f"{p['code']}_{p['push_date']}"
-        if key not in seen:
-            seen.add(key)
-            active_pushes.append(p)
-
-    if active_pushes:
-        lines.append("---")
-        lines.append("📋 持仓明细")
-        for p in active_pushes:
-            start_date = p.get('push_date', '?')
-            tracking_days = p.get('tracking_days', 0)
-            entry = p.get('entry_price', 0)
-            stop_loss = p.get('stop_loss', 0)
-            take_profit = p.get('take_profit', 0)
-            lines.append(f"⏳ {p['code']} {p['name']}")
-            lines.append(f"   📅 {start_date} 起 | 第{tracking_days}天")
-            lines.append(f"   入场{entry:.2f} 止损{stop_loss:.2f} 止盈{take_profit:.2f}")
-
-    # 显示已结束推送，同样去重
-    all_closed = [p for p in all_pushes if p['status'] in ('hit_profit', 'hit_stop')]
-    seen_c = set()
-    closed_pushes = []
-    for p in all_closed:
-        key = f"{p['code']}_{p['push_date']}_{p['status']}"
-        if key not in seen_c:
-            seen_c.add(key)
-            closed_pushes.append(p)
-
-    if closed_pushes:
-        lines.append("")
-        lines.append("📋 已结束")
-        for p in closed_pushes:
-            status_emoji = "✅" if p['status'] == 'hit_profit' else "❌"
-            start_date = p.get('push_date', '?')
-            return_str = f"{p.get('final_return', 0):+.2f}%"
-            lines.append(f"{status_emoji} {p['code']} {p['name']} ({start_date}起) - {return_str}")
+        entry = p.get('entry_price', 0)
+        sl = p.get('stop_loss', 0)
+        if entry > 0 and sl > 0:
+            dist = (entry - sl) / entry * 100
+            if p.get('max_return', 0) < -dist * 0.5:
+                warnings.append(f"⚠️ {p['code']} {p['name']} 回撤已过半({p['max_return']:+.1f}%)，距止损仅-{dist:.0f}%")
+    if warnings:
+        lines.append("\n---\n⚠️ 风险警告")
+        lines.extend(warnings)
 
     return '\n'.join(lines)
 

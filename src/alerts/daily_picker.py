@@ -1,4 +1,4 @@
-"""每日选股推送 - 支持 Sarah CFA 分析模式"""
+"""每日选股推送 - 支持 Factor/因子模式 + Breakout/突破模式 + Sarah CFA 分析"""
 from __future__ import annotations
 import json, os
 from datetime import datetime
@@ -6,6 +6,7 @@ from typing import List, Optional
 from dataclasses import asdict
 
 from src.scanners.factor_scanner import FactorScanner, ScanResult, ScanConfig
+from src.scanners.breakout_scanner import BreakoutScanner, BreakoutCandidate
 from src.alerts.push_tracker import record_push
 from src.agents.sarah_analysis import SarahAnalyst, StockProfile
 
@@ -14,10 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 class DailyPicker:
-    """每日选股"""
+    """每日选股 — 多模式"""
     
-    def __init__(self, config: Optional[ScanConfig] = None):
+    def __init__(self, config: Optional[ScanConfig] = None, mode: str = "factor"):
+        self.mode = mode
         self.scanner = FactorScanner(config)
+        self.breakout_scanner = BreakoutScanner()
         self.sarah = SarahAnalyst()
     
     def run(self) -> List[ScanResult]:
@@ -176,14 +179,151 @@ class DailyPicker:
         return risks
 
 
+    def run_low_volume(self) -> List:
+        """执行 低量价值发现 扫描"""
+        from src.scanners.low_volume_scanner import LowVolumeScanner, LowVolumeConfig, format_results
+        logger.info(f"低量价值扫描开始 {datetime.now()}")
+        config = LowVolumeConfig(top_n=5)
+        scanner = LowVolumeScanner(config)
+        results = scanner.scan()
+        if results:
+            self._print_low_volume(results)
+            self._save_low_volume(results)
+        else:
+            print("今日未找到符合条件的低量蓄势品种")
+        return results
+
+    def _print_low_volume(self, results: List) -> None:
+        from src.scanners.low_volume_scanner import format_results
+        print(format_results(results))
+
+    def _save_low_volume(self, results: List) -> None:
+        os.makedirs("reports/low_volume", exist_ok=True)
+        date = datetime.now().strftime('%Y-%m-%d')
+        fp = f"reports/low_volume/daily_{date}.json"
+        data = {
+            "date": date,
+            "timestamp": datetime.now().isoformat(),
+            "strategy": "low_volume_value",
+            "count": len(results),
+            "picks": [{
+                "code": r.code, "name": r.name, "score": r.score,
+                "price": r.price, "pe": r.pe, "pb": r.pb,
+                "volume_ratio": r.volume_ratio, "sideways_days": r.sideways_days,
+                "drawdown_pct": r.drawdown_pct, "reasons": r.reasons,
+                "suggested_entry": r.suggested_entry,
+                "stop_loss": r.stop_loss, "take_profit": r.take_profit,
+            } for r in results]
+        }
+        with open(fp, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        logger.info(f"已保存低量扫描: {fp}")
+
+        # 记录推送（用于追踪）
+        for r in results[:2]:
+            try:
+                record_push(
+                    code=r.code, name=r.name, price=r.price,
+                    change_pct=r.change_pct, entry_price=r.suggested_entry,
+                    stop_loss=r.stop_loss, take_profit=r.take_profit,
+                    reason=f"低量价值 | 得分{r.score:.0f} | {'; '.join(r.reasons[:2])}",
+                    score=r.score
+                )
+            except Exception as e:
+                logger.error(f"记录推送失败: {e}")
+
+    def run_breakout(self) -> List[BreakoutCandidate]:
+        """执行 Breakout 模式扫描"""
+        logger.info(f"Breakout 扫描开始 {datetime.now()}")
+        candidates = self.breakout_scanner.run()
+        if candidates:
+            self._print_breakout(candidates)
+            self._save_breakout(candidates)
+        else:
+            print("今日未找到符合条件的突破股")
+        return candidates
+    
+    def _print_breakout(self, candidates: List[BreakoutCandidate]) -> None:
+        print("\n" + "=" * 60)
+        print(f"📊 突破选股 ({datetime.now().strftime('%Y-%m-%d')})")
+        print("=" * 60)
+        for i, c in enumerate(candidates, 1):
+            emoji = "🥇" if i == 1 else "🥈" if i == 2 else "🥉" if i == 3 else f" {i}."
+            print(f"\n{emoji} {c.code} {c.name}")
+            print(f"   💰 {c.price:.2f} ({c.change_pct:+.1f}%)")
+            print(f"   📈 得分 {c.score}/28 | 动量 {c.momentum_score:+.1%}")
+            print(f"   🎯 入场 {c.entry_price:.2f} | 量比 {c.volume_ratio:.1f}x")
+            print(f"   🏭 {c.industry}")
+            print(f"   📝 {' | '.join(c.reasons[:3])}")
+        print("\n" + "=" * 60)
+    
+    def _save_breakout(self, candidates: List[BreakoutCandidate]) -> None:
+        os.makedirs("reports/breakout", exist_ok=True)
+        date = datetime.now().strftime('%Y-%m-%d')
+        fp = f"reports/breakout/daily_pick_{date}.json"
+        data = {
+            "date": date,
+            "timestamp": datetime.now().isoformat(),
+            "strategy": "breakout",
+            "score_min": self.breakout_scanner.score_min,
+            "count": len(candidates),
+            "picks": [{
+                "code": c.code, "name": c.name, "score": c.score,
+                "entry_price": c.entry_price, "price": c.price,
+                "volume_ratio": c.volume_ratio, "industry": c.industry,
+                "momentum": c.momentum_score, "reasons": c.reasons,
+            } for c in candidates]
+        }
+        with open(fp, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2)
+        logger.info(f"已保存: {fp}")
+        
+        # 记录推送
+        for c in candidates[:2]:
+            try:
+                record_push(
+                    code=c.code, name=c.name, price=c.price,
+                    change_pct=c.change_pct, entry_price=c.entry_price,
+                    stop_loss=c.entry_price * 0.94,
+                    take_profit=c.entry_price * 1.15,
+                    reason=f"突破得分{c.score}", score=c.score
+                )
+            except Exception as e:
+                logger.error(f"记录推送失败: {e}")
+
 def main():
     import argparse
     parser = argparse.ArgumentParser(description='每日选股')
     parser.add_argument('--top', type=int, default=10)
     parser.add_argument('--json', action='store_true')
+    parser.add_argument('--mode', type=str, default='factor', choices=['factor', 'breakout', 'low'],
+                        help='选股模式: factor/breakout/low(低量价值发现)')
     parser.add_argument('--sarah', action='store_true', help='生成 Sarah CFA 分析报告')
     parser.add_argument('--sarah-brief', action='store_true', help='生成 Sarah 简要报告')
     args = parser.parse_args()
+    
+    if args.mode == 'breakout':
+        picker = DailyPicker(mode='breakout')
+        results = picker.run_breakout()
+        if args.json:
+            print(json.dumps([vars(c) for c in results], ensure_ascii=False, indent=2, default=str))
+        return
+    
+    if args.mode == 'low':
+        picker = DailyPicker()
+        results = picker.run_low_volume()
+        if args.json:
+            print(json.dumps([{
+                'code': r.code, 'name': r.name, 'score': r.score,
+                'price': r.price, 'pe': r.pe, 'volume_ratio': r.volume_ratio,
+                'sideways_days': r.sideways_days, 'reasons': r.reasons,
+            } for r in results], ensure_ascii=False, indent=2))
+        elif results:
+            from src.scanners.low_volume_scanner import format_results
+            print(format_results(results))
+        else:
+            print("今日未找到符合条件的低量蓄势品种")
+        return
     
     config = ScanConfig(top_n=args.top)
     picker = DailyPicker(config)
@@ -192,10 +332,8 @@ def main():
     if args.json:
         print(json.dumps([asdict(r) for r in results], ensure_ascii=False, indent=2))
     elif args.sarah and results:
-        # 生成第一只票的详细 Sarah 报告
         print(picker.format_sarah_report(results[0]))
     elif args.sarah_brief and results:
-        # 生成所有推荐票的简要 Sarah 报告
         for r in results[:2]:
             print(picker.format_sarah_brief(r))
             print("\n")

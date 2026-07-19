@@ -243,8 +243,8 @@ class MultiMarketScanner:
                         reasons=reasons,
                         factors=factors,
                         suggested_entry=q.price * 0.98,
-                        stop_loss=q.price * 0.95,
-                        take_profit=q.price * 1.10,
+                        stop_loss=q.price * 0.94,
+                        take_profit=q.price * 1.15,
                         rsi=tech.get('rsi', 50),
                         macd_signal=tech.get('macd_signal', '')
                     ))
@@ -273,8 +273,8 @@ class MultiMarketScanner:
                         reasons=reasons,
                         factors=factors,
                         suggested_entry=q.price * 0.98,
-                        stop_loss=q.price * 0.95,
-                        take_profit=q.price * 1.10,
+                        stop_loss=q.price * 0.94,
+                        take_profit=q.price * 1.15,
                         rsi=tech.get('rsi', 50),
                         macd_signal=tech.get('macd_signal', '')
                     ))
@@ -302,8 +302,8 @@ class MultiMarketScanner:
                         reasons=reasons,
                         factors=factors,
                         suggested_entry=q.price * 0.98,
-                        stop_loss=q.price * 0.95,
-                        take_profit=q.price * 1.10,
+                        stop_loss=q.price * 0.94,
+                        take_profit=q.price * 1.15,
                         rsi=tech.get('rsi', 50),
                         macd_signal=tech.get('macd_signal', '')
                     ))
@@ -376,48 +376,42 @@ class MultiMarketScanner:
         return all_codes
     
     def _get_hk_codes(self) -> List[str]:
-        """港股股票池 - 主要蓝筹+科技"""
+        """港股股票池 - 从动态缓存读取"""
+        cache_file = os.path.join(_CACHE_DIR, 'hk_codes.json')
+        if os.path.exists(cache_file):
+            try:
+                with open(cache_file, 'r') as f:
+                    cached = json.load(f)
+                # 返回所有代码（由 syncing script 过滤）
+                codes = [c['code'] if isinstance(c, dict) else c for c in cached.get('codes', [])]
+                logger.info(f"港股股票池: {len(codes)} 只 (缓存日期: {cached.get('date', '?')})")
+                return codes
+            except Exception as e:
+                logger.warning(f"港股缓存读取失败: {e}")
+        # fallback: 核心蓝筹
         return [
-            'hk00700',  # 腾讯控股
-            'hk00941',  # 中国移动
-            'hk01810',  # 小米集团
-            'hk03690',  # 美团
-            'hk09988',  # 阿里巴巴
-            'hk02318',  # 中国平安
-            'hk02628',  # 中国人寿
-            'hk00398',  # 中国银行
-            'hk02328',  # 中国财险
-            'hk00688',  # 中国海外发展
-            'hk00883',  # 中国海洋石油
-            'hk00005',  # 汇丰控股
-            'hk00011',  # 恒生银行
-            'hk01299',  # 友邦保险
-            'hk02313',  # 申洲国际
-            'hk02269',  # 药明生物
-            'hk01093',  # 石药集团
-            'hk00669',  # 创科实业
-            'hk00268',  # 金利来
-            'hk00960',  # 龙湖集团
+            'hk00700','hk00941','hk01810','hk03690','hk09988','hk02318',
+            'hk02628','hk00398','hk02328','hk00688','hk00883','hk00005',
+            'hk00011','hk01299','hk02269','hk01093','hk00669','hk00960','hk02313'
         ]
     
     def _get_us_codes(self) -> List[str]:
-        """美股股票池 - 科技龙头"""
+        """美股股票池 - 从动态缓存读取"""
+        cache_file = os.path.join(_CACHE_DIR, 'us_codes.json')
+        if os.path.exists(cache_file):
+            try:
+                with open(cache_file, 'r') as f:
+                    cached = json.load(f)
+                codes = [c['code'] if isinstance(c, dict) else c for c in cached.get('codes', [])]
+                logger.info(f"美股股票池: {len(codes)} 只 (缓存日期: {cached.get('date', '?')})")
+                return codes
+            except Exception as e:
+                logger.warning(f"美股缓存读取失败: {e}")
+        # fallback: 核心科技龙头
         return [
-            'usAAPL',   # 苹果
-            'usMSFT',   # 微软
-            'usGOOGL',  # 谷歌
-            'usAMZN',   # 亚马逊
-            'usNVDA',   # 英伟达
-            'usMETA',   # Meta
-            'usTSLA',   # 特斯拉
-            'usAMD',    # AMD
-            'usAVGO',   # 博通
-            'usORCL',   # 甲骨文
-            'usNFLX',   # 奈飞
-            'usQCOM',   # 高通
-            'usINTC',   # 英特尔
-            'usCRM',    # Salesforce
-            'usADBE',   # Adobe
+            'usAAPL','usMSFT','usGOOGL','usAMZN','usNVDA','usMETA',
+            'usTSLA','usAMD','usAVGO','usORCL','usNFLX','usQCOM',
+            'usINTC','usCRM','usADBE',
         ]
     
     def _filter_a(self, q: StockQuote) -> bool:
