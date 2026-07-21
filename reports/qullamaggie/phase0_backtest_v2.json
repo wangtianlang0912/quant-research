@@ -1,0 +1,59 @@
+{
+  "config": {
+    "min_score": 24,
+    "capital": 1000000,
+    "stocks_loaded": 94,
+    "stocks_failed": 0
+  },
+  "pool_failures": [],
+  "segments": [
+    {
+      "label": "2024复苏",
+      "start": "2024-01-02",
+      "end": "2024-12-31",
+      "days": 242,
+      "stocks": 94,
+      "total_return": -0.018638,
+      "annual_return": -0.019401,
+      "sharpe": 0.0095,
+      "max_drawdown": 0.130821,
+      "total_trades": 88,
+      "win_rate": 0.295455,
+      "profit_factor": 0.7334,
+      "avg_win": 4878.3,
+      "avg_loss": -2789.35,
+      "reasons": {
+        "止损": 60,
+        "MA10跌破": 28
+      },
+      "reasons_pnl": {
+        "止损": -168632.3,
+        "MA10跌破": 122528.34
+      }
+    },
+    {
+      "label": "2025牛",
+      "start": "2025-01-02",
+      "end": "2026-06-26",
+      "days": 357,
+      "stocks": 94,
+      "total_return": 1.662598,
+      "annual_return": 0.996254,
+      "sharpe": 3.0658,
+      "max_drawdown": 0.120074,
+      "total_trades": 274,
+      "win_rate": 0.284672,
+      "profit_factor": 2.4697,
+      "avg_win": 19972.93,
+      "avg_loss": -3218.37,
+      "reasons": {
+        "止损": 170,
+        "MA10跌破": 104
+      },
+      "reasons_pnl": {
+        "止损": -588490.08,
+        "MA10跌破": 1515577.16
+      }
+    }
+  ]
+}
