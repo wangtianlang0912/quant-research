@@ -1,0 +1,118 @@
+{
+  "date": "2026-07-24",
+  "timestamp": "2026-07-24T16:07:53.261065",
+  "count": 4,
+  "picks": [
+    {
+      "code": "002414",
+      "name": "高德红外",
+      "market": "A",
+      "score": 110.0,
+      "price": 14.36,
+      "change_pct": 4.36,
+      "reasons": [
+        "涨幅适中",
+        "成交额416亿",
+        "换手率5.9%",
+        "MACD金叉",
+        "均线多头排列"
+      ],
+      "industry": "",
+      "factors": {
+        "涨幅": 30,
+        "成交额": 25,
+        "换手率": 20,
+        "RSI": 10,
+        "MACD": 15,
+        "均线": 10
+      },
+      "suggested_entry": 14.072799999999999,
+      "stop_loss": 13.498399999999998,
+      "take_profit": 16.514,
+      "rsi": 63.67292225201072,
+      "macd_signal": "金叉"
+    },
+    {
+      "code": "300850",
+      "name": "新强联",
+      "market": "A",
+      "score": 110.0,
+      "price": 25.85,
+      "change_pct": 4.07,
+      "reasons": [
+        "涨幅适中",
+        "成交额227亿",
+        "PE=13",
+        "RSI=46超卖反弹",
+        "MACD金叉"
+      ],
+      "industry": "",
+      "factors": {
+        "涨幅": 30,
+        "成交额": 25,
+        "换手率": 10,
+        "估值": 15,
+        "RSI": 15,
+        "MACD": 15
+      },
+      "suggested_entry": 25.333000000000002,
+      "stop_loss": 24.299,
+      "take_profit": 29.7275,
+      "rsi": 45.95185995623633,
+      "macd_signal": "金叉"
+    },
+    {
+      "code": "00175",
+      "name": "吉利汽车",
+      "market": "HK",
+      "score": 90.0,
+      "price": 19.03,
+      "change_pct": 2.75,
+      "reasons": [
+        "涨幅合理",
+        "成交额11亿",
+        "MACD金叉",
+        "均线多头排列"
+      ],
+      "industry": "",
+      "factors": {
+        "涨幅": 20,
+        "成交额": 25,
+        "换手率": 10,
+        "RSI": 10,
+        "MACD": 15,
+        "均线": 10
+      },
+      "suggested_entry": 18.6494,
+      "stop_loss": 17.8882,
+      "take_profit": 21.8845,
+      "rsi": 62.50000338662802,
+      "macd_signal": "金叉"
+    },
+    {
+      "code": "09903",
+      "name": "天数智芯",
+      "market": "HK",
+      "score": 78.0,
+      "price": 562.5,
+      "change_pct": 3.4,
+      "reasons": [
+        "涨幅适中",
+        "换手率9.9%"
+      ],
+      "industry": "",
+      "factors": {
+        "涨幅": 30,
+        "成交额": 15,
+        "换手率": 20,
+        "估值": 8,
+        "趋势": 5
+      },
+      "suggested_entry": 551.25,
+      "stop_loss": 528.75,
+      "take_profit": 646.875,
+      "rsi": 50,
+      "macd_signal": ""
+    }
+  ]
+}

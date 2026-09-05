@@ -1,0 +1,123 @@
+{
+  "date": "2026-07-29",
+  "timestamp": "2026-07-29T10:06:20.766180",
+  "count": 4,
+  "picks": [
+    {
+      "code": "002083",
+      "name": "孚日股份",
+      "market": "A",
+      "score": 125.0,
+      "price": 11.13,
+      "change_pct": 3.06,
+      "reasons": [
+        "涨幅适中",
+        "成交额80亿",
+        "换手率6.9%",
+        "PE=22",
+        "MACD金叉",
+        "均线多头排列"
+      ],
+      "industry": "",
+      "factors": {
+        "涨幅": 30,
+        "成交额": 25,
+        "换手率": 20,
+        "估值": 15,
+        "RSI": 10,
+        "MACD": 15,
+        "均线": 10
+      },
+      "suggested_entry": 10.9074,
+      "stop_loss": 10.4622,
+      "take_profit": 12.7995,
+      "rsi": 59.80528511821975,
+      "macd_signal": "金叉"
+    },
+    {
+      "code": "002606",
+      "name": "大连电瓷",
+      "market": "A",
+      "score": 125.0,
+      "price": 14.47,
+      "change_pct": 4.78,
+      "reasons": [
+        "涨幅适中",
+        "成交额47亿",
+        "换手率5.4%",
+        "PE=25",
+        "MACD金叉",
+        "均线多头排列"
+      ],
+      "industry": "",
+      "factors": {
+        "涨幅": 30,
+        "成交额": 25,
+        "换手率": 20,
+        "估值": 15,
+        "RSI": 10,
+        "MACD": 15,
+        "均线": 10
+      },
+      "suggested_entry": 14.1806,
+      "stop_loss": 13.601799999999999,
+      "take_profit": 16.6405,
+      "rsi": 60.23054755043228,
+      "macd_signal": "金叉"
+    },
+    {
+      "code": "00175",
+      "name": "吉利汽车",
+      "market": "HK",
+      "score": 75.0,
+      "price": 20.0,
+      "change_pct": 4.6,
+      "reasons": [
+        "涨幅适中",
+        "MACD金叉",
+        "均线多头排列"
+      ],
+      "industry": "",
+      "factors": {
+        "涨幅": 30,
+        "换手率": 10,
+        "RSI": 10,
+        "MACD": 15,
+        "均线": 10
+      },
+      "suggested_entry": 19.6,
+      "stop_loss": 18.799999999999997,
+      "take_profit": 23.0,
+      "rsi": 62.50000338662802,
+      "macd_signal": "金叉"
+    },
+    {
+      "code": "01810",
+      "name": "小米集团-W",
+      "market": "HK",
+      "score": 70.0,
+      "price": 31.02,
+      "change_pct": 6.02,
+      "reasons": [
+        "成交额28亿",
+        "换手率5.6%",
+        "MACD金叉",
+        "均线多头排列"
+      ],
+      "industry": "",
+      "factors": {
+        "涨幅": 10,
+        "成交额": 25,
+        "换手率": 20,
+        "RSI": -10,
+        "MACD": 15,
+        "均线": 10
+      },
+      "suggested_entry": 30.3996,
+      "stop_loss": 29.1588,
+      "take_profit": 35.672999999999995,
+      "rsi": 82.1826266905149,
+      "macd_signal": "金叉"
+    }
+  ]
+}

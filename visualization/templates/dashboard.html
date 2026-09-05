@@ -75,7 +75,7 @@ body {
 .card-header {
   padding: 12px 16px;
   border-bottom: 1px solid var(--border);
-  font-size: 13px;
+  font-size: 15px;
   font-weight: 600;
   color: var(--text2);
   display: flex;
@@ -84,6 +84,32 @@ body {
 }
 .card-header .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
 .card-body { padding: 12px 16px; }
+
+/* ── Market tabs ── */
+.market-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  padding: 4px 8px 0;
+  gap: 2px;
+}
+.market-tab {
+  background: transparent;
+  border: none;
+  color: var(--text3);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 8px 14px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s;
+  border-radius: 6px 6px 0 0;
+}
+.market-tab:hover { color: var(--text2); background: var(--card2); }
+.market-tab.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  background: rgba(99,102,241,0.06);
+}
 
 /* ── Symbol list ── */
 .symbol-item {
@@ -97,9 +123,10 @@ body {
 }
 .symbol-item:hover { background: var(--card2); }
 .symbol-item.active { background: var(--card2); border: 1px solid var(--accent); }
-.symbol-item .sym { font-size: 13px; font-weight: 600; color: var(--text); }
-.symbol-item .info { font-size: 11px; color: var(--text3); margin-top: 2px; }
-.symbol-item .rows { font-size: 11px; color: var(--text3); }
+.symbol-item .sym { font-size: 14px; font-weight: 600; color: var(--text); }
+.symbol-item .sym .sym-code { font-size: 11px; font-weight: 400; color: var(--text3); margin-left: 6px; }
+.symbol-item .info { font-size: 12px; color: var(--text3); margin-top: 2px; }
+.symbol-item .rows { font-size: 12px; color: var(--text3); }
 
 /* ── K-line chart (Lightweight Charts) ── */
 .chart-container { position: relative; height: 360px; }
@@ -112,7 +139,7 @@ body {
 .param-group { margin-bottom: 16px; }
 .param-group label {
   display: block;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text2);
   margin-bottom: 8px;
   font-weight: 500;
@@ -123,7 +150,7 @@ body {
   gap: 10px;
   margin-bottom: 10px;
 }
-.param-row label { min-width: 80px; font-size: 12px; color: var(--text3); }
+.param-row label { min-width: 80px; font-size: 13px; color: var(--text3); }
 .param-row input[type=range] {
   flex: 1;
   accent-color: var(--accent);
@@ -136,13 +163,13 @@ body {
   border-radius: 6px;
   color: var(--text);
   padding: 4px 8px;
-  font-size: 13px;
+  font-size: 14px;
   text-align: center;
 }
 .param-value {
   min-width: 50px;
   text-align: right;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   color: var(--accent2);
   font-variant-numeric: tabular-nums;
@@ -156,7 +183,7 @@ body {
   gap: 6px;
   padding: 8px 16px;
   border-radius: 8px;
-  font-size: 13px;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   border: none;
@@ -194,7 +221,7 @@ body {
 .metric .val.green { color: var(--green); }
 .metric .val.red { color: var(--red); }
 .metric .lbl {
-  font-size: 11px;
+  font-size: 13px;
   color: var(--text3);
   margin-top: 4px;
   text-transform: uppercase;
@@ -205,12 +232,12 @@ body {
 #equityChart { width: 100% !important; }
 
 /* ── Comparison table ── */
-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
 thead tr { border-bottom: 1px solid var(--border); }
 th {
   padding: 8px 12px;
   text-align: left;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 600;
   color: var(--text3);
   text-transform: uppercase;
@@ -223,17 +250,21 @@ td {
 }
 tr:last-child td { border-bottom: none; }
 tr:hover td { background: var(--card2); }
-td .mono { font-variant-numeric: tabular-nums; font-size: 12px; }
+td .mono { font-variant-numeric: tabular-nums; font-size: 13px; }
 td .tag {
   display: inline-block;
   padding: 2px 8px;
   border-radius: 4px;
-  font-size: 11px;
+  font-size: 12px;
   background: var(--card2);
   color: var(--text2);
 }
 td .tag.tf { background: rgba(99,102,241,0.2); color: var(--accent); }
 td .tag.mr { background: rgba(34,211,238,0.15); color: var(--accent2); }
+td .tag.bb { background: rgba(245,158,11,0.2); color: var(--yellow); }
+td .tag.macd { background: rgba(16,185,129,0.2); color: var(--green); }
+td .tag.vwap { background: rgba(239,68,68,0.2); color: var(--red); }
+td .tag.dc { background: rgba(168,85,247,0.2); color: #a855f7; }
 .sharpe { font-weight: 700; }
 .sharpe.high { color: var(--green); }
 .sharpe.low { color: var(--red); }
@@ -250,30 +281,35 @@ td .tag.mr { background: rgba(34,211,238,0.15); color: var(--accent2); }
 }
 .scan-card:hover { border-color: var(--accent); }
 .scan-card.best { border-color: var(--green); background: rgba(16,185,129,0.08); }
-.scan-card .params { font-size: 12px; color: var(--text2); margin-bottom: 6px; }
+.scan-card .params { font-size: 13px; color: var(--text2); margin-bottom: 6px; }
 .scan-card .metrics { display: flex; gap: 10px; flex-wrap: wrap; }
-.scan-card .m { font-size: 12px; }
+.scan-card .m { font-size: 13px; }
 .scan-card .m .v { font-weight: 700; }
 .scan-card .m .v.g { color: var(--green); }
 .scan-card .m .m .v.r { color: var(--red); }
 
-/* ── Strategy tabs ── */
-.tabs { display: flex; gap: 4px; margin-bottom: 14px; }
-.tab {
-  flex: 1;
-  padding: 8px;
+/* ── Strategy grid (6 cards, 2×3) ── */
+.strategy-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.strategy-card {
+  padding: 10px 4px;
   text-align: center;
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   background: var(--card2);
   color: var(--text3);
   border: 1px solid transparent;
   transition: all 0.15s;
+  line-height: 1.3;
 }
-.tab.active { background: rgba(99,102,241,0.2); color: var(--accent); border-color: var(--accent); }
-.tab:hover:not(.active) { color: var(--text); }
+.strategy-card.active { background: rgba(99,102,241,0.2); color: var(--accent); border-color: var(--accent); }
+.strategy-card:hover:not(.active) { color: var(--text); }
 
 /* ── Loading spinner ── */
 .spinner {
@@ -297,20 +333,232 @@ td .tag.mr { background: rgba(34,211,238,0.15); color: var(--accent2); }
 .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
 
-/* ── 荐股日历 ── */
-.picks-day { margin-bottom: 14px; }
-.picks-date { font-size: 11px; color: var(--text3); margin-bottom: 6px; font-weight: 600; letter-spacing: 0.3px; }
-.picks-items { display: flex; flex-direction: column; gap: 6px; }
+/* ── AI Heat Dashboard ── */
+.ai-heat-trend-row {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 0;
+}
+.ai-heat-chart-col { position: relative; height: 220px; min-width: 0; }
+#aiHeatTrendChart { width: 100% !important; height: 100% !important; }
+.ai-heat-snapshot-col {
+  border-left: 1px solid var(--border);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.ai-heat-score-wrap { text-align: center; margin-bottom: 4px; }
+.ai-heat-num { font-size: 44px; font-weight: 800; font-variant-numeric: tabular-nums; line-height: 1; }
+.ai-heat-level { text-align: center; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.ai-heat-bar { height: 6px; background: var(--card2); border-radius: 3px; overflow: hidden; margin-bottom: 14px; width: 100%; }
+.ai-heat-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.ai-heat-meta { display: flex; justify-content: center; gap: 14px; margin-bottom: 12px; font-size: 11px; color: var(--text3); }
+.ai-heat-meta b { color: var(--text); }
+.ai-heat-conclusion {
+  padding: 10px 14px;
+  margin: 0 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.ai-heat-oneliner { font-size: 12px; color: var(--text2); flex: 1; min-width: 200px; }
+.ai-heat-suggestion { font-size: 12px; color: var(--yellow); padding: 6px 10px; background: rgba(245,158,11,0.08); border-radius: 6px; border-left: 3px solid var(--yellow); }
+.sector-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-size: 12px; }
+.sector-name { min-width: 90px; color: var(--text2); }
+.sector-bar { flex: 1; height: 7px; background: var(--card2); border-radius: 4px; overflow: hidden; }
+.sector-bar-fill { height: 100%; border-radius: 4px; transition: width 0.5s; }
+.sector-pct { min-width: 52px; text-align: right; font-weight: 600; font-variant-numeric: tabular-nums; font-size: 12px; }
+.sector-ratio { min-width: 60px; text-align: right; font-size: 11px; color: var(--text3); }
+.ai-heat-oneliner { font-size: 12px; color: var(--text2); margin-top: 14px; padding: 10px 12px; background: var(--card2); border-radius: 6px; }
+.ai-heat-suggestion { font-size: 12px; color: var(--yellow); margin-top: 8px; padding: 10px 12px; background: rgba(245,158,11,0.08); border-radius: 6px; border-left: 3px solid var(--yellow); }
+
+/* ── Month Calendar ── */
+.calendar-nav { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 14px; }
+.calendar-nav-btn {
+  background: var(--card2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 5px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.15s;
+}
+.calendar-nav-btn:hover { background: var(--accent); color: white; border-color: var(--accent); }
+.calendar-title { font-size: 15px; font-weight: 700; color: var(--text); min-width: 110px; text-align: center; }
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  text-align: center;
+  font-size: 11px;
+  color: var(--text3);
+  margin-bottom: 6px;
+  font-weight: 600;
+  padding: 0 2px;
+}
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 3px;
+  padding: 0 2px;
+  grid-auto-rows: minmax(60px, auto);
+}
+.calendar-day {
+  min-height: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  position: relative;
+  transition: background 0.15s;
+  padding: 3px 2px;
+  gap: 1px;
+}
+.calendar-day:hover { background: var(--card2); }
+.calendar-day.other-month { color: var(--text3); opacity: 0.35; cursor: default; }
+.calendar-day.today { border: 1px solid var(--accent); background: rgba(99,102,241,0.08); }
+.calendar-day .day-num { font-weight: 700; font-size: 12px; color: var(--text2); }
+.calendar-day.today .day-num { color: var(--accent); }
+.calendar-day .pick-stock {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--accent2);
+  line-height: 1.3;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  width: 100%;
+}
+.calendar-day .pick-price {
+  font-size: 9px;
+  font-weight: 400;
+  color: var(--text3);
+  line-height: 1.2;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  width: 100%;
+}
+
+
+/* ── Picks detail panel ── */
+.picks-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 0;
+}
+.picks-calendar-col { padding: 16px; }
+.picks-ranking-col {
+  border-left: 1px solid var(--border);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+}
+.picks-ranking-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.picks-ranking-list {
+  flex: 1;
+  overflow-y: auto;
+  max-height: 520px;
+}
+.picks-rank-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(42,45,62,0.5);
+}
+.picks-rank-item:last-child { border-bottom: none; }
+.picks-rank-num {
+  min-width: 22px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text3);
+  text-align: right;
+}
+.picks-rank-num.top1 { color: #f59e0b; }
+.picks-rank-num.top2 { color: #94a3b8; }
+.picks-rank-num.top3 { color: #cd7f32; }
+.picks-rank-body { flex: 1; min-width: 0; }
+.picks-rank-code { font-size: 12px; font-weight: 700; color: var(--text); }
+.picks-rank-name { font-size: 11px; color: var(--text3); margin-left: 4px; }
+.picks-rank-meta { font-size: 10px; color: var(--text3); margin-top: 2px; }
+.picks-rank-ret {
+  font-size: 14px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.picks-detail-header { font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); }
+.picks-detail-empty { color: var(--text3); font-size: 12px; text-align: center; padding: 16px; }
 .picks-item {
   background: var(--card2);
   border-radius: 8px;
   padding: 10px 12px;
   border-left: 3px solid var(--accent);
+  margin-bottom: 6px;
 }
 .picks-item-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px; }
+
+/* ── Picks Modal ── */
+.picks-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.picks-modal {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  width: 520px;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.5);
+}
+.picks-modal-header {
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.picks-modal-header h3 { font-size: 16px; color: var(--text); margin: 0; }
+.picks-modal-close {
+  background: none;
+  border: none;
+  color: var(--text3);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0 4px;
+  line-height: 1;
+}
+.picks-modal-close:hover { color: var(--text); }
+.picks-modal-body { padding: 16px 20px; }
 .picks-name { font-size: 13px; font-weight: 600; color: var(--text); }
 .picks-score { font-size: 12px; font-weight: 700; }
-.picks-item-detail { font-size: 11px; color: var(--text2); display: flex; gap: 8px; }
+.picks-item-detail { font-size: 11px; color: var(--text2); display: flex; gap: 10px; }
 .picks-item-returns { font-size: 11px; margin-top: 4px; display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
 </style>
 </head>
@@ -335,11 +583,16 @@ td .tag.mr { background: rgba(34,211,238,0.15); color: var(--accent2); }
   <!-- ── Left Sidebar ── -->
   <div class="sidebar">
 
-    <!-- 数据标的 -->
+    <!-- 数据标的（按市场Tab切换） -->
     <div class="card">
       <div class="card-header"><div class="dot"></div>数据标的</div>
-      <div class="card-body" style="padding:8px;">
-        <div id="symbolList"><div style="color:var(--text3);font-size:12px;padding:8px;">加载中...</div></div>
+      <div class="card-body" style="padding:0;">
+        <div class="market-tabs">
+          <button class="market-tab active" data-market="all">全部</button>
+          <button class="market-tab" data-market="A">A股</button>
+          <button class="market-tab" data-market="HK">港股</button>
+        </div>
+        <div id="symbolList" style="padding:8px;"><div style="color:var(--text3);font-size:12px;padding:8px;">加载中...</div></div>
       </div>
     </div>
 
@@ -347,9 +600,13 @@ td .tag.mr { background: rgba(34,211,238,0.15); color: var(--accent2); }
     <div class="card">
       <div class="card-header"><div class="dot"></div>策略</div>
       <div class="card-body">
-        <div class="tabs">
-          <div class="tab active" data-strategy="trend_following">趋势跟随</div>
-          <div class="tab" data-strategy="mean_reversion">均值回归</div>
+        <div class="strategy-grid">
+          <div class="strategy-card active" data-strategy="trend_following">趋势跟随</div>
+          <div class="strategy-card" data-strategy="mean_reversion">均值回归</div>
+          <div class="strategy-card" data-strategy="bollinger_bands">布林带</div>
+          <div class="strategy-card" data-strategy="macd_rsi">MACD+RSI</div>
+          <div class="strategy-card" data-strategy="vwap">VWAP</div>
+          <div class="strategy-card" data-strategy="donchian_channel">唐奇安通道</div>
         </div>
         <div id="paramPanel">
           <!-- 动态填充 -->
@@ -400,6 +657,57 @@ td .tag.mr { background: rgba(34,211,238,0.15); color: var(--accent2); }
           <span style="color:#6366f1">MA5</span>
           <span style="color:#22d3ee">MA20</span>
           <span style="color:#f59e0b">MA60</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI 热度仪表盘 -->
+    <div class="card" id="aiHeatCard">
+      <div class="card-header">
+        <div class="dot" style="background:var(--red)"></div>AI 热度仪表盘
+        <span id="aiHeatTime" style="font-weight:400;font-size:11px;color:var(--text3);margin-left:auto"></span>
+      </div>
+      <div class="ai-heat-trend-row">
+        <div class="ai-heat-chart-col">
+          <canvas id="aiHeatTrendChart"></canvas>
+        </div>
+        <div class="ai-heat-snapshot-col">
+          <div class="ai-heat-score-wrap">
+            <span class="ai-heat-num" id="aiHeatScore">--</span>
+          </div>
+          <div class="ai-heat-level" id="aiHeatLevel">加载中...</div>
+          <div class="ai-heat-bar"><div class="ai-heat-bar-fill" id="aiHeatBarFill" style="width:0%"></div></div>
+          <div class="ai-heat-meta">
+            <span>上涨 <b id="aiHeatUp">-</b></span>
+            <span>涨停 <b id="aiHeatLimitUp">-</b></span>
+            <span>总计 <b id="aiHeatTotal">-</b></span>
+          </div>
+          <div id="aiHeatSectors" style="text-align:center;"></div>
+        </div>
+      </div>
+      <div class="ai-heat-conclusion">
+        <div class="ai-heat-oneliner" id="aiHeatOneliner"></div>
+        <div class="ai-heat-suggestion" id="aiHeatSuggestion"></div>
+      </div>
+    </div>
+
+    <!-- 对手盘热度 -->
+    <div class="card" id="counterCard">
+      <div class="card-header">
+        <div class="dot" style="background:var(--accent2)"></div>🏢 对手盘热度（非AI板块）
+        <span id="counterTime" style="font-weight:400;font-size:11px;color:var(--text3);margin-left:auto"></span>
+      </div>
+      <div class="card-body">
+        <div class="ai-heat-meta" style="margin-bottom:8px;">
+          <span>轮动信号 <b id="counterSignal">-</b></span>
+          <span>AI热度 <b id="counterAiHeat">-</b></span>
+          <span>上涨 <b id="counterUp">-</b></span>
+          <span>总计 <b id="counterTotal">-</b></span>
+        </div>
+        <div id="counterSectors" style="display:flex;flex-direction:column;gap:6px;"></div>
+        <div class="ai-heat-conclusion">
+          <div class="ai-heat-oneliner" id="counterOneliner"></div>
+          <div class="ai-heat-suggestion" id="counterSuggestion"></div>
         </div>
       </div>
     </div>
@@ -478,15 +786,30 @@ td .tag.mr { background: rgba(34,211,238,0.15); color: var(--accent2); }
       </div>
     </div>
 
-    <!-- 荐股日历 -->
+    <!-- 荐股日历 (月视图) -->
     <div class="card" id="picksCard">
       <div class="card-header">
         <div class="dot"></div>荐股日历
         <span id="picksCount" style="font-weight:400;font-size:11px;color:var(--text3);margin-left:8px;"></span>
       </div>
-      <div class="card-body" style="padding:0;">
-        <div id="picksCalendar" style="padding:12px;">
-          <div style="color:var(--text3);font-size:12px;padding:8px;text-align:center;">加载中...</div>
+      <div class="picks-layout">
+        <div class="picks-calendar-col">
+          <div class="calendar-nav">
+            <button class="calendar-nav-btn" id="calPrev">◀</button>
+            <span class="calendar-title" id="calTitle"></span>
+            <button class="calendar-nav-btn" id="calNext">▶</button>
+          </div>
+          <div class="calendar-weekdays">
+            <span>日</span><span>一</span><span>二</span><span>三</span><span>四</span><span>五</span><span>六</span>
+          </div>
+          <div class="calendar-grid" id="calGrid"></div>
+          <div id="picksDetail" style="display:none;"></div>
+        </div>
+        <div class="picks-ranking-col">
+          <div class="picks-ranking-title">📊 收益排行</div>
+          <div class="picks-ranking-list" id="rankingList">
+            <div style="color:var(--text3);font-size:12px;text-align:center;padding:20px;">加载中...</div>
+          </div>
         </div>
       </div>
     </div>
@@ -494,15 +817,45 @@ td .tag.mr { background: rgba(34,211,238,0.15); color: var(--accent2); }
   </div>
 </div>
 
+<!-- 荐股详情弹窗 -->
+<div id="picksModal" style="display:none;"></div>
+
 <script>
 // ─────────────────────────────────────────────────────────────────────────
 // State
 // ─────────────────────────────────────────────────────────────────────────
+let currentMarket = 'all'; // 'all', 'A', 'HK'
 let currentSymbol = null;
 let currentStrategy = 'trend_following';
 let klineChart = null;
 let equityChart = null;
 let lastReport = null;
+
+// Calendar state
+let calYear, calMonth, selectedCalDate = null;
+let allPicks = [];
+let picksByDate = {};
+
+// ─────────────────────────────────────────────────────────────────────────
+// Strategy definitions
+// ─────────────────────────────────────────────────────────────────────────
+const STRATEGY_LABELS = {
+  trend_following: '趋势跟随',
+  mean_reversion: '均值回归',
+  bollinger_bands: '布林带',
+  macd_rsi: 'MACD+RSI',
+  vwap: 'VWAP',
+  donchian_channel: '唐奇安通道',
+};
+
+const STRATEGY_TAGS = {
+  trend_following: 'tf',
+  mean_reversion: 'mr',
+  bollinger_bands: 'bb',
+  macd_rsi: 'macd',
+  vwap: 'vwap',
+  donchian_channel: 'dc',
+};
 
 const STRATEGY_SCHEMA = {
   trend_following: [
@@ -513,6 +866,26 @@ const STRATEGY_SCHEMA = {
     { name: 'lookback_window', label: '历史窗口', type: 'int', default: 20, min: 5, max: 200, step: 5 },
     { name: 'entry_zscore',   label: '入场阈值', type: 'float', default: 1.0, min: 0.5, max: 3.0, step: 0.1 },
     { name: 'exit_zscore',    label: '平仓阈值', type: 'float', default: 0.3, min: 0.1, max: 1.5, step: 0.05 },
+  ],
+  bollinger_bands: [
+    { name: 'window',         label: '窗口期',     type: 'int',   default: 20,  min: 5,   max: 100,  step: 1 },
+    { name: 'num_std',        label: '标准差倍数', type: 'float', default: 2.0, min: 1.5, max: 3.0,  step: 0.25 },
+    { name: 'exit_threshold', label: '平仓阈值',   type: 'float', default: 0.0, min: 0.0, max: 1.0,  step: 0.1 },
+  ],
+  macd_rsi: [
+    { name: 'macd_fast',      label: 'MACD快线',  type: 'int',   default: 12,  min: 5,  max: 20,  step: 1 },
+    { name: 'macd_slow',      label: 'MACD慢线',  type: 'int',   default: 26,  min: 20, max: 50,  step: 1 },
+    { name: 'macd_signal',    label: 'MACD信号线',type: 'int',   default: 9,   min: 5,  max: 20,  step: 1 },
+    { name: 'rsi_period',     label: 'RSI周期',   type: 'int',   default: 14,  min: 7,  max: 30,  step: 1 },
+    { name: 'rsi_overbought', label: 'RSI超买',   type: 'float', default: 70.0,min: 60.0,max: 85.0,step: 2.0 },
+    { name: 'rsi_oversold',   label: 'RSI超卖',   type: 'float', default: 30.0,min: 15.0,max: 40.0,step: 2.0 },
+  ],
+  vwap: [
+    { name: 'deviation_pct', label: '偏离百分比(%)', type: 'float', default: 1.0, min: 0.1, max: 5.0, step: 0.1 },
+  ],
+  donchian_channel: [
+    { name: 'channel_period', label: '通道周期', type: 'int', default: 20, min: 10, max: 100, step: 1 },
+    { name: 'exit_period',    label: '退出周期', type: 'int', default: 10, min: 5,  max: 50,  step: 1 },
   ],
 };
 
@@ -533,6 +906,26 @@ const PRESETS = {
     { label: '敏感 (0.8/0.2)', params: { lookback_window: 20, entry_zscore: 0.8, exit_zscore: 0.2 } },
     { label: '默认 (1.0/0.3)', params: { lookback_window: 20, entry_zscore: 1.0, exit_zscore: 0.3 } },
     { label: '保守 (1.5/0.5)', params: { lookback_window: 30, entry_zscore: 1.5, exit_zscore: 0.5 } },
+  ],
+  bollinger_bands: [
+    { label: '默认 (20/2.0)',   params: { window: 20, num_std: 2.0, exit_threshold: 0.0 } },
+    { label: '窄带 (15/1.5)',  params: { window: 15, num_std: 1.5, exit_threshold: 0.0 } },
+    { label: '宽带 (30/2.5)',  params: { window: 30, num_std: 2.5, exit_threshold: 0.5 } },
+  ],
+  macd_rsi: [
+    { label: '默认 (12/26/9)',   params: { macd_fast: 12, macd_slow: 26, macd_signal: 9, rsi_period: 14, rsi_overbought: 70, rsi_oversold: 30 } },
+    { label: '激进 (8/21/5)',   params: { macd_fast: 8, macd_slow: 21, macd_signal: 5, rsi_period: 14, rsi_overbought: 68, rsi_oversold: 32 } },
+    { label: '保守 (15/35/12)', params: { macd_fast: 15, macd_slow: 35, macd_signal: 12, rsi_period: 20, rsi_overbought: 75, rsi_oversold: 25 } },
+  ],
+  vwap: [
+    { label: '默认 (±1.0%)',  params: { deviation_pct: 1.0 } },
+    { label: '敏感 (±0.5%)', params: { deviation_pct: 0.5 } },
+    { label: '宽松 (±2.0%)', params: { deviation_pct: 2.0 } },
+  ],
+  donchian_channel: [
+    { label: '默认 (20/10)',  params: { channel_period: 20, exit_period: 10 } },
+    { label: '短线 (15/5)',  params: { channel_period: 15, exit_period: 5 } },
+    { label: '长线 (30/15)', params: { channel_period: 30, exit_period: 15 } },
   ],
 };
 
@@ -560,6 +953,10 @@ function fmtDate(ts) {
   return ts.replace('T', ' ').slice(0, 16);
 }
 
+function formatDateStr(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
 // ─────────────────────────────────────────────────────────────────────────
 // API calls
 // ─────────────────────────────────────────────────────────────────────────
@@ -584,35 +981,50 @@ async function postJSON(url, body) {
 async function loadSymbols() {
   try {
     const symbols = await fetchJSON('/api/symbols');
-    const container = document.getElementById('symbolList');
-    if (!symbols.length) {
-      container.innerHTML = '<div style="color:var(--text3);font-size:12px;padding:8px;">暂无数据</div>';
-      return;
-    }
-    container.innerHTML = symbols.map(s => `
-      <div class="symbol-item${currentSymbol === s.symbol ? ' active' : ''}" data-symbol="${s.symbol}">
-        <div>
-          <div class="sym">${s.symbol}</div>
-          <div class="info">${s.start_date} ~ ${s.end_date}</div>
-        </div>
-        <div class="rows">${s.rows}条</div>
-      </div>
-    `).join('');
-    container.querySelectorAll('.symbol-item').forEach(el => {
-      el.addEventListener('click', () => {
-        currentSymbol = el.dataset.symbol;
-        loadSymbols();
-        loadTimeseries(currentSymbol);
-        document.getElementById('chartTitle').textContent = currentSymbol + ' 日线';
+    window._allSymbols = symbols;
+    renderSymbolList();
+    document.querySelectorAll('.market-tab').forEach(tab => {
+      tab.addEventListener('click', () => {
+        document.querySelectorAll('.market-tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        currentMarket = tab.dataset.market;
+        renderSymbolList();
       });
     });
-    // 默认选第一个
-    if (!currentSymbol && symbols.length) {
-      currentSymbol = symbols[0].symbol;
-      loadTimeseries(currentSymbol);
-      document.getElementById('chartTitle').textContent = currentSymbol + ' 日线';
-    }
   } catch(e) { console.error('loadSymbols', e); }
+}
+
+function renderSymbolList() {
+  const symbols = window._allSymbols || [];
+  const container = document.getElementById('symbolList');
+  const filtered = currentMarket === 'all' ? symbols : symbols.filter(s => s.market === currentMarket);
+  if (!filtered.length) {
+    container.innerHTML = '<div style="color:var(--text3);font-size:12px;padding:8px;">暂无' + (currentMarket==='A'?'A股':currentMarket==='HK'?'港股':'') + '标的</div>';
+    return;
+  }
+  container.innerHTML = filtered.map(s => `
+    <div class="symbol-item${currentSymbol===s.symbol?' active':''}" data-symbol="${s.symbol}">
+      <div>
+        <div class="sym">${s.name||s.symbol} <span class="sym-code">${s.symbol}</span></div>
+        <div class="info">${s.start_date} ~ ${s.end_date}</div>
+      </div>
+      <div class="rows">${s.rows}条</div>
+    </div>
+  `).join('');
+  container.querySelectorAll('.symbol-item').forEach(el => {
+    el.addEventListener('click', () => {
+      currentSymbol = el.dataset.symbol;
+      renderSymbolList();
+      loadTimeseries(currentSymbol);
+      const n = el.querySelector('.sym').childNodes[0].textContent.trim();
+      document.getElementById('chartTitle').textContent = n + ' ' + el.dataset.symbol + ' 日线';
+    });
+  });
+  if (!currentSymbol && filtered.length) {
+    currentSymbol = filtered[0].symbol;
+    loadTimeseries(currentSymbol);
+    document.getElementById('chartTitle').textContent = (filtered[0].name||filtered[0].symbol) + ' ' + filtered[0].symbol + ' 日线';
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -630,11 +1042,16 @@ async function loadTimeseries(symbol) {
 }
 
 function renderKline(bars) {
-  // Destroy existing chart
   if (klineChart) { klineChart.remove(); klineChart = null; }
 
   const container = document.getElementById('klineChart');
   container.innerHTML = '';
+
+  // Ensure container has width before rendering (layout may not be settled on first load)
+  if (!container.clientWidth || container.clientWidth < 50) {
+    requestAnimationFrame(() => renderKline(bars));
+    return;
+  }
 
   klineChart = LightweightCharts.createChart(container, {
     width: container.clientWidth,
@@ -653,13 +1070,12 @@ function renderKline(bars) {
       vertLine: { color: '#6366f1', labelBackgroundColor: '#6366f1' },
       horzLine: { color: '#6366f1', labelBackgroundColor: '#6366f1' },
     },
-    rightPriceScale: { borderColor: '#2a2d3e', scaleMargins: { top: 0.1, bottom: 0.1 } },
+    rightPriceScale: { borderColor: '#2a2d3e' },
     timeScale: { borderColor: '#2a2d3e', timeVisible: false, secondsVisible: false },
     handleScale: { mouseWheel: true, pinch: true },
     handleScroll: { mouseWheel: true, pressedMouseMove: true },
   });
 
-  // Candlestick series
   const candleData = bars.map(b => ({
     time: b.timestamp.slice(0,10),
     open: b.open,
@@ -667,7 +1083,7 @@ function renderKline(bars) {
     low: b.low,
     close: b.close,
   }));
-  const candleSeries = klineChart.addCandlestickSeries({
+  const candleSeries = klineChart.addSeries(LightweightCharts.CandlestickSeries, {
     upColor: '#10b981',
     downColor: '#ef4444',
     borderUpColor: '#10b981',
@@ -676,47 +1092,56 @@ function renderKline(bars) {
     wickDownColor: '#ef4444',
   });
   candleSeries.setData(candleData);
+  window._candleSeries = candleSeries;
 
-  // Moving averages
   const closes = bars.map(b => b.close);
   const ma5  = calcMA(closes, 5);
   const ma20 = calcMA(closes, 20);
   const ma60 = calcMA(closes, 60);
 
-  const ma5Series = klineChart.addLineSeries({
+  const ma5Series = klineChart.addSeries(LightweightCharts.LineSeries, {
     color: '#6366f1',
     lineWidth: 1.5,
-    priceLineVisible: false,
-    lastValueVisible: false,
   });
-  ma5Series.setData(ma5.map((v, i) => v == null ? null : { time: bars[i].timestamp.slice(0,10), value: v }));
+  const ma5Data = ma5.map((v, i) => ({ time: bars[i].timestamp.slice(0,10), value: v })).filter(d => d.value != null);
+  if (ma5Data.length) ma5Series.setData(ma5Data);
 
-  const ma20Series = klineChart.addLineSeries({
+  const ma20Series = klineChart.addSeries(LightweightCharts.LineSeries, {
     color: '#22d3ee',
     lineWidth: 1.5,
-    priceLineVisible: false,
-    lastValueVisible: false,
   });
-  ma20Series.setData(ma20.map((v, i) => v == null ? null : { time: bars[i].timestamp.slice(0,10), value: v }));
+  const ma20Data = ma20.map((v, i) => ({ time: bars[i].timestamp.slice(0,10), value: v })).filter(d => d.value != null);
+  if (ma20Data.length) ma20Series.setData(ma20Data);
 
-  const ma60Series = klineChart.addLineSeries({
+  const ma60Series = klineChart.addSeries(LightweightCharts.LineSeries, {
     color: '#f59e0b',
     lineWidth: 1.5,
-    priceLineVisible: false,
-    lastValueVisible: false,
   });
-  ma60Series.setData(ma60.map((v, i) => v == null ? null : { time: bars[i].timestamp.slice(0,10), value: v }));
+  const ma60Data = ma60.map((v, i) => ({ time: bars[i].timestamp.slice(0,10), value: v })).filter(d => d.value != null);
+  if (ma60Data.length) ma60Series.setData(ma60Data);
 
-  // Fit content
-  klineChart.timeScale().fitContent();
+  // ── Detect MA crosses & place arrows ──
+  const markers = detectCrossSignals(bars, ma5, ma20, ma60);
+  if (markers.length) {
+    candleSeries.setMarkers(markers);
+  }
 
-  // Tooltip on crosshair move
+  setTimeout(() => {
+    try {
+      // Show only last ~120 daily candles so bars are visible; user can scroll back
+      const totalBars = bars.length;
+      const visibleBars = Math.min(120, totalBars);
+      const fromIdx = totalBars - visibleBars;
+      const fromTime = bars[fromIdx].timestamp.slice(0, 10);
+      const toTime = bars[totalBars - 1].timestamp.slice(0, 10);
+      klineChart.timeScale().setVisibleRange({ from: fromTime, to: toTime });
+    } catch(e) {}
+  }, 100);
+
   klineChart.subscribeCrosshairMove(param => {
     if (!param.time || !param.seriesData) return;
     const cd = param.seriesData.get(candleSeries);
     if (!cd) return;
-    const pct = ((cd.close - cd.open) / cd.open * 100).toFixed(2);
-    // could show tooltip here if needed
   });
 }
 
@@ -728,7 +1153,51 @@ function calcMA(closes, period) {
   });
 }
 
-// Resize observer for kline chart
+/**
+ * Detect golden-cross (金叉) and dead-cross (死叉) from MA lines.
+ * Detects cross between fast/slow MA lines; places ↑/↓ markers.
+ */
+function detectCrossSignals(bars, maFast, maSlow, maSlow2) {
+  const markers = [];
+  // Only use the most standard pair: MA5/MA20 (fast/slow)
+  // MA20/MA60 generates too many noisy crossovers
+  const pairs = [
+    { fast: maFast, slow: maSlow,  fastLabel: 'MA5', slowLabel: 'MA20', color: '#10b981', shape: 'arrowUp' },
+    { fast: maSlow, slow: maSlow2, fastLabel: 'MA20', slowLabel: 'MA60', color: '#22d3ee', shape: 'arrowUp' },
+  ];
+  for (const { fast, slow, fastLabel, slowLabel } of pairs) {
+    for (let i = 1; i < bars.length; i++) {
+      const fPrev = fast[i - 1], fCurr = fast[i];
+      const sPrev = slow[i - 1], sCurr = slow[i];
+      if (fPrev == null || sPrev == null || fCurr == null || sCurr == null) continue;
+      // Golden cross: fast crosses ABOVE slow → 🟢 买入
+      if (fPrev <= sPrev && fCurr > sCurr) {
+        markers.push({
+          time: bars[i].timestamp.slice(0, 10),
+          position: 'belowBar',
+          color: '#10b981',
+          shape: 'arrowUp',
+          size: 3,
+          text: `买 ${fastLabel}↥${slowLabel}`,
+        });
+      }
+      // Dead cross: fast crosses BELOW slow → 🔴 卖出
+      if (fPrev >= sPrev && fCurr < sCurr) {
+        markers.push({
+          time: bars[i].timestamp.slice(0, 10),
+          position: 'aboveBar',
+          color: '#ef4444',
+          shape: 'arrowDown',
+          size: 3,
+          text: `卖 ${fastLabel}↧${slowLabel}`,
+        });
+      }
+    }
+  }
+  // Keep last 30 markers (most recent visible)
+  return markers.slice(-30);
+}
+
 window.addEventListener('resize', () => {
   if (klineChart) {
     const container = document.getElementById('klineChart');
@@ -761,7 +1230,6 @@ function renderParamPanel() {
       </div>
     </div>
   `).join('');
-  // 也渲染风控参数
   renderRiskPanel();
   renderPresets();
 }
@@ -812,7 +1280,7 @@ function applyPreset(params) {
     const schema = [...(STRATEGY_SCHEMA[currentStrategy] || [])];
     const p = schema.find(x => x.name === k);
     if (!p) continue;
-    const display = p.type === 'float' ? v.toFixed ? v.toFixed(2) : v : v;
+    const display = p.type === 'float' ? (v.toFixed ? v.toFixed(2) : v) : v;
     document.getElementById('range_' + k).value = v;
     document.getElementById('num_' + k).value = v;
   }
@@ -898,75 +1366,75 @@ function renderResults(report) {
   document.getElementById('mDD').className = 'val red';
   document.getElementById('mStatus').textContent = report.status === 'completed' ? '✅ 完成' : '⚠️ ' + report.status;
 
-  // 尝试绘制净值曲线（如果有）
   renderEquityCurve(report.run_id, totalReturn);
 }
 
 function renderEquityCurve(runId, totalReturn) {
-  // 尝试加载净值数据，如果没有则用模拟数据
   const equityCard = document.getElementById('equityCard');
+  if (!equityCard) return;
   equityCard.style.display = '';
 
-  // 从当前 K 线数据构造买入持有基准
-  if (!klineChart) return;
-  const klineData = klineChart.data.datasets.find(d => d.label === 'Close');
-  if (!klineData || !klineData.data.length) return;
+  if (!klineChart || !window._candleSeries) return;
+  try {
+    const candleData = window._candleSeries.data();
+    if (!candleData || !candleData.length) return;
 
-  const equityCard2 = document.getElementById('equityCard');
-  const labels = klineData.data.map(d => d.x);
-  const closes = klineData.data.map(d => d.y);
-  if (!closes.length) return;
+    const labels = candleData.map(d => d.time);
+    const closes = candleData.map(d => d.close);
+    if (!closes.length) return;
 
-  const firstClose = closes[0];
-  const benchmark = closes.map(c => 1000000 * (c / firstClose));
-  // 策略净值: 简化处理，用买入持有 * (1 + totalReturn)
-  const strategy = closes.map(() => null); // 无真实数据时留空
-  // 如果有真实回测报告中的 equity_curve，从报告加载
+    const firstClose = closes[0];
+    if (!firstClose || firstClose <= 0) return;
+    const benchmark = closes.map(c => 1000000 * (c / firstClose));
 
-  if (equityChart) equityChart.destroy();
-  const ctx = document.getElementById('equityChart').getContext('2d');
+    if (equityChart) equityChart.destroy();
+    const ctx = document.getElementById('equityChart').getContext('2d');
 
-  equityChart = new Chart(ctx, {
-    data: {
-      labels: labels,
-      datasets: [
-        {
-          label: '买入持有',
-          data: benchmark,
-          borderColor: 'rgba(148,163,184,0.5)',
-          backgroundColor: 'transparent',
-          borderWidth: 1.5,
-          pointRadius: 0,
-          tension: 0.1,
+    equityChart = new Chart(ctx, {
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: '买入持有',
+            data: benchmark,
+            borderColor: 'rgba(148,163,184,0.5)',
+            backgroundColor: 'transparent',
+            borderWidth: 1.5,
+            pointRadius: 0,
+            tension: 0.1,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: { labels: { color: '#94a3b8', font: { size: 11 } } },
+          tooltip: {
+            backgroundColor: '#21253a',
+            titleColor: '#e2e8f0',
+            bodyColor: '#94a3b8',
+          },
         },
-      ],
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      interaction: { mode: 'index', intersect: false },
-      plugins: {
-        legend: { labels: { color: '#94a3b8', font: { size: 11 } } },
-        tooltip: {
-          backgroundColor: '#21253a',
-          titleColor: '#e2e8f0',
-          bodyColor: '#94a3b8',
+        scales: {
+          x: {
+            type: 'category',
+            ticks: { color: '#64748b', maxTicksLimit: 10, font: { size: 11 } },
+            grid: { color: 'rgba(42,45,62,0.5)' },
+          },
+          y: {
+            position: 'right',
+            ticks: { color: '#64748b', font: { size: 11 }, callback: v => v.toLocaleString() },
+            grid: { color: 'rgba(42,45,62,0.5)' },
+          },
         },
       },
-      scales: {
-        x: {
-          type: 'category',
-          ticks: { color: '#64748b', maxTicksLimit: 10, font: { size: 11 } },
-          grid: { color: 'rgba(42,45,62,0.5)' },
-        },
-        y: {
-          position: 'right',
-          ticks: { color: '#64748b', font: { size: 11 }, callback: v => v.toLocaleString() },
-          grid: { color: 'rgba(42,45,62,0.5)' },
-        },
-      },
-    },
-  });
+    });
+  } catch(e) {
+    console.error('renderEquityCurve failed:', e);
+    document.getElementById('equityCard').style.display = 'none';
+  }
 }
 
 // ─────────────────────────────────────────────────────────────────────────
@@ -981,12 +1449,13 @@ async function loadReports() {
       return;
     }
     tbody.innerHTML = reports.slice(0, 50).map(r => {
-      const tagClass = r.strategy === 'trend_following' ? 'tf' : 'mr';
+      const tagClass = STRATEGY_TAGS[r.strategy] || 'tf';
+      const stratLabel = STRATEGY_LABELS[r.strategy] || r.strategy;
       const sharpe = parseFloat(r.sharpe_ratio || 0);
       return `
         <tr onclick="loadReportDetail('${r.run_id}')" style="cursor:pointer">
           <td><span class="mono">${fmtDate(r.created_at)}</span></td>
-          <td><span class="tag ${tagClass}">${r.strategy === 'trend_following' ? '趋势' : '均值'}</span></td>
+          <td><span class="tag ${tagClass}">${stratLabel}</span></td>
           <td>${r.symbol}</td>
           <td class="mono" style="color:${parseFloat(r.total_return||0)>=0?'var(--green)':'var(--red)'}">${fmtPct(r.total_return)}</td>
           <td class="mono">${fmtPct(r.annualized_return)}</td>
@@ -1034,6 +1503,23 @@ document.getElementById('btnScan').addEventListener('click', async () => {
       lookback_window: [10, 20, 30],
       entry_zscore: [0.8, 1.0, 1.5],
     },
+    bollinger_bands: {
+      window: [10, 20, 30],
+      num_std: [1.5, 2.0, 2.5],
+    },
+    macd_rsi: {
+      macd_fast: [8, 12],
+      macd_slow: [21, 26],
+      macd_signal: [9],
+      rsi_period: [14],
+    },
+    vwap: {
+      deviation_pct: [0.5, 1.0, 2.0],
+    },
+    donchian_channel: {
+      channel_period: [15, 20, 30],
+      exit_period: [10, 15],
+    },
   };
 
   try {
@@ -1080,13 +1566,13 @@ function renderScanResults(results) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
-// Strategy tab switching
+// Strategy card switching
 // ─────────────────────────────────────────────────────────────────────────
-document.querySelectorAll('.tab').forEach(tab => {
-  tab.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    currentStrategy = tab.dataset.strategy;
+document.querySelectorAll('.strategy-card').forEach(card => {
+  card.addEventListener('click', () => {
+    document.querySelectorAll('.strategy-card').forEach(c => c.classList.remove('active'));
+    card.classList.add('active');
+    currentStrategy = card.dataset.strategy;
     renderParamPanel();
     document.getElementById('resultsCard').style.display = 'none';
     document.getElementById('equityCard').style.display = 'none';
@@ -1095,111 +1581,523 @@ document.querySelectorAll('.tab').forEach(tab => {
 });
 
 // ─────────────────────────────────────────────────────────────────────────
+// AI Heat Dashboard
+// ─────────────────────────────────────────────────────────────────────────
+async function loadAIHeat() {
+  try {
+    const data = await fetchJSON('/api/ai-heat');
+    if (!data.ok) return;
+    renderAIHeat(data);
+    // After getting today's snapshot, also load history for trend
+    loadAIHeatTrend();
+  } catch(e) {
+    document.getElementById('aiHeatLevel').textContent = '加载失败';
+    console.error('loadAIHeat', e);
+  }
+}
+
+let aiHeatTrendChart = null;
+
+async function loadAIHeatTrend() {
+  try {
+    const resp = await fetchJSON('/api/ai-heat-history');
+    if (!resp.ok || !resp.history || resp.history.length === 0) return;
+    const hist = resp.history;
+
+    const labels = hist.map(h => h.date.slice(5)); // MM-DD
+    const heatSeries = hist.map(h => h.overall_heat);
+
+    // Build sector trends: collect unique sector names, then fill
+    const sectorMap = {};
+    hist.forEach(h => {
+      (h.sectors || []).forEach(s => {
+        if (!sectorMap[s.name]) sectorMap[s.name] = new Array(hist.length).fill(null);
+      });
+    });
+    hist.forEach((h, i) => {
+      (h.sectors || []).forEach(s => {
+        if (sectorMap[s.name]) sectorMap[s.name][i] = s.avg_change;
+      });
+    });
+
+    const sectorColors = ['#ef4444','#22d3ee','#f59e0b','#10b981','#a855f7'];
+    const datasets = [
+      {
+        label: '综合热度',
+        data: heatSeries,
+        borderColor: '#ef4444',
+        backgroundColor: 'rgba(239,68,68,0.08)',
+        borderWidth: 2.5,
+        pointRadius: 1,
+        pointHoverRadius: 5,
+        fill: true,
+        tension: 0.3,
+        yAxisID: 'y',
+      },
+    ];
+
+    let ci = 0;
+    for (const [name, series] of Object.entries(sectorMap)) {
+      datasets.push({
+        label: name,
+        data: series,
+        borderColor: sectorColors[ci % sectorColors.length],
+        borderWidth: 1,
+        borderDash: [4, 2],
+        pointRadius: 0,
+        pointHoverRadius: 3,
+        fill: false,
+        tension: 0.3,
+        yAxisID: 'y1',
+      });
+      ci++;
+    }
+
+    const ctx = document.getElementById('aiHeatTrendChart').getContext('2d');
+    if (aiHeatTrendChart) aiHeatTrendChart.destroy();
+    aiHeatTrendChart = new Chart(ctx, {
+      type: 'line',
+      data: { labels, datasets },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        interaction: { mode: 'index', intersect: false },
+        plugins: {
+          legend: {
+            position: 'bottom',
+            labels: {
+              boxWidth: 10,
+              boxHeight: 2,
+              padding: 8,
+              font: { size: 10 },
+              color: '#94a3b8',
+              usePointStyle: true,
+              pointStyleWidth: 12,
+            },
+          },
+          tooltip: {
+            backgroundColor: '#1a1d27',
+            borderColor: '#2a2d3e',
+            borderWidth: 1,
+            titleColor: '#e2e8f0',
+            bodyColor: '#94a3b8',
+          },
+        },
+        scales: {
+          x: {
+            ticks: { color: '#64748b', font: { size: 10 }, maxTicksLimit: 12 },
+            grid: { color: 'rgba(42,45,62,0.3)' },
+          },
+          y: {
+            type: 'linear',
+            position: 'left',
+            min: 0,
+            max: 100,
+            ticks: { color: '#ef4444', font: { size: 10 }, stepSize: 20, callback: v => v },
+            grid: { color: 'rgba(42,45,62,0.3)' },
+            title: { display: true, text: '热度指数', color: '#ef4444', font: { size: 10 } },
+          },
+          y1: {
+            type: 'linear',
+            position: 'right',
+            ticks: { color: '#22d3ee', font: { size: 10 }, callback: v => (v >= 0 ? '+' : '') + v.toFixed(1) + '%' },
+            grid: { drawOnChartArea: false },
+            title: { display: true, text: '板块涨跌', color: '#22d3ee', font: { size: 10 } },
+          },
+        },
+      },
+    });
+  } catch(e) {
+    console.error('loadAIHeatTrend', e);
+  }
+}
+
+function renderAIHeat(data) {
+  // Score & level
+  const score = data.overall_heat || 0;
+  const elScore = document.getElementById('aiHeatScore');
+  elScore.textContent = score.toFixed(1);
+  elScore.style.color = heatColor(score);
+
+  document.getElementById('aiHeatLevel').textContent = data.level || '';
+  document.getElementById('aiHeatLevel').style.color = heatColor(score);
+
+  // Bar
+  const barFill = document.getElementById('aiHeatBarFill');
+  barFill.style.width = Math.min(score, 100) + '%';
+  barFill.style.background = heatGradient(score);
+
+  // Meta
+  document.getElementById('aiHeatUp').textContent = data.total_up_count + '/' + data.total_count;
+  document.getElementById('aiHeatLimitUp').textContent = data.limit_up_total || 0;
+  document.getElementById('aiHeatTotal').textContent = data.total_count || '-';
+
+  // Timestamp
+  document.getElementById('aiHeatTime').textContent = data.timestamp || '';
+
+  // Sectors compact
+  const sectors = data.sectors || [];
+  const secContainer = document.getElementById('aiHeatSectors');
+  if (sectors.length) {
+    secContainer.innerHTML = '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:6px 12px;margin-top:4px;">' +
+      sectors.map(s => {
+        const chg = s.avg_change || 0;
+        const color = chg >= 0 ? 'var(--green)' : 'var(--red)';
+        return `<span style="font-size:11px;"><span style="color:var(--text3)">${s.name}</span> <span style="color:${color};font-weight:600">${chg >= 0 ? '+' : ''}${chg.toFixed(1)}%</span></span>`;
+      }).join('') +
+      '</div>';
+  }
+
+  // One-liner
+  const oneliner = document.getElementById('aiHeatOneliner');
+  if (data.one_liner) {
+    oneliner.textContent = '💬 ' + data.one_liner;
+  }
+
+  // Suggestion
+  const sugg = document.getElementById('aiHeatSuggestion');
+  if (data.suggestion) {
+    sugg.textContent = '🎯 ' + data.suggestion;
+  }
+}
+
+function heatColor(score) {
+  if (score >= 85) return '#dc2626';
+  if (score >= 70) return '#ef4444';
+  if (score >= 50) return '#f59e0b';
+  if (score >= 30) return '#22d3ee';
+  return '#64748b';
+}
+
+function heatGradient(score) {
+  if (score >= 85) return 'linear-gradient(90deg, #f59e0b, #ef4444, #dc2626)';
+  if (score >= 70) return 'linear-gradient(90deg, #f59e0b, #ef4444)';
+  if (score >= 50) return 'linear-gradient(90deg, #22d3ee, #f59e0b)';
+  if (score >= 30) return 'linear-gradient(90deg, #64748b, #22d3ee)';
+  return '#64748b';
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Counter Sector (对手盘热度)
+// ─────────────────────────────────────────────────────────────────────────
+async function loadCounterSector() {
+  try {
+    const resp = await fetchJSON('/api/counter-sector');
+    if (!resp.ok) { console.error('Counter sector error:', resp.error); return; }
+    renderCounterSector(resp);
+  } catch(e) {
+    console.error('loadCounterSector', e);
+  }
+}
+
+function renderCounterSector(data) {
+  document.getElementById('counterTime').textContent = data.timestamp || '';
+  document.getElementById('counterSignal').textContent = data.rotation_signal || '-';
+  document.getElementById('counterAiHeat').textContent = (data.ai_heat || 0).toFixed(0) + '/100';
+  document.getElementById('counterUp').textContent = (data.total_up || 0) + '/' + (data.total_cnt || 0);
+  document.getElementById('counterTotal').textContent = data.total_cnt || '-';
+
+  // Sector bars
+  const sectors = data.sectors || [];
+  const maxChg = Math.max(1, ...sectors.map(s => Math.abs(s.avg_change || 0)));
+  const container = document.getElementById('counterSectors');
+  container.innerHTML = sectors.map(s => {
+    const chg = s.avg_change || 0;
+    const color = chg >= 0 ? 'var(--green)' : 'var(--red)';
+    const barW = Math.max(2, Math.abs(chg) / maxChg * 60);
+    const barSide = chg >= 0 ? 'left' : 'right';
+    const arrow = chg >= 0 ? '▲' : '▼';
+    return `<div style="display:flex;align-items:center;gap:8px;height:22px;">
+      <span style="width:70px;font-size:12px;color:var(--text2);text-align:right;flex-shrink:0;">${s.name}</span>
+      <span style="font-size:11px;color:${color};font-weight:600;min-width:48px;text-align:${barSide};">${arrow} ${Math.abs(chg).toFixed(1)}%</span>
+      <div style="flex:1;height:6px;border-radius:3px;background:var(--card2);overflow:hidden;">
+        <div style="height:100%;width:${barW}%;background:${color};border-radius:3px;float:${barSide};${barSide === 'left' ? 'margin-right:auto' : 'margin-left:auto'}"></div>
+      </div>
+      <span style="font-size:10px;color:var(--text3);min-width:55px;">${s.up_count}/${s.total_count}涨</span>
+      <span style="font-size:10px;color:var(--text2);min-width:70px;text-align:left;">${s.top_gainer || '-'}</span>
+    </div>`;
+  }).join('');
+
+  // One-liner & suggestion
+  document.getElementById('counterOneliner').textContent = '💬 ' + (data.one_liner || '');
+  document.getElementById('counterSuggestion').textContent = '🎯 ' + (data.suggestion || '');
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Picks Calendar - Month View
+// ─────────────────────────────────────────────────────────────────────────
+async function loadPicksCalendar() {
+  try {
+    const resp = await fetchJSON('/api/picks?days=90');
+    allPicks = resp.picks || [];
+    document.getElementById('picksCount').textContent = allPicks.length + ' 条记录';
+
+    // Build picks-by-date map
+    picksByDate = {};
+    allPicks.forEach(p => {
+      const d = p.push_date;
+      if (!picksByDate[d]) picksByDate[d] = [];
+      picksByDate[d].push(p);
+    });
+
+    // Default to today's month
+    const today = new Date();
+    calYear = today.getFullYear();
+    calMonth = today.getMonth();
+
+    renderMonthCalendar();
+    renderPicksRanking();
+  } catch(e) {
+    document.getElementById('calGrid').innerHTML =
+      '<div style="color:var(--text3);font-size:12px;padding:16px;text-align:center;grid-column:1/-1;">加载失败: ' + e.message + '</div>';
+  }
+}
+
+function renderPicksRanking() {
+  const container = document.getElementById('rankingList');
+  // Pick the best return per unique stock (latest entry if same code)
+  const latestPerCode = {};
+  for (const p of allPicks) {
+    const key = p.code;
+    if (!latestPerCode[key] || (p.final_return != null && (latestPerCode[key].final_return == null || p.push_date > latestPerCode[key].push_date))) {
+      latestPerCode[key] = p;
+    }
+  }
+  let ranked = Object.values(latestPerCode);
+  // Sort: has return first, then by return desc; no return at bottom, by score desc
+  ranked.sort((a, b) => {
+    const aHas = a.final_return != null;
+    const bHas = b.final_return != null;
+    if (aHas && !bHas) return -1;
+    if (!aHas && bHas) return 1;
+    if (aHas && bHas) return b.final_return - a.final_return;
+    return (b.score || 0) - (a.score || 0);
+  });
+
+  const topN = ranked.slice(0, 30);
+  container.innerHTML = topN.map((p, idx) => {
+    const ret = p.final_return;
+    const entry = p.entry_price != null ? p.entry_price.toFixed(2) : '-';
+    const sl = p.stop_loss != null ? p.stop_loss.toFixed(2) : '-';
+    const tp = p.take_profit != null ? p.take_profit.toFixed(2) : '-';
+    let rankClass = '';
+    if (idx === 0) rankClass = ' top1';
+    else if (idx === 1) rankClass = ' top2';
+    else if (idx === 2) rankClass = ' top3';
+
+    let retHtml = '';
+    if (ret != null) {
+      const retColor = ret >= 0 ? 'var(--green)' : 'var(--red)';
+      const retText = (ret >= 0 ? '+' : '') + ret.toFixed(1) + '%';
+      const statusIcon = p.status === 'hit_profit' ? '✅' : p.status === 'hit_stop' ? '❌' : '⏳';
+      retHtml = `<span class="picks-rank-ret" style="color:${retColor}">${retText} ${statusIcon}</span>`;
+    } else {
+      const scoreColor = (p.score || 0) >= 80 ? 'var(--green)' : 'var(--accent2)';
+      retHtml = `<span class="picks-rank-ret" style="color:${scoreColor};font-size:11px;">${p.score || '-'}分</span>`;
+    }
+    const reason = (p.reason || '').slice(0, 20);
+    return `<div class="picks-rank-item">
+      <span class="picks-rank-num${rankClass}">${idx + 1}</span>
+      <div class="picks-rank-body">
+        <span class="picks-rank-code">${p.code}</span><span class="picks-rank-name">${p.name || ''}</span>
+        <div class="picks-rank-meta">买${entry} 盈${tp} 损${sl} · ${reason}</div>
+      </div>
+      ${retHtml}
+    </div>`;
+  }).join('');
+}
+
+function renderMonthCalendar() {
+  // Title
+  document.getElementById('calTitle').textContent = calYear + '年' + (calMonth + 1) + '月';
+
+  // Compute calendar cells
+  const firstDay = new Date(calYear, calMonth, 1).getDay(); // 0=Sun
+  const daysInMonth = new Date(calYear, calMonth + 1, 0).getDate();
+  const prevMonthLastDay = new Date(calYear, calMonth, 0).getDate();
+
+  const today = new Date();
+  const todayStr = formatDateStr(today);
+
+  let cells = [];
+
+  // Previous month trailing days
+  const prevYear = calMonth === 0 ? calYear - 1 : calYear;
+  const prevMonth = calMonth === 0 ? 11 : calMonth - 1;
+  for (let i = firstDay - 1; i >= 0; i--) {
+    const d = prevMonthLastDay - i;
+    const dateStr = `${prevYear}-${String(prevMonth+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    cells.push({ day: d, dateStr, isOtherMonth: true, pickCount: (picksByDate[dateStr] || []).length });
+  }
+
+  // Current month days
+  for (let i = 1; i <= daysInMonth; i++) {
+    const dateStr = `${calYear}-${String(calMonth+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+    cells.push({ day: i, dateStr, isOtherMonth: false, pickCount: (picksByDate[dateStr] || []).length });
+  }
+
+  // Next month leading days
+  const remaining = 7 - (cells.length % 7);
+  if (remaining < 7) {
+    const nextYear = calMonth === 11 ? calYear + 1 : calYear;
+    const nextMonth = calMonth === 11 ? 0 : calMonth + 1;
+    for (let i = 1; i <= remaining; i++) {
+      const dateStr = `${nextYear}-${String(nextMonth+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
+      cells.push({ day: i, dateStr, isOtherMonth: true, pickCount: (picksByDate[dateStr] || []).length });
+    }
+  }
+
+  // Render grid
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = cells.map(c => {
+    let cls = 'calendar-day';
+    if (c.isOtherMonth) cls += ' other-month';
+    if (c.dateStr === todayStr) cls += ' today';
+
+    let stockLines = '';
+    const dayPicks = picksByDate[c.dateStr] || [];
+    // Dedupe by (code, name) combo and show full entry/SL/TP info
+    const seen = new Set();
+    const uniquePicks = [];
+    for (const p of dayPicks) {
+      const key = (p.code || '') + '|' + (p.name || '');
+      if (!seen.has(key)) { seen.add(key); uniquePicks.push(p); }
+    }
+    if (uniquePicks.length > 0) {
+      stockLines = uniquePicks.map(p => {
+        const entry = p.entry_price != null ? p.entry_price.toFixed(2) : '-';
+        const sl = p.stop_loss != null ? p.stop_loss.toFixed(2) : '-';
+        const tp = p.take_profit != null ? p.take_profit.toFixed(2) : '-';
+        const ret = p.final_return;
+        let stockColor = 'var(--accent2)'; // 未结算 → 蓝色
+        if (ret != null) {
+          stockColor = ret >= 0 ? 'var(--green)' : 'var(--red)';
+        }
+        return `<span class="pick-stock" style="color:${stockColor}">${p.code || ''} ${p.name || ''}</span>
+          <span class="pick-price">买${entry} 止盈${tp} 止损${sl}</span>`;
+      }).join('');
+    }
+
+    return `<div class="${cls}" data-date="${c.dateStr}" ${c.isOtherMonth ? '' : `onclick="selectCalendarDay('${c.dateStr}')"`}>
+      <span class="day-num">${c.day}</span>
+      ${stockLines}
+    </div>`;
+  }).join('');
+
+}
+
+function selectCalendarDay(dateStr) {
+  const dayPicks = picksByDate[dateStr] || [];
+  if (!dayPicks.length) return;
+  // Show modal with full details
+  const now = new Date();
+  const todayStr = now.getFullYear() + '-' + String(now.getMonth()+1).padStart(2,'0') + '-' + String(now.getDate()).padStart(2,'0');
+  const isToday = dateStr === todayStr;
+  const html = `
+    <div class="picks-modal-overlay" onclick="closePicksModal(event)">
+      <div class="picks-modal" onclick="event.stopPropagation()">
+        <div class="picks-modal-header">
+          <h3>📋 ${dateStr} ${isToday ? '(今天)' : ''} — ${dayPicks.length} 条荐股</h3>
+          <button class="picks-modal-close" onclick="closePicksModal()">&times;</button>
+        </div>
+        <div class="picks-modal-body">
+          ${dayPicks.map(p => renderPickItem(p)).join('')}
+        </div>
+      </div>
+    </div>`;
+  document.getElementById('picksModal').innerHTML = html;
+  document.getElementById('picksModal').style.display = 'block';
+}
+
+function closePicksModal(e) {
+  // Called from overlay click (e=event) or close button (e=undefined)
+  if (e && e.target !== e.currentTarget) return;
+  document.getElementById('picksModal').style.display = 'none';
+  document.getElementById('picksModal').innerHTML = '';
+}
+
+function updatePicksDetail() {
+  const container = document.getElementById('picksDetail');
+  if (!selectedCalDate) {
+    container.innerHTML = '<div class="picks-detail-empty">点击日期查看荐股详情</div>';
+    return;
+  }
+
+  const dayPicks = picksByDate[selectedCalDate] || [];
+  if (!dayPicks.length) {
+    container.innerHTML = `<div class="picks-detail-empty">${selectedCalDate} 无荐股记录</div>`;
+    return;
+  }
+
+  container.innerHTML = `
+    <div class="picks-detail-header">📋 ${selectedCalDate} — ${dayPicks.length} 条荐股</div>
+    ${dayPicks.map(p => renderPickItem(p)).join('')}
+  `;
+}
+
+function renderPickItem(p) {
+  const entry = p.entry_price ? p.entry_price.toFixed(2) : '-';
+  const sl = p.stop_loss ? p.stop_loss.toFixed(2) : '-';
+  const tp = p.take_profit ? p.take_profit.toFixed(2) : '-';
+  const ret = p.final_return;
+  const maxR = p.max_return;
+
+  let retColor = 'var(--text3)';
+  let retText = '-';
+  let statusIcon = '⏳';
+  if (ret !== null && ret !== undefined) {
+    retText = (ret >= 0 ? '+' : '') + ret.toFixed(2) + '%';
+    retColor = ret >= 0 ? 'var(--green)' : 'var(--red)';
+    if (p.status === 'hit_profit') statusIcon = '✅';
+    else if (p.status === 'hit_stop') statusIcon = '❌';
+    else statusIcon = '⏳';
+  } else if (p.tracking_days > 0) {
+    retText = '追踪' + p.tracking_days + '天';
+  }
+
+  const scoreColor = p.score >= 80 ? 'var(--green)' : p.score >= 70 ? 'var(--accent2)' : 'var(--text3)';
+
+  return `
+    <div class="picks-item">
+      <div class="picks-item-header">
+        <span class="picks-name">${statusIcon} ${p.code} ${p.name}</span>
+        <span class="picks-score" style="color:${scoreColor}">评分${p.score}</span>
+      </div>
+      <div class="picks-item-detail">
+        <span>入场${entry}</span>
+        <span style="color:var(--red)">损${sl}</span>
+        <span style="color:var(--green)">盈${tp}</span>
+      </div>
+      <div class="picks-item-returns">
+        <span style="color:${retColor}">${retText}</span>
+        ${maxR !== null && maxR > 0 ? `<span style="color:var(--accent2);font-size:10px;"> 最高+${maxR.toFixed(1)}%</span>` : ''}
+        <span style="color:var(--text3);font-size:10px;"> ${p.reason || ''}</span>
+      </div>
+    </div>`;
+}
+
+// Calendar navigation
+document.getElementById('calPrev').addEventListener('click', () => {
+  calMonth--;
+  if (calMonth < 0) { calMonth = 11; calYear--; }
+  renderMonthCalendar();
+});
+
+document.getElementById('calNext').addEventListener('click', () => {
+  calMonth++;
+  if (calMonth > 11) { calMonth = 0; calYear++; }
+  renderMonthCalendar();
+});
+
+// ─────────────────────────────────────────────────────────────────────────
 // Boot
 // ─────────────────────────────────────────────────────────────────────────
 renderParamPanel();
 loadSymbols();
 loadReports();
+loadAIHeat();
+loadCounterSector();
 loadPicksCalendar();
-
-// ─────────────────────────────────────────────────────────────────────────
-// 荐股日历
-// ─────────────────────────────────────────────────────────────────────────
-async function loadPicksCalendar() {
-  try {
-    const resp = await fetchJSON('/api/picks?days=90');
-    const picks = resp.picks || [];
-    document.getElementById('picksCount').textContent = `${picks.length} 条记录`;
-    renderPicksCalendar(picks);
-  } catch(e) {
-    document.getElementById('picksCalendar').innerHTML =
-      '<div style="color:var(--text3);font-size:12px;padding:8px;">加载失败: ' + e.message + '</div>';
-  }
-}
-
-function renderPicksCalendar(picks) {
-  const container = document.getElementById('picksCalendar');
-  if (!picks.length) {
-    container.innerHTML = '<div style="color:var(--text3);font-size:12px;text-align:center;padding:16px;">暂无荐股记录</div>';
-    return;
-  }
-
-  // 按 push_date 分组
-  const byDate = {};
-  picks.forEach(p => {
-    const d = p.push_date;
-    if (!byDate[d]) byDate[d] = [];
-    byDate[d].push(p);
-  });
-
-  const dates = Object.keys(byDate).sort((a, b) => b.localeCompare(a));
-  let html = '';
-
-  dates.forEach(date => {
-    const dayPicks = byDate[date];
-    html += `<div class="picks-day">`;
-    html += `<div class="picks-date">${formatDateLabel(date)}</div>`;
-    html += `<div class="picks-items">`;
-    dayPicks.forEach(p => {
-      const entry = p.entry_price ? p.entry_price.toFixed(2) : '-';
-      const sl = p.stop_loss ? p.stop_loss.toFixed(2) : '-';
-      const tp = p.take_profit ? p.take_profit.toFixed(2) : '-';
-      const ret = p.final_return;
-      const maxR = p.max_return;
-
-      let retColor = 'var(--text3)';
-      let retText = '-';
-      let statusIcon = '⏳';
-      if (ret !== null && ret !== undefined) {
-        retText = (ret >= 0 ? '+' : '') + ret.toFixed(2) + '%';
-        retColor = ret >= 0 ? 'var(--green)' : 'var(--red)';
-        if (p.status === 'hit_profit') statusIcon = '✅';
-        else if (p.status === 'hit_stop') statusIcon = '❌';
-        else statusIcon = '⏳';
-      } else if (p.tracking_days > 0) {
-        retText = `追踪${p.tracking_days}天`;
-      }
-
-      const scoreColor = p.score >= 80 ? 'var(--green)' : p.score >= 70 ? 'var(--accent2)' : 'var(--text3)';
-
-      html += `
-        <div class="picks-item">
-          <div class="picks-item-header">
-            <span class="picks-name">${statusIcon} ${p.code} ${p.name}</span>
-            <span class="picks-score" style="color:${scoreColor}">${p.score}</span>
-          </div>
-          <div class="picks-item-detail">
-            <span>入场${entry}</span>
-            <span style="color:var(--red)">损${sl}</span>
-            <span style="color:var(--green)">盈${tp}</span>
-          </div>
-          <div class="picks-item-returns">
-            <span style="color:${retColor}">${retText}</span>
-            ${maxR !== null && maxR > 0 ? `<span style="color:var(--accent2);font-size:10px;"> 最高+${maxR.toFixed(1)}%</span>` : ''}
-            <span style="color:var(--text3);font-size:10px;"> ${p.reason || ''}</span>
-          </div>
-        </div>`;
-    });
-    html += `</div></div>`;
-  });
-
-  container.innerHTML = html;
-}
-
-function formatDateLabel(dateStr) {
-  // dateStr format: YYYY-MM-DD
-  const d = new Date(dateStr);
-  const today = new Date();
-  const yesterday = new Date(today);
-  yesterday.setDate(today.getDate() - 1);
-  if (dateStr === formatDate(today)) return '📅 今日';
-  if (dateStr === formatDate(yesterday)) return '🗓 昨日';
-  return '📅 ' + dateStr;
-}
-
-function formatDate(d) {
-  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-}
 </script>
 </body>
 </html>

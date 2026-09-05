@@ -117,7 +117,7 @@ def update_push_status(push_id: str, updates: Dict):
         data = json.load(f)
 
     for p in data["pushes"]:
-        if p["push_id"] == push_id:
+        if p.get("push_id") == push_id:
             p.update(updates)
             break
 

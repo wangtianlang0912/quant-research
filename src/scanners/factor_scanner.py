@@ -114,14 +114,14 @@ class ScanConfig:
     a_max_change: float = 6.0      # 最大涨跌幅
     a_max_pe: float = 100          # 最大PE
     
-    # 港股参数（成交额用亿港元）
-    hk_min_amount: float = 5e8     # 最小成交额5亿港元
-    hk_max_amount: float = 100e8
-    hk_min_turnover: float = 0.5
-    hk_max_turnover: float = 10.0
-    hk_min_change: float = 1.0
-    hk_max_change: float = 6.0
-    hk_max_pe: float = 50
+    # 港股参数（成交额用亿港元，更宽松以适应大盘蓝筹）
+    hk_min_amount: float = 1e8      # 最小成交额1亿港元
+    hk_max_amount: float = 500e8    # 最大成交额500亿港元
+    hk_min_turnover: float = 0.1    # 最小换手率0.1%
+    hk_max_turnover: float = 20.0   # 最大换手率20%
+    hk_min_change: float = -2.0     # 最小涨跌幅-2%
+    hk_max_change: float = 8.0      # 最大涨跌幅8%
+    hk_max_pe: float = 200          # 最大PE(港科技股PE偏高，且很多为负)
     
     # 美股参数（成交额用美元）
     us_min_amount: float = 10e8    # 最小成交额10亿美元
@@ -254,12 +254,20 @@ class MultiMarketScanner:
         return results[:self.cfg.top_n_per_market]
     
     def _scan_hk(self) -> List[ScanResult]:
-        """扫描港股"""
+        """扫描港股 - 分批获取行情"""
         codes = self._get_hk_codes()
-        quotes = self.client._get_quotes(codes)
+        all_quotes = []
+        for i in range(0, len(codes), 800):
+            batch = codes[i:i+800]
+            quotes = self.client._get_quotes(batch)
+            all_quotes.extend(quotes)
+            if i + 800 < len(codes):
+                time.sleep(0.3)
+        
+        print(f"[港股扫描] 获取行情 {len(all_quotes)}/{len(codes)} 只")
         
         results = []
-        for q in quotes:
+        for q in all_quotes:
             if self._filter_hk(q):
                 score, reasons, factors, tech = self._score_with_tech(q, 'HK')
                 if score > 30:
@@ -438,11 +446,13 @@ class MultiMarketScanner:
         amount = q.amount  # 港元
         if not (self.cfg.hk_min_amount <= amount <= self.cfg.hk_max_amount):
             return False
-        if not (self.cfg.hk_min_turnover <= q.turnover_rate <= self.cfg.hk_max_turnover):
-            return False
+        # 腾讯API对港股换手率常返回0，跳过换手率过滤（有成交额兜底）
+        if q.turnover_rate > 0:
+            if not (self.cfg.hk_min_turnover <= q.turnover_rate <= self.cfg.hk_max_turnover):
+                return False
         if not (self.cfg.hk_min_change <= q.change_pct <= self.cfg.hk_max_change):
             return False
-        if q.pe > self.cfg.hk_max_pe:
+        if q.pe > self.cfg.hk_max_pe and q.pe > 0:
             return False
         return True
     
@@ -572,18 +582,107 @@ class MultiMarketScanner:
         return score, reasons, factors, tech
     
     def _get_klines(self, code: str, market: str) -> List[KlineBar]:
-        """获取K线数据"""
-        # 根据市场构造完整代码
-        if market == 'A':
-            full_code = code  # 已经是 sh600000 格式
-        elif market == 'HK':
-            full_code = code  # 已经是 hk00700 格式
-        elif market == 'US':
-            full_code = code  # 已经是 usAAPL 格式
-        else:
+        """获取K线数据，A股走腾讯/新浪，港股美股优先读 Yahoo 缓存"""
+        # 港股: 优先读 dashboard cache (Yahoo Finance)
+        if market == 'HK':
+            bars = self._load_hk_klines_from_cache(code)
+            if bars:
+                return bars
+        # 美股: 也尝试 Yahoo cache
+        if market == 'US':
+            bars = self._load_us_klines_from_cache(code)
+            if bars:
+                return bars
+        
+        # 默认走腾讯/新浪 API
+        return self.client.get_kline(code, days=60)
+    
+    def _load_hk_klines_from_cache(self, code: str) -> List[KlineBar]:
+        """加载港股K线：优先 dashboard cache → Yahoo Finance 实时拉取"""
+        cache_dir = os.path.join(_CACHE_DIR)
+        # code 可能是 "hk00700" 或 "00700"，统一加前缀
+        cache_key = code if code.startswith('hk') else f'hk{code}'
+        cache_file = os.path.join(cache_dir, f'klines_dashboard_{cache_key}.json')
+        
+        bars_data = None
+        if os.path.exists(cache_file):
+            try:
+                import json as _json
+                with open(cache_file) as f:
+                    bars_data = _json.load(f)
+            except Exception:
+                pass
+        
+        # 缓存未命中 → Yahoo Finance 实时拉取并落盘
+        if bars_data is None:
+            bars_data = self._fetch_yahoo_hk(code)
+            if bars_data:
+                try:
+                    import json as _json
+                    with open(cache_file, 'w') as f:
+                        _json.dump(bars_data, f)
+                except Exception:
+                    pass
+        
+        if not bars_data:
             return []
         
-        return self.client.get_kline(full_code, days=60)
+        try:
+            from datetime import datetime as _dt
+            result = []
+            for b in bars_data:
+                result.append(KlineBar(
+                    date=_dt.fromtimestamp(b['t']).strftime('%Y-%m-%d'),
+                    open=float(b['o']),
+                    high=float(b['h']),
+                    low=float(b['l']),
+                    close=float(b['c']),
+                    volume=float(b.get('v', 0)),
+                    amount=0.0,
+                ))
+            return result
+        except Exception as e:
+            logger.debug(f"Kline parse fail {code}: {e}")
+            return []
+    
+    def _fetch_yahoo_hk(self, code: str) -> list:
+        """Yahoo Finance 实时拉取港股K线"""
+        try:
+            import urllib.request, json, time
+            # code 格式: hk00700 → 00700.HK
+            clean = code[2:]  # remove 'hk' prefix, keep leading zeros
+            symbol = f"{clean}.HK"
+            url = f"https://query1.finance.yahoo.com/v8/finance/chart/{symbol}?range=3mo&interval=1d"
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'})
+            resp = urllib.request.urlopen(req, timeout=8)
+            data = json.loads(resp.read())
+            r = data['chart']['result'][0]
+            ts = r['timestamp']
+            quotes = r['indicators']['quote'][0]
+            bars = []
+            for j in range(len(ts)):
+                c = quotes['close'][j]
+                if c is None:
+                    continue
+                bars.append({
+                    't': ts[j],
+                    'o': quotes['open'][j] or 0,
+                    'h': quotes['high'][j] or 0,
+                    'l': quotes['low'][j] or 0,
+                    'c': c,
+                    'v': quotes['volume'][j] or 0,
+                })
+            time.sleep(0.2)  # rate limit
+            return bars
+        except Exception as e:
+            logger.debug(f"Yahoo HK fetch fail {code}: {e}")
+            return []
+            return []
+    
+    def _load_us_klines_from_cache(self, code: str) -> List[KlineBar]:
+        """从 dashboard cache 读取美股K线"""
+        # code 格式: usAAPL → 找 klines_dashboard_usaapl.json (暂未实现, 返回空)
+        return []
 
 
 # 兼容别名

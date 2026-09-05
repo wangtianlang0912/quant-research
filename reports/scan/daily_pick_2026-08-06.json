@@ -1,0 +1,113 @@
+{
+  "date": "2026-08-06",
+  "timestamp": "2026-08-06T09:46:48.993319",
+  "count": 4,
+  "picks": [
+    {
+      "code": "600961",
+      "name": "株冶集团",
+      "market": "A",
+      "score": 105.0,
+      "price": 27.49,
+      "change_pct": 3.11,
+      "reasons": [
+        "涨幅适中",
+        "成交额257亿",
+        "PE=15",
+        "MACD金叉"
+      ],
+      "industry": "",
+      "factors": {
+        "涨幅": 30,
+        "成交额": 25,
+        "换手率": 10,
+        "估值": 15,
+        "RSI": 10,
+        "MACD": 15
+      },
+      "suggested_entry": 26.940199999999997,
+      "stop_loss": 25.8406,
+      "take_profit": 31.613499999999995,
+      "rsi": 60.984570168993386,
+      "macd_signal": "金叉"
+    },
+    {
+      "code": "301026",
+      "name": "浩通科技",
+      "market": "A",
+      "score": 105.0,
+      "price": 22.38,
+      "change_pct": 4.14,
+      "reasons": [
+        "涨幅适中",
+        "成交额84亿",
+        "PE=23",
+        "MACD金叉",
+        "均线多头排列"
+      ],
+      "industry": "",
+      "factors": {
+        "涨幅": 30,
+        "成交额": 25,
+        "换手率": 10,
+        "估值": 15,
+        "MACD": 15,
+        "均线": 10
+      },
+      "suggested_entry": 21.932399999999998,
+      "stop_loss": 21.0372,
+      "take_profit": 25.737,
+      "rsi": 75.18072289156629,
+      "macd_signal": "金叉"
+    },
+    {
+      "code": "00700",
+      "name": "腾讯控股",
+      "market": "HK",
+      "score": 65.0,
+      "price": 486.4,
+      "change_pct": -1.18,
+      "reasons": [
+        "PE=18",
+        "MACD金叉",
+        "均线多头排列"
+      ],
+      "industry": "",
+      "factors": {
+        "成交额": 15,
+        "估值": 15,
+        "RSI": 10,
+        "MACD": 15,
+        "均线": 10
+      },
+      "suggested_entry": 476.67199999999997,
+      "stop_loss": 457.21599999999995,
+      "take_profit": 559.3599999999999,
+      "rsi": 65.58534380716668,
+      "macd_signal": "金叉"
+    },
+    {
+      "code": "02099",
+      "name": "中国黄金国际",
+      "market": "HK",
+      "score": 53.0,
+      "price": 214.0,
+      "change_pct": 4.19,
+      "reasons": [
+        "涨幅适中"
+      ],
+      "industry": "",
+      "factors": {
+        "涨幅": 30,
+        "换手率": 10,
+        "估值": 8,
+        "趋势": 5
+      },
+      "suggested_entry": 209.72,
+      "stop_loss": 201.16,
+      "take_profit": 246.1,
+      "rsi": 50,
+      "macd_signal": ""
+    }
+  ]
+}
