@@ -1,69 +1,73 @@
-# Python
+# ============================================================
+# quant_research_v2 · .gitignore
+#
+# ★ v1 事故根因，此处必须根治：
+#   v1 的 `data/`（无前导斜杠）会被 Git 递归匹配任意层级的同名目录，
+#   把 `src/data/` 整个包忽略掉 —— 导致 7 个模块 ModuleNotFoundError，
+#   仓库 clone 下来跑不起来，而那个包从未被提交过，无人察觉。
+#
+# 铁律：
+#   1. 目录型规则一律带前导斜杠（锚定仓库根），禁止裸目录名。
+#   2. 运行时数据只有唯一一个根：`/var/`。
+#   3. 源码树中不存在任何名为 `data` 的目录（由 tests/architecture 守卫）。
+# ============================================================
+
+# ---- Python 字节码 ----
 __pycache__/
 *.py[cod]
 *$py.class
 *.so
 .Python
 
-# Virtual environments
+# ---- 虚拟环境 ----
+# 注意：`.venv/` 带前导点，不会误伤任何包；`env`/`venv` 不写成裸目录名
+.venv/
 .env
-.venv
-env/
-venv/
-ENV/
-env.bak/
-venv.bak/
 
-# Jupyter Notebook
-.ipynb_checkpoints/
-*.ipynb_checkpoints
-
-# Distribution / packaging
+# ---- 分发 / 打包 ----
 dist/
 build/
 *.egg-info/
 *.egg
 .eggs/
 
-# Testing
+# ---- 测试与静态分析缓存 ----
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 .coverage
-htmlcov/
+.coverage.*
 coverage.xml
-*.coveragerc
+htmlcov/
 
-# IDE
+# ---- IDE / 编辑器 / OS ----
 .vscode/
 .idea/
 *.swp
 *.swo
-
-# OS
 .DS_Store
 Thumbs.db
 
-# Project-specific: data and secrets
-.env
-configs/*.secret.yaml
-configs/runtime.yaml
-data/
-*.h5
-*.hdf5
+# ---- ★ 运行时数据根（唯一）—— 前导斜杠是刚需 ----
+/var/
+
+# ---- 二进制数据格式（var/ 之外的同名文件不应存在）----
 *.parquet
 *.feather
+*.h5
+*.hdf5
 *.pkl
 *.pickle
 
-# Logs
-logs/
+# ---- 日志 ----
 *.log
 
-# Backtest outputs (large files, commit reports not raw data)
-research/**/*.csv
-research/**/*.parquet
-research/**/*.h5
-research/**/data/
+# ---- 机密（凭证一律走环境变量，永不入库）----
+configs/*.secret.yaml
+configs/runtime.yaml
+*.pem
+*.key
 
-# Build artifacts
-*.tar.gz
-*.zip
+# ---- 前端（T05 引入后再细化）----
+web/node_modules/
+web/dist/

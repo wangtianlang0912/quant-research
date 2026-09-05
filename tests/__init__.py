@@ -1,1 +1,0 @@
-# quant-research tests package

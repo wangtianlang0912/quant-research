@@ -1,0 +1,188 @@
+name: ci
+
+on:
+  push:
+    branches: [main, v2]
+  pull_request:
+    branches: [main, v2]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  UV_VERSION: "0.10.10"
+  PYTHON_VERSION: "3.11"
+
+jobs:
+  # ---------------------------------------------------------
+  # Job 1 setup：验证 uv.lock 与 pyproject 一致（--frozen）
+  # ---------------------------------------------------------
+  setup:
+    name: "1 · setup (uv sync --frozen)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - name: uv sync --frozen
+        run: uv sync --frozen
+
+  # ---------------------------------------------------------
+  # Job 2 lint：ruff check + ruff format --check
+  # ---------------------------------------------------------
+  lint:
+    name: "2 · lint (ruff)"
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: uv sync --frozen
+      - run: uv run ruff check src tests tools
+      - run: uv run ruff format --check src tests tools
+
+  # ---------------------------------------------------------
+  # Job 3 type：mypy --strict（核心域）
+  # ---------------------------------------------------------
+  type:
+    name: "3 · type (mypy --strict)"
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: uv sync --frozen
+      - run: uv run mypy
+
+  # ---------------------------------------------------------
+  # Job 4 arch-lint：自研 AST 扫描 ARCH001~013
+  # ---------------------------------------------------------
+  arch-lint:
+    name: "4 · arch-lint (ARCH001~013)"
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: uv sync --frozen
+      - name: python -m tools.arch_lint.cli
+        run: uv run python -m tools.arch_lint.cli --root .
+
+  # ---------------------------------------------------------
+  # Job 5 test：pytest + 覆盖率双阈值（整体 60% / 核心域 85%）
+  # ---------------------------------------------------------
+  test:
+    name: "5 · test (coverage)"
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: uv sync --frozen
+      - name: pytest
+        run: uv run pytest --cov=quant_v2 --cov=tools --cov-report=term-missing --cov-report=xml -q
+      - name: 整体覆盖率 ≥ 60%
+        run: uv run coverage report --fail-under=60
+      - name: 核心域覆盖率 ≥ 85%（domain + indicators）
+        run: >
+          uv run coverage report --fail-under=85
+          --include="src/quant_v2/domain/*,src/quant_v2/indicators/*"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-xml
+          path: coverage.xml
+
+  # ---------------------------------------------------------
+  # Job 6 dup：重复代码块 > 30 行（ARCH007）
+  #   由 tools/arch_lint 的 ARCH007 规则承担，不引入 pylint 依赖。
+  # ---------------------------------------------------------
+  dup:
+    name: "6 · dup (ARCH007 重复代码块)"
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: uv sync --frozen
+      - run: uv run python -m tools.arch_lint.cli --root . --only ARCH007
+
+  # ---------------------------------------------------------
+  # Job 7 hygiene：入库纪律（ARCH009）
+  #   ★ 根治"生产脚本跑了 40 天从未提交"：工作区必须干净，
+  #     且不允许存在未纳入版本控制的文件。
+  # ---------------------------------------------------------
+  hygiene:
+    name: "7 · hygiene (git 干净)"
+    needs: setup
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+        with:
+          version: ${{ env.UV_VERSION }}
+          enable-cache: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ env.PYTHON_VERSION }}
+      - run: uv sync --frozen
+      - name: 无未跟踪文件（git ls-files --others）
+        run: |
+          untracked="$(git ls-files --others --exclude-standard)"
+          if [ -n "$untracked" ]; then
+            echo "::error::存在未纳入版本控制的文件："
+            echo "$untracked"
+            exit 1
+          fi
+      - name: 无未提交改动（git status --porcelain）
+        run: |
+          dirty="$(git status --porcelain)"
+          if [ -n "$dirty" ]; then
+            echo "::error::工作区不干净："
+            echo "$dirty"
+            exit 1
+          fi
+      - name: 契约 schema 与模型一致（重新导出后无 diff）
+        run: |
+          uv run python -m quant_v2.tools.export_schemas --check
+
+# ---------------------------------------------------------
+# 说明：Job 8 (web build) 与 Job 9 (openapi 类型漂移) 在 T05 引入前端后追加。
+# 现在就写上会导致 CI 必然失败（web/ 与 api/ 尚不存在）。
+# ---------------------------------------------------------

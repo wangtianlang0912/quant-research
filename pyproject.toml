@@ -1,0 +1,149 @@
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[project]
+name = "quant-research"
+version = "2.0.0"
+description = "个人级可解释投研助手（quant_research_v2）"
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "Private" }
+
+# ★ 依赖极简：v2 是单人维护项目，每加一个依赖都是长期维护债。
+#   领域层（domain/）零第三方依赖，只有 pydantic 用于数据契约。
+dependencies = [
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.2",
+    "pytest-cov>=5.0",
+    "coverage>=7.5",
+    "mypy>=1.10",
+    "ruff>=0.6",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/quant_v2"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src/quant_v2", "configs", "tests", "tools", "README.md"]
+
+[tool.uv]
+# uv sync 时以 editable 方式安装本项目，使 `import quant_v2` 可用
+package = true
+
+# ============================================================
+# ruff —— lint + format 的唯一真源
+# ============================================================
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests", "tools"]
+extend-exclude = ["docs", "var", "web"]
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "N",   # pep8-naming
+    "UP",  # pyupgrade
+    "B",   # flake8-bugbear
+    "C4",  # flake8-comprehensions
+    "SIM", # flake8-simplify
+    "RET", # flake8-return
+    "ARG", # flake8-unused-arguments
+    "PTH", # flake8-use-pathlib
+    "PL",  # pylint
+    "RUF", # ruff 特有规则
+    "S",   # bandit（安全）；对测试目录豁免 S101
+]
+ignore = [
+    "PLR0913",  # 构造参数多：领域对象字段天然较多，强行拆散反而难读
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["S101", "PLR2004", "PLR0915", "ARG001", "ARG002"]
+"tools/arch_lint/**" = ["S101", "PLR2004", "ARG001"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["quant_v2"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+# ============================================================
+# mypy —— strict 覆盖核心域（§8.4）
+# ============================================================
+[tool.mypy]
+python_version = "3.11"
+mypy_path = "src"
+files = [
+    "src/quant_v2/domain",
+    "src/quant_v2/indicators",
+]
+strict = true
+warn_unreachable = true
+warn_no_return = true
+show_error_codes = true
+pretty = true
+
+# adapters 依赖第三方 SDK，缺类型存根；T02 接入 akshare/pandas 后在此放宽
+[[tool.mypy.overrides]]
+module = ["quant_v2.adapters.*"]
+strict = true
+ignore_missing_imports = true
+
+[[tool.mypy.overrides]]
+module = ["yaml.*", "tools.*"]
+ignore_missing_imports = true
+
+# ============================================================
+# pytest
+# ============================================================
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+pythonpath = ["src", "."]
+addopts = "-ra --strict-markers --strict-config --import-mode=importlib"
+markers = [
+    "unit: 单元测试（纯逻辑，无 I/O）",
+    "architecture: 架构守卫测试，对应 ARCH001~013 不变量",
+    "regression: v1 实证缺陷的回归测试，删除即 CI 失败",
+    "golden: 对照独立参考实现的数值 golden 测试",
+    "integration: 跨模块集成测试",
+    "e2e: 端到端冒烟",
+]
+filterwarnings = ["error"]
+
+# ============================================================
+# coverage —— 双阈值（整体 ≥60%，核心域 ≥85%）
+#   整体阈值写在 report.fail_under；核心域阈值由 `make coverage` 二次判定
+# ============================================================
+[tool.coverage.run]
+branch = true
+source = ["src/quant_v2", "tools"]
+omit = ["*/__main__.py"]
+
+[tool.coverage.paths]
+source = ["src/quant_v2", "*/src/quant_v2"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "@overload",
+    "\\.\\.\\.",
+]
+
+# 整体阈值；核心域阈值见 Makefile 的 `make coverage`
+fail_under = 60

@@ -1,44 +1,20 @@
-# configs/ — 配置目录
+# configs/
 
-本目录管理系统所有配置文件，包括数据源配置、策略参数、环境配置等。
+**全部配置，全部入库，全部有 schema 校验。**
 
----
+| 路径 | 作用 |
+| --- | --- |
+| `markets/cn_a.yaml` | v1 唯一实装的 `MarketProfile` |
+| `markets/hk.yaml.template` | 港股注释模板（v1.5 启用） |
+| `markets/us.yaml.template` | 美股注释模板（v2.0 启用） |
+| `schemas/*.json` | 由 Pydantic 模型导出的数据契约，**不要手改** —— `make schema` 重新生成 |
 
-## 配置分离原则
+## 纪律
 
-| 配置类型 | 文件 | 说明 |
-|---------|------|------|
-| 数据源配置 | `data_sources.yaml` | 数据 API Token、接入参数（**不提交 Token 到 Git**）|
-| 策略参数 | `strategy_<ID>.yaml` | 各策略的运行参数（如均线周期、止损比例）|
-| 风控参数 | `risk.yaml` | 风控规则的数值阈值（对应 `docs/risk-rules.md`）|
-| 运行时状态 | `runtime.yaml` | Kill Switch 状态、系统运行模式（paper/live）|
-| 环境配置 | `.env.example` | 环境变量模板（真实 `.env` 不提交到 Git）|
-
----
-
-## 环境分离
-
-| 环境 | 说明 |
-|------|------|
-| `dev` | 本地开发，使用模拟数据 |
-| `backtest` | 回测环境，使用历史数据 |
-| `paper` | 纸盘环境，实时数据 + 模拟下单 |
-| `live` | 实盘环境，实时数据 + 真实下单（需额外授权）|
-
-通过环境变量 `QUANT_ENV` 区分（默认 `dev`）。
-
----
-
-## 安全规则
-
-- **严禁将 API Token、账户密码等敏感信息提交到 Git**
-- 使用 `.env` 文件管理敏感配置，`.env` 已加入 `.gitignore`
-- 提供 `.env.example` 作为模板，不含真实值
-- 生产环境配置通过环境变量注入，不存储在文件系统
-
----
-
-## 配置验证
-
-所有配置文件在系统启动时自动验证必填字段和数值范围。  
-配置错误会导致系统启动失败，并输出明确的错误信息。
+1. **任何配置改动都要能被 schema 拦住**：加载器用 Pydantic 校验，`ValidationError` 直接抛，
+   不允许"字段写错就静默用默认值"。
+2. **凭证永不入库**：一律走环境变量；`*.secret.yaml` 与 `runtime.yaml` 已在 `.gitignore`。
+3. **schema 与模型必须一致**：CI 会重新导出并 `git diff --exit-code`，漂移即失败
+   （`python -m quant_v2.tools.export_schemas --check`）。
+4. **`.template` 后缀的文件不参与加载**，也不参与 YAML 语法校验 —— 它们是待填的注释模板，
+   本来就不完整。
