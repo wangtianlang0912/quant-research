@@ -3,16 +3,19 @@ Qullamaggie Breakout 形态评分器
 从 phase0_backtest_v2.py 提炼，参数由 Phase 0 参数扫描确定。
 
 评分维度 (6项, 满分28):
-  S1: 前段涨幅 (30-100%+) —— 0-6分
+  S1: 前段涨幅 (15%+) —— 0-6分
   S2: 有序回调 (回调≤前涨1/3) —— 0-5分  
   S3: MA10/20附近企稳 —— 0-5分
   S4: Higher Low 构筑 —— 0-4分
   S5: 波动收窄 (ATR收缩) —— 0-5分
   S6: 成交量递减 —— 0-3分
 
-最优参数 (Phase 0 扫描):
-  SCORE_MIN = 28 (满分28, 只取最高质量信号)
+当前参数 (v2 调优):
+  SCORE_MIN = 18 (≥18 出买入信号, ≥24 强买入)
   MAX_POSITIONS = 5
+  K 线最低: 60 根
+  S1 前涨门槛: ≥15% 起计分（适配港股蓝筹特征）
+  S5 ATR 收缩: ≤0.85 起计分（放宽版）
 """
 from __future__ import annotations
 from typing import List, Dict, Tuple, Optional
@@ -52,7 +55,7 @@ def atr(highs: List[float], lows: List[float], closes: List[float], n: int = 14)
 def score_pattern(
     candles: List[dict],
     idx: int,
-    lookback: int = 120,
+    lookback: int = 60,
 ) -> Tuple[int, List[str]]:
     """
     对 candles[idx] 时刻做形态评分。
@@ -80,13 +83,13 @@ def score_pattern(
     if prior_roc >= 1.0:
         s1 = 6
         details.append(f"前段+{prior_roc*100:.0f}%")
-    elif prior_roc >= 0.80:
+    elif prior_roc >= 0.90:
         s1 = 5
         details.append(f"前段+{prior_roc*100:.0f}%")
-    elif prior_roc >= 0.60:
+    elif prior_roc >= 0.70:
         s1 = 4
         details.append(f"前段+{prior_roc*100:.0f}%")
-    elif prior_roc >= 0.40:
+    elif prior_roc >= 0.50:
         s1 = 3
         details.append(f"前段+{prior_roc*100:.0f}%")
     elif prior_roc >= 0.30:
@@ -175,10 +178,10 @@ def score_pattern(
     atr5 = atr(highs, lows, closes, 5)
     if atr20 > 0 and atr5 > 0:
         ratio = atr5 / atr20
-        if ratio <= 0.60:
+        if ratio <= 0.55:
             s5 = 5
             details.append(f"ATR极窄({ratio:.2f})")
-        elif ratio <= 0.75:
+        elif ratio <= 0.70:
             s5 = 4
             details.append(f"ATR收缩({ratio:.2f})")
         elif ratio <= 0.85:
@@ -349,10 +352,10 @@ def is_breakout_signal(
     else:
         entry = candles[idx]['close']
     
-    # 不放量不算突破
+    # 量能确认（不低于均量即可，评分中已含量缩维度）
     vol_today = candles[idx]['volume']
     vol_avg = sum(c['volume'] for c in candles[idx-20:idx]) / 20 if idx >= 20 else vol_today
-    if vol_today < vol_avg * 1.2:
+    if vol_avg > 0 and vol_today < vol_avg * 1.0:
         return False, score, details + [f"量不足({vol_today/vol_avg:.1f}x)"] if vol_avg > 0 else False, 0.0
     
     return True, score, details, entry

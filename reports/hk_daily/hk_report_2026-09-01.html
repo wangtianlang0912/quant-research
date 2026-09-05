@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>港股全主板荐股报告 | 2026-09-01</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, 'Helvetica Neue', Arial, sans-serif; background: #0f1117; color: #d1d5db; padding: 20px; }
+  .container { max-width: 800px; margin: 0 auto; }
+  .header { text-align: center; padding: 24px 0; border-bottom: 1px solid #2a2e39; margin-bottom: 20px; }
+  .header h1 { font-size: 22px; color: #f0f0f0; }
+  .header .meta { font-size: 13px; color: #6b7280; margin-top: 8px; }
+  .section { background: #161922; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+  .section-title { font-size: 16px; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .sentiment-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .sentiment-card { background: #1c2030; border-radius: 8px; padding: 14px; }
+  .sentiment-card .label { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+  .sentiment-card .value { font-size: 20px; font-weight: 700; color: #f0f0f0; }
+  .sentiment-card .detail { font-size: 12px; color: #9ca3af; margin-top: 6px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+  .badge-bear { background: #3a1a1a; color: #ff6b6b; }
+  .badge-neutral { background: #2a2a2a; color: #9ca3af; }
+  .badge-bull { background: #1a3a1a; color: #4ade80; }
+  .badge-golden { background: #3a3a1a; color: #fbbf24; }
+  .badge-death { background: #1a2a3a; color: #60a5fa; }
+  .stock-card { background: #1c2030; border-radius: 8px; padding: 14px; margin-bottom: 10px; border-left: 3px solid; }
+  .stock-card.buy { border-left-color: #ef4444; }
+  .stock-card.sell { border-left-color: #22c55e; }
+  .stock-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .stock-name { font-size: 15px; font-weight: 600; color: #f0f0f0; }
+  .stock-code { font-size: 12px; color: #6b7280; margin-left: 6px; }
+  .stock-score { font-size: 18px; font-weight: 700; }
+  .stock-score.positive { color: #ef4444; }
+  .stock-score.negative { color: #22c55e; }
+  .stock-detail { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; font-size: 12px; }
+  .stock-detail .item .label { color: #6b7280; }
+  .stock-detail .item .value { color: #d1d5db; font-weight: 600; margin-top: 2px; }
+  .stock-reason { font-size: 12px; color: #9ca3af; margin-top: 8px; line-height: 1.5; }
+  .stock-industry { font-size: 11px; color: #6b7280; margin-top: 4px; }
+  .sector-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #1c2030; font-size: 13px; }
+  .sector-row:last-child { border-bottom: none; }
+  .sector-name { font-weight: 600; }
+  .sector-score { font-weight: 600; }
+  .sector-score.positive { color: #ef4444; }
+  .sector-score.negative { color: #22c55e; }
+  .stats { text-align: center; font-size: 13px; color: #9ca3af; padding: 12px; }
+  .disclaimer { font-size: 11px; color: #6b7280; line-height: 1.6; padding: 12px; background: #12141c; border-radius: 8px; margin-top: 16px; }
+  .price-up { color: #ef4444; }
+  .price-down { color: #22c55e; }
+  .medal { font-size: 18px; }
+  .overall-judgment { text-align: center; padding: 10px; font-size: 15px; font-weight: 700; }
+  .overall-judgment.neutral { color: #9ca3af; }
+  .overall-judgment.bullish { color: #ef4444; }
+  .overall-judgment.bearish { color: #22c55e; }
+  .push-note { text-align: center; font-size: 12px; color: #6b7280; margin-top: 12px; }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>📊 港股全主板荐股报告</h1>
+    <div class="meta">2026-09-01（周二） | 数据来源: AKShare(新浪) | 扫描标的: 1,033只 | 7策略并发扫描</div>
+  </div>
+
+  <!-- 市场情绪 -->
+  <div class="section">
+    <div class="section-title">📈 市场情绪判断</div>
+    <div class="sentiment-grid">
+      <div class="sentiment-card">
+        <div class="label">恒生指数 (HSI)</div>
+        <div class="value">25,567</div>
+        <div class="detail">
+          <span class="badge badge-bear">空头</span>
+          RSI=48 <span class="badge badge-death">MACD 死叉</span><br>
+          涨跌 <span class="price-down">-0.07%</span> | MA5 &lt; MA20
+        </div>
+      </div>
+      <div class="sentiment-card">
+        <div class="label">恒生科技 (HSTECH)</div>
+        <div class="value">4,620</div>
+        <div class="detail">
+          <span class="badge badge-neutral">中性</span>
+          RSI=34 <span class="badge badge-death">MACD 死叉</span><br>
+          涨跌 <span class="price-up">+0.32%</span> | 超卖区间
+        </div>
+      </div>
+    </div>
+    <div class="overall-judgment neutral">综合判断: 震荡 — 恒指空头排列但恒生科技超卖反弹</div>
+  </div>
+
+  <!-- 推荐买入 -->
+  <div class="section">
+    <div class="section-title">🔥 推荐买入标的 TOP 5</div>
+
+    <div class="stock-card buy">
+      <div class="stock-header">
+        <div><span class="medal">🥇</span><span class="stock-name">中芯国际</span><span class="stock-code">hk00981</span></div>
+        <div class="stock-score positive">+25分</div>
+      </div>
+      <div class="stock-detail">
+        <div class="item"><div class="label">现价</div><div class="value">70.75 <span class="price-up">+0.86%</span></div></div>
+        <div class="item"><div class="label">入场 / 止损</div><div class="value">69.33 / 66.50</div></div>
+        <div class="item"><div class="label">目标位</div><div class="value">81.36 (+15%)</div></div>
+        <div class="item"><div class="label">RSI</div><div class="value">60</div></div>
+        <div class="item"><div class="label">MACD</div><div class="value"><span class="badge badge-golden">金叉</span></div></div>
+        <div class="item"><div class="label">板块</div><div class="value">半导体</div></div>
+      </div>
+      <div class="stock-reason">📝 趋势金叉: MA短期(69.95) > MA长期(69.40) | MACD金叉 RSI=56.8 | 多策略共振看多</div>
+    </div>
+
+    <div class="stock-card buy">
+      <div class="stock-header">
+        <div><span class="medal">🥈</span><span class="stock-name">中国电力</span><span class="stock-code">hk02380</span></div>
+        <div class="stock-score positive">+23分</div>
+      </div>
+      <div class="stock-detail">
+        <div class="item"><div class="label">现价</div><div class="value">2.87 <span class="price-down">-1.21%</span></div></div>
+        <div class="item"><div class="label">入场 / 止损</div><div class="value">2.81 / 2.69</div></div>
+        <div class="item"><div class="label">目标位</div><div class="value">3.29 (+15%)</div></div>
+        <div class="item"><div class="label">RSI</div><div class="value">60</div></div>
+        <div class="item"><div class="label">MACD</div><div class="value"><span class="badge badge-golden">金叉</span></div></div>
+        <div class="item"><div class="label">板块</div><div class="value">电力</div></div>
+      </div>
+      <div class="stock-reason">📝 趋势金叉: MA短期(2.86) > MA长期(2.79) | MACD金叉 RSI=60.5 | 电力板块整体偏强</div>
+    </div>
+
+    <div class="stock-card buy">
+      <div class="stock-header">
+        <div><span class="medal">🥉</span><span class="stock-name">融创中国</span><span class="stock-code">hk01918</span></div>
+        <div class="stock-score positive">+23分</div>
+      </div>
+      <div class="stock-detail">
+        <div class="item"><div class="label">现价</div><div class="value">0.60 <span class="price-down">-10.37%</span></div></div>
+        <div class="item"><div class="label">入场 / 止损</div><div class="value">0.59 / 0.57</div></div>
+        <div class="item"><div class="label">目标位</div><div class="value">0.70 (+15%)</div></div>
+        <div class="item"><div class="label">RSI</div><div class="value">56</div></div>
+        <div class="item"><div class="label">MACD</div><div class="value"><span class="badge badge-golden">金叉</span></div></div>
+        <div class="item"><div class="label">板块</div><div class="value">地产</div></div>
+      </div>
+      <div class="stock-reason">📝 趋势金叉: MA短期(0.61) > MA长期(0.58) | MACD金叉 RSI=49.2 | 注意：当日大跌-10%，信号可能受短期波动干扰</div>
+    </div>
+
+    <div class="stock-card buy">
+      <div class="stock-header">
+        <div><span class="medal">🏅</span><span class="stock-name">中国重汽</span><span class="stock-code">hk03808</span></div>
+        <div class="stock-score positive">+23分</div>
+      </div>
+      <div class="stock-detail">
+        <div class="item"><div class="label">现价</div><div class="value">40.20 <span class="price-down">-4.06%</span></div></div>
+        <div class="item"><div class="label">入场 / 止损</div><div class="value">39.40 / 37.79</div></div>
+        <div class="item"><div class="label">目标位</div><div class="value">46.23 (+15%)</div></div>
+        <div class="item"><div class="label">RSI</div><div class="value">42</div></div>
+        <div class="item"><div class="label">MACD</div><div class="value"><span class="badge badge-golden">金叉</span></div></div>
+        <div class="item"><div class="label">板块</div><div class="value">制造</div></div>
+      </div>
+      <div class="stock-reason">📝 趋势金叉: MA短期(40.37) > MA长期(40.35) | MACD金叉 RSI=44.4 | 回调中趋势仍在</div>
+    </div>
+
+    <div class="stock-card buy">
+      <div class="stock-header">
+        <div><span class="medal">🏅</span><span class="stock-name">中国海外发展</span><span class="stock-code">hk00688</span></div>
+        <div class="stock-score positive">+22分</div>
+      </div>
+      <div class="stock-detail">
+        <div class="item"><div class="label">现价</div><div class="value">12.53 <span class="price-down">-9.33%</span></div></div>
+        <div class="item"><div class="label">入场 / 止损</div><div class="value">12.28 / 11.78</div></div>
+        <div class="item"><div class="label">目标位</div><div class="value">14.41 (+15%)</div></div>
+        <div class="item"><div class="label">RSI</div><div class="value">43</div></div>
+        <div class="item"><div class="label">MACD</div><div class="value"><span class="badge badge-death">死叉</span></div></div>
+        <div class="item"><div class="label">板块</div><div class="value">地产</div></div>
+      </div>
+      <div class="stock-reason">📝 布林带超卖: close(12.53) ≤ lower_band(12.70) | zscore(-2.37) ≤ -2.0 超卖入场 | 趋势金叉仍在</div>
+    </div>
+  </div>
+
+  <!-- 建议卖出 -->
+  <div class="section">
+    <div class="section-title">⚠️ 建议卖出/减仓标的 TOP 5</div>
+
+    <div class="stock-card sell">
+      <div class="stock-header">
+        <div><span class="stock-name">ASMPT</span><span class="stock-code">hk00522</span></div>
+        <div class="stock-score negative">-20分</div>
+      </div>
+      <div class="stock-detail">
+        <div class="item"><div class="label">现价</div><div class="value">164.00 <span class="price-up">+1.93%</span></div></div>
+        <div class="item"><div class="label">RSI</div><div class="value">48</div></div>
+        <div class="item"><div class="label">MACD</div><div class="value"><span class="badge badge-death">死叉</span></div></div>
+      </div>
+      <div class="stock-reason">📝 趋势死叉: MA短期(163.20) < MA长期(165.64) | MACD死叉 RSI=45.3</div>
+    </div>
+
+    <div class="stock-card sell">
+      <div class="stock-header">
+        <div><span class="stock-name">迅策</span><span class="stock-code">hk03317</span></div>
+        <div class="stock-score negative">-20分</div>
+      </div>
+      <div class="stock-detail">
+        <div class="item"><div class="label">现价</div><div class="value">127.40 <span class="price-up">+0.24%</span></div></div>
+        <div class="item"><div class="label">RSI</div><div class="value">46</div></div>
+        <div class="item"><div class="label">MACD</div><div class="value"><span class="badge badge-death">死叉</span></div></div>
+      </div>
+      <div class="stock-reason">📝 趋势死叉: MA短期(124.76) < MA长期(131.81) | MACD死叉 RSI=45.1</div>
+    </div>
+
+    <div class="stock-card sell">
+      <div class="stock-header">
+        <div><span class="stock-name">万科企业</span><span class="stock-code">hk02202</span></div>
+        <div class="stock-score negative">-20分</div>
+      </div>
+      <div class="stock-detail">
+        <div class="item"><div class="label">现价</div><div class="value">2.40 <span class="price-down">-3.61%</span></div></div>
+        <div class="item"><div class="label">RSI</div><div class="value">47</div></div>
+        <div class="item"><div class="label">MACD</div><div class="value"><span class="badge badge-death">死叉</span></div></div>
+      </div>
+      <div class="stock-reason">📝 趋势死叉 + MACD死叉 RSI=38.6 | 地产板块承压</div>
+    </div>
+
+    <div class="stock-card sell">
+      <div class="stock-header">
+        <div><span class="stock-name">龙源电力</span><span class="stock-code">hk00916</span></div>
+        <div class="stock-score negative">-20分</div>
+      </div>
+      <div class="stock-detail">
+        <div class="item"><div class="label">现价</div><div class="value">5.43 <span class="price-down">-0.09%</span></div></div>
+        <div class="item"><div class="label">RSI</div><div class="value">34</div></div>
+        <div class="item"><div class="label">MACD</div><div class="value"><span class="badge badge-death">死叉</span></div></div>
+      </div>
+      <div class="stock-reason">📝 趋势死叉 + MACD死叉 RSI=36.0 | 电力板块内部分化</div>
+    </div>
+
+    <div class="stock-card sell">
+      <div class="stock-header">
+        <div><span class="stock-name">汇丰控股</span><span class="stock-code">hk00005</span></div>
+        <div class="stock-score negative">-15分</div>
+      </div>
+      <div class="stock-detail">
+        <div class="item"><div class="label">现价</div><div class="value">161.00 <span class="price-down">-0.25%</span></div></div>
+        <div class="item"><div class="label">RSI</div><div class="value">48</div></div>
+        <div class="item"><div class="label">MACD</div><div class="value"><span class="badge badge-death">死叉</span></div></div>
+      </div>
+      <div class="stock-reason">📝 趋势死叉: MA短期(161.82) < MA长期(162.00) | MACD死叉 RSI=48.9</div>
+    </div>
+  </div>
+
+  <!-- 板块轮动 -->
+  <div class="section">
+    <div class="section-title">🔄 行业板块信号轮动</div>
+    <div style="margin-bottom: 12px; font-size: 13px; color: #ef4444; font-weight: 600;">🔥 热门板块</div>
+    <div class="sector-row"><span class="sector-name">新能源</span><span class="sector-score positive">+15.0 (2只)</span></div>
+    <div class="sector-row"><span class="sector-name">保险</span><span class="sector-score positive">+6.1 (5只)</span></div>
+    <div class="sector-row"><span class="sector-name">教育</span><span class="sector-score positive">+6.0 (5只)</span></div>
+    <div class="sector-row"><span class="sector-name">电信</span><span class="sector-score positive">+5.0 (5只)</span></div>
+    <div class="sector-row"><span class="sector-name">电力</span><span class="sector-score positive">+3.5 (8只, 买入1只)</span></div>
+    <div style="margin: 12px 0 8px; font-size: 13px; color: #22c55e; font-weight: 600;">❄️ 冷门板块</div>
+    <div class="sector-row"><span class="sector-name">汽车</span><span class="sector-score negative">-2.0 (12只, 卖出2只)</span></div>
+    <div class="sector-row"><span class="sector-name">航空</span><span class="sector-score negative">-3.8 (4只, 卖出1只)</span></div>
+  </div>
+
+  <!-- 扫描统计 -->
+  <div class="section">
+    <div class="section-title">📊 扫描统计</div>
+    <div class="stats">
+      共扫描 1,033 只 | 买入信号 5 只 (0.5%) | 卖出信号 38 只 (3.7%) | 中性 990 只 (95.8%)<br>
+      K线获取成功率: 300/300 (100%) | 7策略并发扫描
+    </div>
+  </div>
+
+  <!-- 风险提示 -->
+  <div class="disclaimer">
+    ⚠️ 风险提示<br>
+    1. 以上荐股仅供参考，不构成投资建议<br>
+    2. 港股市场波动较大，需注意汇率风险和做空机制<br>
+    3. 技术指标存在滞后性，建议结合基本面综合判断<br>
+    4. 入场前请做好仓位管理和风险控制<br>
+    5. 过往信号表现不代表未来收益<br>
+    6. 本报告基于2026-08-31收盘数据生成（港股T-1日行情）
+  </div>
+
+  <div class="push-note">
+    📨 飞书推送状态: 未完成 — 飞书连接器未连接，lark-cli 需浏览器 OAuth 授权<br>
+    报告已保存至 reports/hk_daily/ 目录
+  </div>
+</div>
+</body>
+</html>

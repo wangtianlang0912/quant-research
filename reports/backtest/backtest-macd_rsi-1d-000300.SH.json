@@ -1,11 +1,11 @@
 {
   "context": {
     "run_id": {
-      "value": "backtest-trend_following-1d-000300.SH"
+      "value": "backtest-macd_rsi-1d-000300.SH"
     },
     "mode": "backtest",
     "strategy_id": {
-      "value": "trend_following"
+      "value": "macd_rsi"
     },
     "symbols": [
       "000300.SH"
@@ -13,29 +13,29 @@
     "frequency": "1d",
     "start_date": "2024-04-09",
     "end_date": "2026-04-30",
-    "created_at": "2026-07-19T20:41:42.945150",
+    "created_at": "2026-07-19T20:42:01.235499",
     "environment": "dev",
     "metadata": {
       "data_path": "./data",
-      "strategy_name": "trend_following",
+      "strategy_name": "macd_rsi",
       "market_data_source": "local_csv",
       "frequency": "1d"
     }
   },
   "summary": {
     "run_id": {
-      "value": "backtest-trend_following-1d-000300.SH"
+      "value": "backtest-macd_rsi-1d-000300.SH"
     },
     "mode": "backtest",
-    "started_at": "2026-07-19T20:41:42.945150",
-    "finished_at": "2026-07-19T20:41:42.991463",
+    "started_at": "2026-07-19T20:42:01.235499",
+    "finished_at": "2026-07-19T20:42:01.262853",
     "status": "completed",
     "message": "Run finished successfully.",
-    "final_equity": "971778.5221581500",
-    "total_return": "-0.02822147784185",
-    "annualized_return": "-0.0133195957654797426749444077",
-    "max_drawdown": "0.08319319342334547578879720663",
-    "sharpe_ratio": "-0.4482355571095448529160078446"
+    "final_equity": "985433.4394047500",
+    "total_return": "-0.01456656059525",
+    "annualized_return": "-0.0068496140861489636832191189",
+    "max_drawdown": "0.08213392181871338736823040532",
+    "sharpe_ratio": "-0.2580307311284215032395344984"
   },
   "risk_summary": {
     "engine": "BasicRiskManager",
@@ -48,8 +48,8 @@
     "min_cash_reserve": "50000"
   },
   "strategy_metadata": {
-    "strategy_id": "trend_following",
-    "name": "Trend Following",
+    "strategy_id": "macd_rsi",
+    "name": "MACD+RSI",
     "version": "0.1.0",
     "author": "copilot"
   },

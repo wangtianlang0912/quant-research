@@ -1,0 +1,522 @@
+{
+  "push_date": "2026-08-07",
+  "push_time": "08:58:35",
+  "data_source": "akshare (新浪)",
+  "total_scanned": 1012,
+  "buy_count": 4,
+  "sell_count": 34,
+  "top_buy": [
+    {
+      "code": "hk03750",
+      "name": "宁德时代",
+      "price": 628.0,
+      "change_pct": -5.04573,
+      "amount": 2502768645.0,
+      "turnover_rate": 0,
+      "pe": 0,
+      "market_cap": 0,
+      "industry": "",
+      "total_score": 25.0,
+      "buy_signals": [
+        {
+          "strategy": "trend_following",
+          "direction": "buy",
+          "strength": 1.0,
+          "reason": "short_ma(637.60) > long_ma(620.72) 金叉"
+        },
+        {
+          "strategy": "macd_rsi",
+          "direction": "buy",
+          "strength": 1.0,
+          "reason": "MACD金叉 RSI=52.6"
+        }
+      ],
+      "sell_signals": [],
+      "rsi": 55.470737913486005,
+      "macd_signal": "金叉",
+      "zscore": 0.44805354735794134,
+      "ma5": 637.6,
+      "ma10": 628.9,
+      "ma20": 620.725,
+      "bollinger_upper": 653.198797129378,
+      "bollinger_lower": 588.251202870622,
+      "donchian_upper": 692.0,
+      "donchian_lower": 576.5,
+      "strategy_signals": {
+        "trend_following": {
+          "direction": "long",
+          "strength": 1.0,
+          "reason": "short_ma(637.60) > long_ma(620.72) 金叉",
+          "score": 10.0
+        },
+        "macd_rsi": {
+          "direction": "long",
+          "strength": 1.0,
+          "reason": "MACD金叉 RSI=52.6",
+          "score": 10.0
+        },
+        "mean_reversion": {
+          "direction": "flat",
+          "strength": 1.0,
+          "reason": "zscore(0.45) 回归均衡，平仓",
+          "score": 0.0
+        }
+      }
+    },
+    {
+      "code": "hk01057",
+      "name": "浙江世宝",
+      "price": 4.075,
+      "change_pct": -9.54495,
+      "amount": 270520130.0,
+      "turnover_rate": 0,
+      "pe": 0,
+      "market_cap": 0,
+      "industry": "",
+      "total_score": 25.0,
+      "buy_signals": [
+        {
+          "strategy": "trend_following",
+          "direction": "buy",
+          "strength": 1.0,
+          "reason": "short_ma(4.07) > long_ma(3.71) 金叉"
+        },
+        {
+          "strategy": "macd_rsi",
+          "direction": "buy",
+          "strength": 1.0,
+          "reason": "MACD金叉 RSI=65.4"
+        },
+        {
+          "strategy": "vwap",
+          "direction": "buy",
+          "strength": 1.0,
+          "reason": "close(4.08) < VWAP(4.13) 偏离-1.26%"
+        }
+      ],
+      "sell_signals": [],
+      "rsi": 65.37467700258401,
+      "macd_signal": "金叉",
+      "zscore": 1.3605493148917682,
+      "ma5": 4.072,
+      "ma10": 3.8939999999999997,
+      "ma20": 3.7145,
+      "bollinger_upper": 4.244433014634869,
+      "bollinger_lower": 3.1845669853651315,
+      "donchian_upper": 4.6,
+      "donchian_lower": 3.37,
+      "strategy_signals": {
+        "trend_following": {
+          "direction": "long",
+          "strength": 1.0,
+          "reason": "short_ma(4.07) > long_ma(3.71) 金叉",
+          "score": 10.0
+        },
+        "macd_rsi": {
+          "direction": "long",
+          "strength": 1.0,
+          "reason": "MACD金叉 RSI=65.4",
+          "score": 10.0
+        },
+        "vwap": {
+          "direction": "long",
+          "strength": 1.0,
+          "reason": "close(4.08) < VWAP(4.13) 偏离-1.26%",
+          "score": 5.0
+        }
+      }
+    },
+    {
+      "code": "hk02706",
+      "name": "海致科技集团",
+      "price": 50.95,
+      "change_pct": -6.51376,
+      "amount": 593837877.0,
+      "turnover_rate": 0,
+      "pe": 0,
+      "market_cap": 0,
+      "industry": "",
+      "total_score": 23.0,
+      "buy_signals": [
+        {
+          "strategy": "trend_following",
+          "direction": "buy",
+          "strength": 1.0,
+          "reason": "short_ma(44.34) > long_ma(36.04) 金叉"
+        },
+        {
+          "strategy": "macd_rsi",
+          "direction": "buy",
+          "strength": 1.0,
+          "reason": "MACD金叉 RSI=66.8"
+        }
+      ],
+      "sell_signals": [],
+      "rsi": 64.55026455026456,
+      "macd_signal": "金叉",
+      "zscore": 1.9078672054544783,
+      "ma5": 44.342,
+      "ma10": 35.439,
+      "ma20": 36.0415,
+      "bollinger_upper": 51.66994621195594,
+      "bollinger_lower": 20.41305378804406,
+      "donchian_upper": 59.75,
+      "donchian_lower": 21.44,
+      "strategy_signals": {
+        "trend_following": {
+          "direction": "long",
+          "strength": 1.0,
+          "reason": "short_ma(44.34) > long_ma(36.04) 金叉",
+          "score": 10.0
+        },
+        "macd_rsi": {
+          "direction": "long",
+          "strength": 1.0,
+          "reason": "MACD金叉 RSI=66.8",
+          "score": 10.0
+        }
+      }
+    },
+    {
+      "code": "hk02382",
+      "name": "舜宇光学科技",
+      "price": 58.45,
+      "change_pct": -1.68209,
+      "amount": 563963536.0,
+      "turnover_rate": 0,
+      "pe": 0,
+      "market_cap": 0,
+      "industry": "",
+      "total_score": 23.0,
+      "buy_signals": [
+        {
+          "strategy": "trend_following",
+          "direction": "buy",
+          "strength": 1.0,
+          "reason": "short_ma(57.66) > long_ma(57.21) 金叉"
+        },
+        {
+          "strategy": "macd_rsi",
+          "direction": "buy",
+          "strength": 1.0,
+          "reason": "MACD金叉 RSI=59.4"
+        }
+      ],
+      "sell_signals": [],
+      "rsi": 61.08374384236453,
+      "macd_signal": "金叉",
+      "zscore": 0.6959588955424437,
+      "ma5": 57.660000000000004,
+      "ma10": 58.175,
+      "ma20": 57.2125,
+      "bollinger_upper": 60.76874450790437,
+      "bollinger_lower": 53.656255492095625,
+      "donchian_upper": 61.45,
+      "donchian_lower": 53.45,
+      "strategy_signals": {
+        "trend_following": {
+          "direction": "long",
+          "strength": 1.0,
+          "reason": "short_ma(57.66) > long_ma(57.21) 金叉",
+          "score": 10.0
+        },
+        "macd_rsi": {
+          "direction": "long",
+          "strength": 1.0,
+          "reason": "MACD金叉 RSI=59.4",
+          "score": 10.0
+        }
+      }
+    }
+  ],
+  "top_sell": [
+    {
+      "code": "hk09969",
+      "name": "诺诚健华",
+      "price": 13.8,
+      "change_pct": 0.72993,
+      "amount": 66654649.0,
+      "turnover_rate": 0,
+      "pe": 0,
+      "market_cap": 0,
+      "industry": "",
+      "total_score": -25.0,
+      "buy_signals": [],
+      "sell_signals": [
+        {
+          "strategy": "trend_following",
+          "direction": "sell",
+          "strength": 1.0,
+          "reason": "short_ma(13.54) < long_ma(14.01) 死叉"
+        },
+        {
+          "strategy": "macd_rsi",
+          "direction": "sell",
+          "strength": 1.0,
+          "reason": "MACD死叉 RSI=42.1"
+        },
+        {
+          "strategy": "vwap",
+          "direction": "sell",
+          "strength": 1.0,
+          "reason": "close(13.80) > VWAP(13.63) 偏离1.26%"
+        }
+      ],
+      "rsi": 49.856733524355306,
+      "macd_signal": "死叉",
+      "zscore": -0.5046869105426061,
+      "ma5": 13.536000000000001,
+      "ma10": 13.697,
+      "ma20": 14.013,
+      "bollinger_upper": 14.857087673171455,
+      "bollinger_lower": 13.168912326828545,
+      "donchian_upper": 15.48,
+      "donchian_lower": 13.03,
+      "strategy_signals": {
+        "trend_following": {
+          "direction": "short",
+          "strength": 1.0,
+          "reason": "short_ma(13.54) < long_ma(14.01) 死叉",
+          "score": -10.0
+        },
+        "macd_rsi": {
+          "direction": "short",
+          "strength": 1.0,
+          "reason": "MACD死叉 RSI=42.1",
+          "score": -10.0
+        },
+        "vwap": {
+          "direction": "short",
+          "strength": 1.0,
+          "reason": "close(13.80) > VWAP(13.63) 偏离1.26%",
+          "score": -5.0
+        }
+      }
+    },
+    {
+      "code": "hk06886",
+      "name": "HTSC",
+      "price": 16.77,
+      "change_pct": -0.76923,
+      "amount": 90005056.0,
+      "turnover_rate": 0,
+      "pe": 0,
+      "market_cap": 0,
+      "industry": "",
+      "total_score": -20.0,
+      "buy_signals": [],
+      "sell_signals": [
+        {
+          "strategy": "trend_following",
+          "direction": "sell",
+          "strength": 1.0,
+          "reason": "short_ma(16.81) < long_ma(16.82) 死叉"
+        },
+        {
+          "strategy": "macd_rsi",
+          "direction": "sell",
+          "strength": 1.0,
+          "reason": "MACD死叉 RSI=45.9"
+        }
+      ],
+      "rsi": 52.63157894736841,
+      "macd_signal": "死叉",
+      "zscore": -0.18188430018023832,
+      "ma5": 16.81,
+      "ma10": 16.887,
+      "ma20": 16.8245,
+      "bollinger_upper": 17.423782070481003,
+      "bollinger_lower": 16.225217929518998,
+      "donchian_upper": 17.47,
+      "donchian_lower": 15.74,
+      "strategy_signals": {
+        "trend_following": {
+          "direction": "short",
+          "strength": 1.0,
+          "reason": "short_ma(16.81) < long_ma(16.82) 死叉",
+          "score": -10.0
+        },
+        "macd_rsi": {
+          "direction": "short",
+          "strength": 1.0,
+          "reason": "MACD死叉 RSI=45.9",
+          "score": -10.0
+        },
+        "mean_reversion": {
+          "direction": "flat",
+          "strength": 1.0,
+          "reason": "zscore(-0.18) 回归均衡，平仓",
+          "score": 0.0
+        }
+      }
+    },
+    {
+      "code": "hk00867",
+      "name": "康哲药业",
+      "price": 12.0,
+      "change_pct": 1.43703,
+      "amount": 88214351.0,
+      "turnover_rate": 0,
+      "pe": 0,
+      "market_cap": 0,
+      "industry": "",
+      "total_score": -20.0,
+      "buy_signals": [],
+      "sell_signals": [
+        {
+          "strategy": "trend_following",
+          "direction": "sell",
+          "strength": 1.0,
+          "reason": "short_ma(11.92) < long_ma(12.18) 死叉"
+        },
+        {
+          "strategy": "macd_rsi",
+          "direction": "sell",
+          "strength": 1.0,
+          "reason": "MACD死叉 RSI=37.2"
+        }
+      ],
+      "rsi": 45.7286432160804,
+      "macd_signal": "死叉",
+      "zscore": -0.7267102446391578,
+      "ma5": 11.92,
+      "ma10": 11.998999999999999,
+      "ma20": 12.1775,
+      "bollinger_upper": 12.666002814730888,
+      "bollinger_lower": 11.688997185269113,
+      "donchian_upper": 12.85,
+      "donchian_lower": 11.6,
+      "strategy_signals": {
+        "trend_following": {
+          "direction": "short",
+          "strength": 1.0,
+          "reason": "short_ma(11.92) < long_ma(12.18) 死叉",
+          "score": -10.0
+        },
+        "macd_rsi": {
+          "direction": "short",
+          "strength": 1.0,
+          "reason": "MACD死叉 RSI=37.2",
+          "score": -10.0
+        }
+      }
+    },
+    {
+      "code": "hk00220",
+      "name": "统一企业中国",
+      "price": 7.47,
+      "change_pct": 1.77111,
+      "amount": 66547131.0,
+      "turnover_rate": 0,
+      "pe": 0,
+      "market_cap": 0,
+      "industry": "",
+      "total_score": -20.0,
+      "buy_signals": [],
+      "sell_signals": [
+        {
+          "strategy": "trend_following",
+          "direction": "sell",
+          "strength": 1.0,
+          "reason": "short_ma(7.46) < long_ma(7.46) 死叉"
+        },
+        {
+          "strategy": "macd_rsi",
+          "direction": "sell",
+          "strength": 1.0,
+          "reason": "MACD死叉 RSI=44.9"
+        }
+      ],
+      "rsi": 45.27027027027025,
+      "macd_signal": "死叉",
+      "zscore": 0.04704811926502604,
+      "ma5": 7.4590000000000005,
+      "ma10": 7.4784999999999995,
+      "ma20": 7.46375,
+      "bollinger_upper": 7.729435434301545,
+      "bollinger_lower": 7.198064565698456,
+      "donchian_upper": 7.79,
+      "donchian_lower": 7.18,
+      "strategy_signals": {
+        "trend_following": {
+          "direction": "short",
+          "strength": 1.0,
+          "reason": "short_ma(7.46) < long_ma(7.46) 死叉",
+          "score": -10.0
+        },
+        "macd_rsi": {
+          "direction": "short",
+          "strength": 1.0,
+          "reason": "MACD死叉 RSI=44.9",
+          "score": -10.0
+        },
+        "mean_reversion": {
+          "direction": "flat",
+          "strength": 1.0,
+          "reason": "zscore(0.05) 回归均衡，平仓",
+          "score": 0.0
+        }
+      }
+    },
+    {
+      "code": "hk01088",
+      "name": "中国神华",
+      "price": 42.84,
+      "change_pct": 1.66113,
+      "amount": 581670027.0,
+      "turnover_rate": 0,
+      "pe": 0,
+      "market_cap": 0,
+      "industry": "",
+      "total_score": -17.0,
+      "buy_signals": [],
+      "sell_signals": [
+        {
+          "strategy": "trend_following",
+          "direction": "sell",
+          "strength": 1.0,
+          "reason": "short_ma(42.65) < long_ma(42.84) 死叉"
+        },
+        {
+          "strategy": "macd_rsi",
+          "direction": "sell",
+          "strength": 1.0,
+          "reason": "MACD死叉 RSI=43.6"
+        }
+      ],
+      "rsi": 53.07262569832405,
+      "macd_signal": "死叉",
+      "zscore": -0.004729758340705724,
+      "ma5": 42.652,
+      "ma10": 42.986000000000004,
+      "ma20": 42.844,
+      "bollinger_upper": 44.5354183397374,
+      "bollinger_lower": 41.152581660262605,
+      "donchian_upper": 44.66,
+      "donchian_lower": 40.46,
+      "strategy_signals": {
+        "trend_following": {
+          "direction": "short",
+          "strength": 1.0,
+          "reason": "short_ma(42.65) < long_ma(42.84) 死叉",
+          "score": -10.0
+        },
+        "macd_rsi": {
+          "direction": "short",
+          "strength": 1.0,
+          "reason": "MACD死叉 RSI=43.6",
+          "score": -10.0
+        },
+        "mean_reversion": {
+          "direction": "flat",
+          "strength": 1.0,
+          "reason": "zscore(-0.00) 回归均衡，平仓",
+          "score": 0.0
+        }
+      }
+    }
+  ],
+  "status": "completed",
+  "feishu_push": "failed - connector unavailable",
+  "note": "报告已生成，飞书推送失败（连接器不可用）"
+}

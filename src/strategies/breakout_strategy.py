@@ -27,8 +27,8 @@ STRATEGY_META = StrategyMetadata(
     author="quant-research",
 )
 
-# Phase 0 最优参数
-DEFAULT_MIN_SCORE = 28
+# Phase 0 最优参数 → v2 调优（港股适配）
+DEFAULT_MIN_SCORE = 18
 DEFAULT_MAX_POS = 5
 DEFAULT_RISK = Decimal("0.01")
 
@@ -78,7 +78,7 @@ class BreakoutStrategy:
         Returns:
             Signal 或 None
         """
-        if len(candles) < 121:
+        if len(candles) < 60:
             return None
         
         idx = len(candles) - 1
