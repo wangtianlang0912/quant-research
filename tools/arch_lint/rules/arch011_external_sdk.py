@@ -21,6 +21,10 @@ CODE = "ARCH011"
 DESCRIPTION = "反向导入方向：外部 SDK 只允许在 adapters/"
 
 # 模块根名 → 允许出现的路径前缀
+# ★ tests/unit/<scope>/ 是对应生产作用域的镜像测试目录：
+#   测 SQLite 适配器就要用 sqlite3 查 PRAGMA，测 CLI 就要用 typer.testing。
+#   允许测试 import 与被测对象同一技术栈，但**只允许镜像目录**——
+#   tests/unit/domain/ 里出现任何一个都仍然违规。
 ALLOWED_SCOPES: dict[str, tuple[str, ...]] = {
     "akshare": ("src/quant_v2/adapters/",),
     "baostock": ("src/quant_v2/adapters/",),
@@ -29,13 +33,13 @@ ALLOWED_SCOPES: dict[str, tuple[str, ...]] = {
     "httpx": ("src/quant_v2/adapters/",),
     "smtplib": ("src/quant_v2/adapters/",),
     "pyarrow": ("src/quant_v2/adapters/",),
-    "sqlite3": ("src/quant_v2/adapters/",),
+    "sqlite3": ("src/quant_v2/adapters/", "tests/unit/adapters/"),
     "pandas": ("src/quant_v2/adapters/",),
     "numpy": ("src/quant_v2/adapters/",),
     "fastapi": ("src/quant_v2/api/", "src/quant_v2/adapters/"),
     "uvicorn": ("src/quant_v2/api/",),
     "apscheduler": ("src/quant_v2/orchestration/", "src/quant_v2/adapters/"),
-    "typer": ("src/quant_v2/cli/",),
+    "typer": ("src/quant_v2/cli/", "tests/unit/cli/"),
     # YAML 用于配置加载：适配层 + 测试脚手架 + 扫描工具
     "yaml": ("src/quant_v2/adapters/", "tests/", "tools/"),
 }

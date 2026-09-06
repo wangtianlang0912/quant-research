@@ -92,6 +92,8 @@ from tools.arch_lint.rules import (  # noqa: E402
     arch011_external_sdk,
     arch012_swallow_lookahead,
     arch013_float_discipline,
+    arch014_baostock_isolation,
+    arch015_forbidden_endpoints,
 )
 
 del arch001_market_branching
@@ -107,3 +109,5 @@ del arch010_import_direction
 del arch011_external_sdk
 del arch012_swallow_lookahead
 del arch013_float_discipline
+del arch014_baostock_isolation
+del arch015_forbidden_endpoints

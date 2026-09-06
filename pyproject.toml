@@ -15,7 +15,22 @@ license = { text = "Private" }
 dependencies = [
     "pydantic>=2.7",
     "pyyaml>=6.0",
+    # ★ 唯一进入运行时的第三方存储依赖：Parquet 列存（adapters/persistence 专用）。
+    #   领域层（domain/）依旧零第三方依赖 —— ARCH010 import 方向守卫保证它不会渗入。
+    "pyarrow>=16",
+    # CLI：typer 用类型注解生成命令（架构选型 §3），rich 让门禁报告可读。
+    #   只允许 cli/ 与 ops/ 使用 —— 不进入 domain/（ARCH010 禁入清单）。
+    "typer>=0.12",
+    "rich>=13.7",
+    # ★ baostock：A 股主源（唯一同时给 backAdjustFactor / 退市股历史 / PIT 快照的源）。
+    #   只允许在 adapters/market_data/subprocess_worker.py 与 baostock_cn.py import
+    #   （ARCH014：裸 TCP 不认代理 + C 扩展会挂死，主进程绝不持有其会话）。
+    "baostock>=0.8",
+    "akshare>=1.14",
 ]
+
+[project.scripts]
+qv2 = "quant_v2.cli.main:app"
 
 [dependency-groups]
 dev = [
@@ -81,13 +96,13 @@ ignore = [
     "UP042",
 ]
 
-# ★ 自定义 noqa 规则码（tools/arch_lint 的 ARCH001~013）。
+# ★ 自定义 noqa 规则码（tools/arch_lint 的 ARCH001~015）。
 #   不声明的话 ruff 会把 `# noqa: ARCH001` 判为 RUF102 无效规则码，
 #   而行内豁免正是架构门禁的"例外出口"，不能被 linter 二次卡住。
 external = [
     "ARCH001", "ARCH002", "ARCH003", "ARCH004", "ARCH005", "ARCH006",
     "ARCH007", "ARCH008", "ARCH009", "ARCH010", "ARCH011", "ARCH012",
-    "ARCH013",
+    "ARCH013", "ARCH014", "ARCH015",
 ]
 
 [tool.ruff.lint.per-file-ignores]
@@ -99,6 +114,9 @@ external = [
     "N802", "PLC2401",
 ]
 "tools/arch_lint/**" = ["S101", "PLR2004", "ARG001"]
+# ★ CLI：typer 的声明式参数就长这样（typer.Option 在默认值位置），
+#   这是框架惯用法而非 bug；B008 针对的是"默认值里有隐藏副作用调用"。
+"src/quant_v2/cli/**" = ["B008"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["quant_v2"]
@@ -143,7 +161,7 @@ pythonpath = ["src", "."]
 addopts = "-ra --strict-markers --strict-config --import-mode=importlib"
 markers = [
     "unit: 单元测试（纯逻辑，无 I/O）",
-    "architecture: 架构守卫测试，对应 ARCH001~013 不变量",
+    "architecture: 架构守卫测试，对应 ARCH001~015 不变量",
     "regression: v1 实证缺陷的回归测试，删除即 CI 失败",
     "golden: 对照独立参考实现的数值 golden 测试",
     "integration: 跨模块集成测试",

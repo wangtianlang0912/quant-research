@@ -253,8 +253,8 @@ def clear_cache() -> None:
 def available_markets(*, config_dir: Path | None = None) -> tuple[str, ...]:
     """列出该目录下所有**已实装**的市场代码（不含 `.yaml.template`）。
 
-    Returns:
-        市场代码元组，按字母序。
+    `*_calendar_overrides.yaml` 是交易日历手工表（T02.4），与市场 profile
+    同目录但不是 profile —— 显式排除，避免被当作市场代码加载。
     """
     directory = _resolve_dir(config_dir)
     if not directory.is_dir():
@@ -262,7 +262,9 @@ def available_markets(*, config_dir: Path | None = None) -> tuple[str, ...]:
     codes = [
         path.name[: -len(_MARKET_FILE_SUFFIX)]
         for path in directory.iterdir()
-        if path.is_file() and path.name.endswith(_MARKET_FILE_SUFFIX)
+        if path.is_file()
+        and path.name.endswith(_MARKET_FILE_SUFFIX)
+        and not path.name.endswith("_calendar_overrides.yaml")
     ]
     return tuple(sorted(codes))
 

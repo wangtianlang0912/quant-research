@@ -24,9 +24,11 @@ __all__ = [
     "KillSwitchActiveError",
     "LookaheadViolationError",
     "MarketProfileNotFoundError",
+    "NotTradingDayError",
     "NotificationConfigError",
     "PriceUnavailableError",
     "QuantV2Error",
+    "SourceUnavailableError",
     "SurvivorshipBiasError",
 ]
 
@@ -106,9 +108,27 @@ class MarketProfileNotFoundError(ConfigValidationError):
     """请求的 market_code 在 `configs/markets/` 下不存在。"""
 
 
+class NotTradingDayError(QuantV2Error):
+    """请求 PIT 快照的 `as_of` 不是交易日（或早于市场开市日）。
+
+    M-19：baostock `query_all_stock(day=)` 在非交易日返回 **0 rows**，
+    0 rows ≠ 空池子 —— 必须先过交易日历再查源，否则节假日会被误判成
+    空池子并写入脏数据。M-15：A 股快照最早 1990-12-19（上交所开市首日）。
+    """
+
+
 class AdjustmentError(QuantV2Error):
     """复权换算失败：如 adj_factor 序列非法（含 ≤ 0、长度不匹配）。"""
 
 
 class FingerprintError(QuantV2Error):
     """数据指纹计算失败：如输入行集为空或字段缺失。"""
+
+
+class SourceUnavailableError(QuantV2Error):
+    """数据源连续超时/挂死，当日拉黑（§5.11 / M-14）。
+
+    由 `SubprocessWorker` 在**连续 2 次**子进程超时后抛出；
+    编排层捕获后应切换备源并告警 P1，**禁止静默重试或返回空数据** ——
+    空数据会顺着管道变成"覆盖暴跌门禁 FAIL"，那已经是灾难的下游了。
+    """
