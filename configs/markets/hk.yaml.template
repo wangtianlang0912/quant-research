@@ -1,0 +1,82 @@
+# ============================================================================
+# 港股市场画像 —— **注释模板**（v1.5 启用，OQ-1）
+#
+# 状态：未实装。文件后缀是 .yaml.template，**加载器会跳过它**，
+#       也不会被 YAML 语法检查（它本来就不完整）。
+#
+# 启用步骤（v1.5）：
+#   1. 把本文件改名为 hk.yaml
+#   2. 逐项确认下面的数值（尤其是 tick_table、交易成本、假期表）
+#   3. 实现 adapters/market_data/akshare_hk.py
+#   4. 跑 tests/architecture/test_pipeline_accepts_new_market.py 的港股版本
+#   ★ 目标：engines/ 与 strategies/ 零改动。若做不到，说明抽象坏了，回来改抽象。
+#
+# 与 A 股的关键差异（都是"数值不同"，不需要分支）：
+#   - 无涨跌停制度        → price_limit 全 null
+#   - tick 随价格分段      → 用 tick_table 而不是 tick_size
+#   - T+0                 → t_plus: 0
+#   - 可做空              → shortable: true
+#   - 交易成本结构不同      → 印花税双边、有交易征费/结算费
+#   - 计价/结算币种可能不同 → settlement_currency
+# ============================================================================
+
+market_code: hk
+display_name: 港股
+timezone: Asia/Hong_Kong
+calendar_id: XHKG
+currency: HKD
+settlement_currency: HKD
+
+lot_size: 1              # ★ 港股每手股数由发行人决定（100/200/500/1000...）
+                         #   1 = 无统一手数；实际手数需从 Instrument.lot_size_override 取
+odd_lot_allowed: true
+
+tick:
+  tick_size: null        # 不用固定 tick
+  tick_table:            # ★ 分段表（价格上界, tick）—— 待逐档核实
+    # - ["0.25", "0.001"]
+    # - ["0.50", "0.005"]
+    # - ["10.00", "0.010"]
+
+price_limit:
+  limit_pct: null        # 无涨跌停制度 → null，而不是写 if market != 'cn_a'
+  st_limit_pct: null
+  new_listing_free_days: 0
+  ipo_first_day_pct: null
+
+t_plus: 0                # T+0
+shortable: true
+
+cost:
+  commission_rate: "0.0005"     # 待与券商确认
+  commission_min: "50"          # 港股最低佣金通常按笔收（HKD）
+  tax_rate_sell: "0.001"        # 印花税双边 0.1%
+  tax_rate_buy: "0.001"         # ★ 港股买入也收印花税 —— 这就是为什么税率分两个字段
+  transfer_fee_rate: "0"        # 港股无过户费；结算费另计（待建模）
+  exchange_fee_rate: "0.00005"  # 交易征费等合并估算，待拆分
+  slippage_bps: 20              # 港股流动性分化大，滑点给得更保守
+
+symbol_pattern: '^\d{5}\.HK$'
+
+half_day_dates: []       # 港股半天市：圣诞前夕 / 新年前夕 / 农历新年前夕
+extra_holidays: []
+
+fund_availability: PARTIAL
+delisting_data_availability: NONE   # ★ 实测后回填；NONE 时回测必须抛 SurvivorshipBiasError
+
+max_symbols: 3000
+
+data_sources:
+  - source_id: akshare_hk
+    adapter: quant_v2.adapters.market_data.akshare_hk.AkshareHkAdapter
+    priority: 0
+    capabilities:
+      daily_bars: true
+      adj_factor: true
+      delisting_history: NONE
+      delisting_list: false
+      trading_calendar: true
+      fundamentals: false
+      intraday: false
+
+hooks: {}

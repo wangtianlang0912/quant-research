@@ -1,0 +1,69 @@
+# ============================================================================
+# 美股市场画像 —— **注释模板**（v2.0 启用，OQ-1）
+#
+# 状态：未实装。文件后缀是 .yaml.template，加载器会跳过。
+#
+# 与 A 股/港股的关键差异（照样是"数值不同"）：
+#   - 无涨跌停，但有熔断机制（市场级，不属于个股 price_limit）
+#   - 可零股交易（odd_lot_allowed: true）
+#   - T+0（现金账户有交割限制，v2.0 再建模）
+#   - 交易成本以"每股"或"固定费用"计，与按比例收费的市场结构不同
+#   - 有盘前盘后时段（session_close 需要区分常规时段与扩展时段）
+# ============================================================================
+
+market_code: us
+display_name: 美股
+timezone: America/New_York
+calendar_id: XNYS
+currency: USD
+settlement_currency: USD
+
+lot_size: 1              # 可买 1 股
+odd_lot_allowed: true
+
+tick:
+  tick_size: "0.01"
+  tick_table: []
+
+price_limit:
+  limit_pct: null        # 无个股涨跌幅限制（熔断是市场级机制，不在此表达）
+  st_limit_pct: null
+  new_listing_free_days: 0
+  ipo_first_day_pct: null
+
+t_plus: 0
+shortable: true
+
+cost:
+  commission_rate: "0"          # 多数券商零佣金
+  commission_min: "0"
+  tax_rate_sell: "0"            # 美股无印花税；但有 SEC fee / TAF（待建模）
+  tax_rate_buy: "0"
+  transfer_fee_rate: "0"
+  exchange_fee_rate: "0.0000278"  # SEC fee 估算值，待按季度费率表更新
+  slippage_bps: 5
+
+symbol_pattern: '^[A-Z][A-Z0-9.\-]{0,7}$'
+
+half_day_dates: []       # 美股半天市：感恩节次日 / 圣诞前夕
+extra_holidays: []
+
+fund_availability: FULL
+delisting_data_availability: NONE   # ★ 实测后回填
+
+max_symbols: 10000
+
+data_sources:
+  - source_id: akshare_us
+    adapter: quant_v2.adapters.market_data.akshare_us.AkshareUsAdapter
+    priority: 0
+    capabilities:
+      daily_bars: true
+      adj_factor: true
+      delisting_history: NONE
+      delisting_list: false
+      trading_calendar: true
+      fundamentals: false
+      intraday: false
+
+hooks: {}

@@ -65,10 +65,39 @@ select = [
 ]
 ignore = [
     "PLR0913",  # 构造参数多：领域对象字段天然较多，强行拆散反而难读
+
+    # ★ RUF001/002/003「歧义 Unicode 字符」—— 本项目的文档字符串与注释是中文，
+    #   全角标点（，。：（））会被逐字符判为"疑似 ASCII 同形字符"。
+    #   实测这三规则贡献了 2047 / 2170 条告警（94%），全是误报。
+    #   一条规则若 94% 是噪音，工程师会学会无视它的输出 —— 那它还不如关掉。
+    "RUF001",
+    "RUF002",
+    "RUF003",
+
+    # ★ UP042 建议把 `class X(str, Enum)` 换成 `StrEnum`。
+    #   不换：3.11/3.12 下 mixin enum 的 __str__/__format__ 行为变过两次，
+    #   而本项目大量把枚举值推进 JSON / 飞书卡片 / SQLite，
+    #   序列化口径必须稳定可预期。统一用 `.value` 取值，不依赖隐式 str()。
+    "UP042",
+]
+
+# ★ 自定义 noqa 规则码（tools/arch_lint 的 ARCH001~013）。
+#   不声明的话 ruff 会把 `# noqa: ARCH001` 判为 RUF102 无效规则码，
+#   而行内豁免正是架构门禁的"例外出口"，不能被 linter 二次卡住。
+external = [
+    "ARCH001", "ARCH002", "ARCH003", "ARCH004", "ARCH005", "ARCH006",
+    "ARCH007", "ARCH008", "ARCH009", "ARCH010", "ARCH011", "ARCH012",
+    "ARCH013",
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101", "PLR2004", "PLR0915", "ARG001", "ARG002"]
+"tests/**" = [
+    "S101", "PLR2004", "PLR0915", "ARG001", "ARG002",
+    # ★ 测试函数名放宽 N802 / PLC2401：pytest 输出就是文档，
+    #   中文命名（"test_三视图两两比值恒定"）的可读性高于 ASCII 强制约束；
+    #   生产代码 (src/ tools/) 仍受这两条规则约束。
+    "N802", "PLC2401",
+]
 "tools/arch_lint/**" = ["S101", "PLR2004", "ARG001"]
 
 [tool.ruff.lint.isort]

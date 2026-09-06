@@ -1,0 +1,102 @@
+# ============================================================================
+# A 股市场画像（v1 唯一实装的市场）
+#
+# ★ 抽象纪律（改这个文件前请先读一遍）：
+#   1. 配置优先于分支 —— 市场差异尽量表达为"数值不同"
+#   2. None 优先于特例 —— 无约束写 null，不要写 if market != 'cn_a'
+#   3. 极端特例用 hooks 注入 dotted path
+#   ★ 禁止把策略参数塞进来：这里只放"市场规则"，不放"怎么赚钱"。
+#
+# ★ 所有金额/比例一律写成**字符串**：YAML 会把 0.10 解析成 Python float，
+#   而领域层禁止 float 进金额计算（ARCH013）。字符串 → Decimal 是精确转换。
+# ============================================================================
+
+market_code: cn_a
+display_name: A股
+timezone: Asia/Shanghai
+calendar_id: XSHG
+currency: CNY
+settlement_currency: CNY
+
+lot_size: 100            # 最小交易单位 1 手 = 100 股
+odd_lot_allowed: false   # A 股不允许零股买入（卖出可以，故卖出侧不强制）
+
+tick:
+  tick_size: "0.01"      # 固定最小报价单位 0.01 元
+  # tick_table:          # 分段表（港股用）；两者都给时优先用 tick_table
+  #   - ["10.00", "0.01"]
+  #   - ["20.00", "0.02"]
+
+price_limit:
+  limit_pct: "0.10"            # 普通股 ±10%
+  st_limit_pct: "0.05"         # ST / *ST ±5%
+  new_listing_free_days: 5     # 创业板/科创板次新股前 5 个交易日无涨跌幅
+  ipo_first_day_pct: null      # 首发首日另有规则，暂无统一数值 → 记为未知而非猜一个
+
+t_plus: 1                # T+1：当日买入不可当日卖出
+shortable: false         # 不可做空（融券不属于 v1 范围）
+
+cost:
+  commission_rate: "0.00025"    # 佣金率（双边）万分之 2.5
+  commission_min: "5"           # 最低佣金 5 元 —— 小额交易成本高得离谱就是因为它
+  tax_rate_sell: "0.0005"       # 印花税：仅卖出，千分之 0.5
+  tax_rate_buy: "0"             # 买入无印花税
+  transfer_fee_rate: "0.00001"  # 过户费（沪深）十万分之 1
+  exchange_fee_rate: "0.0000487"  # 交易所规费
+  slippage_bps: 10              # 默认滑点 10 bps = 0.10%
+
+symbol_pattern: '^\d{6}\.(SH|SZ|BJ)$'
+
+half_day_dates: []       # 半天市（如除夕）；命中的日子 session_close 提前
+extra_holidays: []       # 临时休市（如灾害/重大活动）
+
+fund_availability: PARTIAL            # 财务数据可得性（D-13）
+delisting_data_availability: PARTIAL  # ★ OQ-8：实测退市股历史数据可得性后回填
+                                      #   FULL / PARTIAL / NONE 三档，
+                                      #   NONE 时回测必须抛 SurvivorshipBiasError
+
+max_symbols: 6000
+
+data_sources:
+  - source_id: akshare
+    adapter: quant_v2.adapters.market_data.akshare_cn.AkshareCnAdapter
+    priority: 0
+    capabilities:
+      daily_bars: true
+      adj_factor: true
+      delisting_history: NONE   # ★ 实测后回填：akshare 的退市股历史行情覆盖不全
+      delisting_list: true
+      trading_calendar: true
+      fundamentals: true
+      intraday: false
+      rate_limit_per_min: 200
+
+  - source_id: baostock
+    adapter: quant_v2.adapters.market_data.baostock_cn.BaostockCnAdapter
+    priority: 1
+    capabilities:
+      daily_bars: true
+      adj_factor: true          # 复权质量更好，用于交叉校验
+      delisting_history: PARTIAL
+      delisting_list: true
+      trading_calendar: true
+      fundamentals: true
+      intraday: false
+
+  - source_id: tencent
+    adapter: quant_v2.adapters.market_data.tencent_fallback.TencentAdapter
+    priority: 2
+    capabilities:
+      daily_bars: true
+      adj_factor: false         # 备源不给复权因子 → 需标记为 legacy 并告警
+      delisting_history: NONE
+      delisting_list: false
+      trading_calendar: false
+      fundamentals: false
+      intraday: true
+
+# 极端特例的类路径注入（抽象纪律第三条）。
+# 只有"实在无法数值化"的规则才放这里；能数值化的一律走上面的字段。
+hooks: {}
+  # st_detector: quant_v2.adapters.market_data.cn_a_rules.detect_st
+  # price_limit_calculator: quant_v2.adapters.market_data.cn_a_rules.calc_price_limit
